@@ -112,6 +112,7 @@ for i in `find . -name "\#*"`; do rm -rf $i; done
 for i in `find . -name "*~"`; do rm -rf $i; done
 for i in `find . -name "core*"`; do rm -rf $i; done
 for i in `find . -name "CVS"`; do rm -rf $i; done
+for i in `find . -name ".git"`; do rm -rf $i; done
 for i in `find . -name "*.plg"`; do rm -rf $i; done
 for i in `find . -name "*.ncb"`; do rm -rf $i; done
 for i in `find . -name "*.layout"`; do rm -rf $i; done
@@ -137,10 +138,11 @@ make>>$LOG_FILE 2>&1
 cp -f refman.pdf ../CImg_reference.pdf
 rm -rf ../latex
 
-# Commit changes on CVS repository
-echo " - Commit on CVS repository."
+# Commit changes on GIT repository
+echo " - Commit on GIT repository."
 cd $SRC_DIR
-cvs commit -m "">>$LOG_FILE 2>&1
+git commit -a -m "">>$LOG_FILE 2>&1
+git push
 
 # Create ZIP archive
 echo " - Build ZIP archive file '$ZIP_FILE'."
