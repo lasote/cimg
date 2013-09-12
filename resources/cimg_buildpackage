@@ -141,7 +141,7 @@ rm -rf ../latex
 # Commit changes on GIT repository
 echo " - Commit on GIT repository."
 cd $SRC_DIR
-git commit -a -m "">>$LOG_FILE 2>&1
+git commit -a -m "-">>$LOG_FILE 2>&1
 git push
 
 # Create ZIP archive
