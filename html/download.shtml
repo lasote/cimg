@@ -24,7 +24,7 @@
            onmouseover="this.src='img/item_sources2.jpg';"
            onmouseout="this.src='img/item_sources.jpg';" /></img></td>
 <td><hr noshade="noshade" size="1" width="100%"></hr>
-  You may be also more adventurous and use <b>git</b>.
+  You may be also more adventurous and try the current development version with <a href="http://git-scm.com/"><b>git</b></a>.
   This ensures you will get the latest code available, and will ease the
   updates as well. To do this, just
   type the commands : <br><br>
