@@ -20,23 +20,21 @@
     It contains all the required files, as well as various examples (which must be compiled),
     illustrating the use of the library functions and classes.<br/>
 </td></tr>
-<tr><td><a href="http://cimg.cvs.sourceforge.net/cimg/CImg/">
-      <img src="img/item_sources.jpg" border="0" alt="Sources Repository"
+<tr><td><img src="img/item_sources.jpg" border="0" alt="Sources Repository"
            onmouseover="this.src='img/item_sources2.jpg';"
-           onmouseout="this.src='img/item_sources.jpg';" /></img></a></td>
+           onmouseout="this.src='img/item_sources.jpg';" /></img></td>
 <td><hr noshade="noshade" size="1" width="100%"></hr>
-  You may be also more adventurous and use CVS.
+  You may be also more adventurous and use <b>git</b>.
   This ensures you will get the latest code available, and will ease the
-  updates as well (knowing the tool <i>cvs</i> is needed indeed). To do this, just
+  updates as well. To do this, just
   type the commands : <br><br>
       <table cellpadding="10" cellspacing="0" border="0" bgcolor="#EEEEFF"><tr><td>
             <font size="-1"><i>
-                export CVS_RSH=ssh<br/>
-                cvs -d:pserver:anonymous@cimg.cvs.sourceforge.net:/cvsroot/cimg co CImg
+                git clone http://git.code.sf.net/p/cimg/source CImg
             </i></font>
       </td></tr></table>
-      <br>in your favorite console. Nevertheless, you have to know that some code in the CVS version
-        may be experimental, so always test the latest stable archive before complaining !
+      <br>in your favorite console. Nevertheless, you have to know that some code in the source repository
+        is under development and may be experimental, so always test the latest stable archive before complaining !
     </td></tr>
   </table>
 </p>
