@@ -4254,7 +4254,7 @@ namespace cimg_library_suffixed {
       cimg::mutex(2);
       static unsigned long t0 = 0;
       const unsigned long t = cimg::time();
-      if (is_tic) return (t0 = t);
+      if (is_tic) { cimg::mutex(2,0); return (t0 = t); }
       const unsigned long dt = t>=t0?(t - t0):cimg::type<unsigned long>::max();
       const unsigned int
         edays = (unsigned int)(dt/86400000.0),
