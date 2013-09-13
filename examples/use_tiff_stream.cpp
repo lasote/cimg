@@ -43,7 +43,7 @@
 
 
 #include <fstream>
-// These includes are necessary to get the plug-in compile !
+// These includes are necessary to get the plug-in compile ! Don't forget to link with 'libtiff' and 'libtiffxx' !
 #include "tiffio.h"
 #include "tiffio.hxx"
 

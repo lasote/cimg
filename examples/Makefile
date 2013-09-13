@@ -78,7 +78,7 @@ CIMG_FILES = CImg_demo \
 	     use_RGBclass \
 
 # Files which requires external libraries to run.
-CIMG_EXTRA_FILES = use_jpeg_buffer use_tiff_stream
+CIMG_EXTRA_FILES = use_tiff_stream use_jpeg_buffer
 
 #---------------------------------
 # Set correct variables and paths
@@ -299,7 +299,7 @@ $(CIMG_XSHM_CFLAGS)" \
 $(CIMG_X11_LDFLAGS) \
 $(CIMG_TIFF_LDFLAGS) \
 $(CIMG_XSHM_LDFLAGS)" \
-all
+all $(CIMG_EXTRA_FILES)
 
 # Linux/BSD/Mac OSX targets, with X11 display.
 linux:
