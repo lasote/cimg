@@ -1,6 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <!--#include file="header.html" -->
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Summary</div></div>
+<div id="center"><div id="text_centre_intro">
 
 <p>
   The <tt><i>CImg Library</i></tt> is a <b>small</b>, <b>open source</b>, <b>C++ toolkit</b> for <b>image processing</b>,
@@ -73,7 +78,11 @@
   of image processing applications.
 </blockquote>
 
-<br/><img src="img/item_authors.jpg" alt="Authors"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Authors</div></div>
+<div id="center"><div id="text_centre_intro">
+
 <blockquote>
   <a href="http://tschumperle.users.greyc.fr/">David Tschumperl&eacute;</a> (project leader)<br/><br/>
   with the help of many contributors around the world :<br/><br/>
@@ -141,7 +150,11 @@
   </i>
 </blockquote>
 
-<br/><img src="img/item_licenses.jpg" alt="Licenses"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Licenses</div></div>
+<div id="center"><div id="text_centre_intro">
+
 <blockquote>
   The <tt><i>CImg Library</i></tt> is an open-source product distributed under <b>two distinct licenses</b> :
   the library core itself is dual-licensed and
@@ -157,7 +170,11 @@
   under registration number <i>IDDN.FR.001.040004.000.S.P.2004.000.21000.</i>
 </blockquote>
 
-<br/><img src="img/item_learnmore.jpg" alt="Learn More"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Learn more</div></div>
+<div id="center"><div id="text_centre_intro">
+
 <ul>
   <li>The <a href="screenshots.shtml">Screenshots</a> section illustrates some of the different source code examples provided in
     the <tt><i>CImg</i></tt> package.</li>
@@ -176,7 +193,11 @@
   </tr></tbody>
 </table>
 
-<br/><img src="img/item_quickhistory.jpg" alt="Quick History"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Quick history</div></div>
+<div id="center"><div id="text_centre_intro">
+
 <blockquote>
   The development of the <tt><i>CImg Library</i></tt> began at the end of 1999, when I started my PhD thesis
   in the <a href="http://www-sop.inria.fr/odyssee"><img border="0" height="16" alt="" src="img/logoODYSSEE.jpg"></img> Lab</a>
@@ -194,7 +215,11 @@
   I am still using, maintaining and updating the <tt><i>CImg Library</i></tt>, and will probably do it for the next couple of years.
 </blockquote>
 
-<br/><img src="img/item_howtohelp.jpg" alt="How to Help ?"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">How to help ?</div></div>
+<div id="center"><div id="text_centre_intro">
+
 <blockquote>
   The <tt><i>CImg Library</i></tt> is an open source C++ library which is mainly developped during
   free time. If you enjoy using <tt><i>CImg</i></tt>, you may contribute to the project
@@ -311,7 +336,11 @@
     </ul>
     </blockquote>
 
-    <br/><img src="img/item_copyrights.jpg" alt="Copyrights"></img>
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
+
+<div id="bloc_option"><div id="top_vert"><div id="text_top">Copyrights</div></div>
+<div id="center"><div id="text_centre_intro">
+
     <blockquote>
       <font size="-2">
         Copyrights (C) From october 2004, David Tschumperlé - GREYC UMR CNRS 6072, Image team.<br/>
@@ -319,5 +348,7 @@
         Copyrights (C) 2000->2003, David Tschumperlé - INRIA Sophia-Antipolis. Odyssée group.<br/>
       </font>
     </blockquote>
+
+</div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
 
     <!--#include file="footer.html" -->
