@@ -4038,6 +4038,17 @@ namespace cimg_library_suffixed {
       return res;
     }
 
+    // Return number of available CPU cores.
+    inline unsigned int nb_cpus() {
+#if cimg_OS==2
+      SYSTEM_INFO sysinfo;
+      GetSystemInfo(&sysinfo);
+      return (unsigned int)sysinfo.dwNumberOfProcessors;
+#else
+      return (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+    }
+
     // Lock/unlock mutex for CImg multi-thread programming.
     inline int mutex(const unsigned int n, const int lock_mode) {
       switch (lock_mode) {
