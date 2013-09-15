@@ -30,7 +30,7 @@
   This ensures you will get the latest code available, and will ease the
   updates as well. To do this, just
   type the commands : <br><br>
-      <table cellpadding="10" cellspacing="0" border="0" bgcolor="#EEEEFF"><tr><td>
+      <table cellpadding="10" cellspacing="0" border="0" bgcolor="#E0E0E0"><tr><td>
             <font size="-1"><i>
                 git clone http://git.code.sf.net/p/cimg/source CImg
             </i></font>
