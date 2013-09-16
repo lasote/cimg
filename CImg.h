@@ -4048,7 +4048,7 @@ namespace cimg_library_suffixed {
 #else
       res = (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
 #endif
-      return cimg::max(1U,res);
+      return res?res:1U;
     }
 
     // Lock/unlock mutex for CImg multi-thread programming.
