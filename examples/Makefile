@@ -206,8 +206,8 @@ CIMG_MAGICK_LDFLAGS = `Magick++-config --ldflags` `Magick++-config --libs`
 # Flags to enable faster Discrete Fourier Transform computation, using the FFTW3 library
 # ( http://www.fftw.org/ )
 CIMG_FFTW3_CFLAGS = -Dcimg_use_fftw3
-ifeq ($(MSYSTEM),MINGW32)
-CIMG_FFTW3_LDFLAGS = -lfftw3-3 -lfftw3-3_threads
+ifeq ($(OSTYPE),msys)
+CIMG_FFTW3_LDFLAGS = -lfftw3-3
 else
 CIMG_FFTW3_LDFLAGS = -lfftw3 -lfftw3_threads
 endif
