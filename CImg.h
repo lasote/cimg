@@ -26555,9 +26555,11 @@ namespace cimg_library_suffixed {
 #ifdef cimg_use_fftw3
       cimg::mutex(12);
       const unsigned int _nb_threads = nb_threads?nb_threads:cimg::nb_cpus();
+#ifndef cimg_use_fftw3_singlethread
       static int fftw_st = fftw_init_threads();
       cimg::unused(fftw_st);
       fftw_plan_with_nthreads(_nb_threads);
+#endif
       fftw_complex *data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*real._width*real._height*real._depth);
       if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u).",
                                                 pixel_type(),
@@ -26592,7 +26594,9 @@ namespace cimg_library_suffixed {
       }
       fftw_destroy_plan(data_plan);
       fftw_free(data_in);
+#ifndef cimg_use_fftw3_singlethread
       fftw_cleanup_threads();
+#endif
       cimg::mutex(12,0);
 #else
       cimg::unused(nb_threads);
