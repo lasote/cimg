@@ -51,7 +51,7 @@ RELEASE3=`echo $RELEASE0 | head -c 3 | tail -c 1`
 RELEASE=$RELEASE1.$RELEASE2.$RELEASE3
 
 # Read command line options.
-if [ "$1" == "final" -o "$2" == "final" ]; then SUFFIX=""; else SUFFIX=_beta; fi
+if [ "$1" == "final" -o "$2" == "final" ]; then SUFFIX=""; else SUFFIX=_rolling; fi
 
 # Define the different paths and filenames used in this script.
 BASE_DIR=`pwd`
