@@ -46097,7 +46097,7 @@ namespace cimg {
       const unsigned long t1 = cimg::time();
       if (is_tic) { // Tic.
         times[pos++] = t1;
-        if (pos>=times.width())
+        if (pos>=times._width)
           throw CImgArgumentException("cimg::tic(): Too much calls to 'cimg::tic()' without calls to 'cimg::toc()'.");
         cimg::mutex(2,0);
         return t1;
@@ -46121,12 +46121,12 @@ namespace cimg {
           std::fprintf(cimg::output(),"%s[CImg]%*sElapsed time: %u sec %u ms%s\n",cimg::t_red,1+2*pos,"",esec,ems,cimg::t_normal);
         else {
           if (!edays && !ehours)
-            std::fprintf(cimg::output(),"%s[CImg]%*Elapsed time: %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,"",emin,esec,ems,cimg::t_normal);
+            std::fprintf(cimg::output(),"%s[CImg]%*sElapsed time: %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,"",emin,esec,ems,cimg::t_normal);
           else{
             if (!edays)
-              std::fprintf(cimg::output(),"%s[CImg]%*Elapsed time: %u hours %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,ehours,emin,esec,ems,cimg::t_normal);
+              std::fprintf(cimg::output(),"%s[CImg]%*sElapsed time: %u hours %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,"",ehours,emin,esec,ems,cimg::t_normal);
             else{
-              std::fprintf(cimg::output(),"%s[CImg]%*Elapsed time: %u days %u hours %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,edays,ehours,emin,esec,ems,cimg::t_normal);
+              std::fprintf(cimg::output(),"%s[CImg]%*sElapsed time: %u days %u hours %u min %u sec %u ms%s\n",cimg::t_red,1+2*pos,"",edays,ehours,emin,esec,ems,cimg::t_normal);
             }
           }
         }
