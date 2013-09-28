@@ -25887,12 +25887,14 @@ namespace cimg_library_suffixed {
        \param z Z-coordinate of the source point.
        \note At input, image instance represents a field of potentials.
     **/
-    CImg<T>& distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0) {
-      return get_distance_dijkstra(x,y,z).move_to(*this);
+    CImg<T>& distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0,
+                               const bool is_high_connectivity=false) {
+      return get_distance_dijkstra(x,y,z,is_high_connectivity).move_to(*this);
     }
 
     //! Compute distance map to one source point \newinstance.
-    CImg<Tfloat> get_distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0) const {
+    CImg<Tfloat> get_distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0,
+                                       const bool is_high_connectivity=false) const {
       if (is_empty()) return *this;
       if (!containsXYZC(x,y,z,0))
         throw CImgArgumentException(_cimg_instance
@@ -25923,22 +25925,94 @@ namespace cimg_library_suffixed {
         // Update neighbors.
         Tfloat npot = 0;
         if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x-1,y,z)+potential),x-1,y,z)) {
-          res(x-1,y,z) = npot; res(x-1,y,z,1) = 2;
+          res(x-1,y,z) = npot; res(x-1,y,z,1) = 1;
         }
         if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x+1,y,z)+potential),x+1,y,z)) {
-          res(x+1,y,z) = npot; res(x+1,y,z,1) = 1;
+          res(x+1,y,z) = npot; res(x+1,y,z,1) = 2;
         }
         if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y-1,z)+potential),x,y-1,z)) {
           res(x,y-1,z) = npot; res(x,y-1,z,1) = 4;
         }
         if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y+1,z)+potential),x,y+1,z)) {
-          res(x,y+1,z) = npot; res(x,y+1,z,1) = 3;
+          res(x,y+1,z) = npot; res(x,y+1,z,1) = 8;
         }
         if (z-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z-1)+potential),x,y,z-1)) {
-          res(x,y,z-1) = npot; res(x,y,z-1,1) = 6;
+          res(x,y,z-1) = npot; res(x,y,z-1,1) = 16;
         }
         if (z+1<depth() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z+1)+potential),x,y,z+1)) {
-          res(x,y,z+1) = npot; res(x,y,z+1,1) = 5;
+          res(x,y,z+1) = npot; res(x,y,z+1,1) = 32;
+        }
+
+        if (is_high_connectivity) {
+          const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
+
+          // Diagonal neighbors on slice z.
+          if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y-1,z)+potential),x-1,y-1,z)) {
+            res(x-1,y-1,z) = npot; res(x-1,y-1,z,1) = 5;
+          }
+          if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y-1,z)+potential),x+1,y-1,z)) {
+            res(x+1,y-1,z) = npot; res(x+1,y-1,z,1) = 6;
+          }
+          if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y+1,z)+potential),x-1,y+1,z)) {
+            res(x-1,y+1,z) = npot; res(x-1,y+1,z,1) = 9;
+          }
+          if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y+1,z)+potential),x+1,y+1,z)) {
+            res(x+1,y+1,z) = npot; res(x+1,y+1,z,1) = 10;
+          }
+
+          if (z-1>=0) { // Diagonal neighbors on slice z-1.
+            if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z-1)+potential),x-1,y,z-1)) {
+              res(x-1,y,z-1) = npot; res(x-1,y,z-1,1) = 17;
+            }
+            if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z-1)+potential),x+1,y,z-1)) {
+              res(x+1,y,z-1) = npot; res(x+1,y,z-1,1) = 18;
+            }
+            if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z-1)+potential),x,y-1,z-1)) {
+              res(x,y-1,z-1) = npot; res(x,y-1,z-1,1) = 20;
+            }
+            if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z-1)+potential),x,y+1,z-1)) {
+              res(x,y+1,z-1) = npot; res(x,y+1,z-1,1) = 24;
+            }
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z-1)+potential),x-1,y-1,z-1)) {
+              res(x-1,y-1,z-1) = npot; res(x-1,y-1,z-1,1) = 21;
+            }
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z-1)+potential),x+1,y-1,z-1)) {
+              res(x+1,y-1,z-1) = npot; res(x+1,y-1,z-1,1) = 22;
+            }
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z-1)+potential),x-1,y+1,z-1)) {
+              res(x-1,y+1,z-1) = npot; res(x-1,y+1,z-1,1) = 25;
+            }
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z-1)+potential),x+1,y+1,z-1)) {
+              res(x+1,y+1,z-1) = npot; res(x+1,y+1,z-1,1) = 26;
+            }
+          }
+
+          if (z+1<depth()) { // Diagonal neighbors on slice z+1.
+            if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z+1)+potential),x-1,y,z+1)) {
+              res(x-1,y,z+1) = npot; res(x-1,y,z+1,1) = 33;
+            }
+            if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z+1)+potential),x+1,y,z+1)) {
+              res(x+1,y,z+1) = npot; res(x+1,y,z+1,1) = 34;
+            }
+            if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z+1)+potential),x,y-1,z+1)) {
+              res(x,y-1,z+1) = npot; res(x,y-1,z+1,1) = 36;
+            }
+            if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z+1)+potential),x,y+1,z+1)) {
+              res(x,y+1,z+1) = npot; res(x,y+1,z+1,1) = 40;
+            }
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z+1)+potential),x-1,y-1,z+1)) {
+              res(x-1,y-1,z+1) = npot; res(x-1,y-1,z+1,1) = 37;
+            }
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z+1)+potential),x+1,y-1,z+1)) {
+              res(x+1,y-1,z+1) = npot; res(x+1,y-1,z+1,1) = 38;
+            }
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z+1)+potential),x-1,y+1,z+1)) {
+              res(x-1,y+1,z+1) = npot; res(x-1,y+1,z+1,1) = 41;
+            }
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z+1)+potential),x+1,y+1,z+1)) {
+              res(x+1,y+1,z+1) = npot; res(x+1,y+1,z+1,1) = 42;
+            }
+          }
         }
       }
       return res;
