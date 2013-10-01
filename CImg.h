@@ -23864,19 +23864,19 @@ namespace cimg_library_suffixed {
                                     cimg_instance,priority._width,priority._height,priority._depth,priority._spectrum,priority._data);
       if (_spectrum!=1) { cimg_forC(*this,c) get_shared_channel(c).watershed(priority.get_shared_channel(c%priority._spectrum),fill_lines); return *this; }
 
-      CImg<boolT> in_queue(_width,_height,_depth,1,0);
+      CImg<boolT> is_queued(_width,_height,_depth,1,0);
       CImg<typename cimg::superset2<T,t,int>::type> Q;
       unsigned int sizeQ = 0;
 
       // Find seed points and insert them in priority queue.
       const T *ptrs = _data;
       cimg_forXYZ(*this,x,y,z) if (*(ptrs++)) {
-        if (x-1>=0 && !(*this)(x-1,y,z))       Q._priority_queue_insert(in_queue,sizeQ,priority(x-1,y,z),x-1,y,z);
-        if (x+1<width() && !(*this)(x+1,y,z))  Q._priority_queue_insert(in_queue,sizeQ,priority(x+1,y,z),x+1,y,z);
-        if (y-1>=0 && !(*this)(x,y-1,z))       Q._priority_queue_insert(in_queue,sizeQ,priority(x,y-1,z),x,y-1,z);
-        if (y+1<height() && !(*this)(x,y+1,z)) Q._priority_queue_insert(in_queue,sizeQ,priority(x,y+1,z),x,y+1,z);
-        if (z-1>=0 && !(*this)(x,y,z-1))       Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z-1),x,y,z-1);
-        if (z+1<depth() && !(*this)(x,y,z+1))  Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z+1),x,y,z+1);
+        if (x-1>=0 && !(*this)(x-1,y,z))       Q._priority_queue_insert(is_queued,sizeQ,priority(x-1,y,z),x-1,y,z);
+        if (x+1<width() && !(*this)(x+1,y,z))  Q._priority_queue_insert(is_queued,sizeQ,priority(x+1,y,z),x+1,y,z);
+        if (y-1>=0 && !(*this)(x,y-1,z))       Q._priority_queue_insert(is_queued,sizeQ,priority(x,y-1,z),x,y-1,z);
+        if (y+1<height() && !(*this)(x,y+1,z)) Q._priority_queue_insert(is_queued,sizeQ,priority(x,y+1,z),x,y+1,z);
+        if (z-1>=0 && !(*this)(x,y,z-1))       Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z-1),x,y,z-1);
+        if (z+1<depth() && !(*this)(x,y,z+1))  Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z+1),x,y,z+1);
       }
 
       // Start watershed computation.
@@ -23891,27 +23891,27 @@ namespace cimg_library_suffixed {
         unsigned int label = 0;
         if (x-1>=0) {
           if ((*this)(x-1,y,z)) { if (!label) label = (unsigned int)(*this)(x-1,y,z); else if (label!=(*this)(x-1,y,z)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x-1,y,z),x-1,y,z);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x-1,y,z),x-1,y,z);
         }
         if (x+1<width()) {
           if ((*this)(x+1,y,z)) { if (!label) label = (unsigned int)(*this)(x+1,y,z); else if (label!=(*this)(x+1,y,z)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x+1,y,z),x+1,y,z);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x+1,y,z),x+1,y,z);
         }
         if (y-1>=0) {
           if ((*this)(x,y-1,z)) { if (!label) label = (unsigned int)(*this)(x,y-1,z); else if (label!=(*this)(x,y-1,z)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y-1,z),x,y-1,z);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y-1,z),x,y-1,z);
         }
         if (y+1<height()) {
           if ((*this)(x,y+1,z)) { if (!label) label = (unsigned int)(*this)(x,y+1,z); else if (label!=(*this)(x,y+1,z)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y+1,z),x,y+1,z);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y+1,z),x,y+1,z);
         }
         if (z-1>=0) {
           if ((*this)(x,y,z-1)) { if (!label) label = (unsigned int)(*this)(x,y,z-1); else if (label!=(*this)(x,y,z-1)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z-1),x,y,z-1);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z-1),x,y,z-1);
         }
         if (z+1<depth()) {
           if ((*this)(x,y,z+1)) { if (!label) label = (unsigned int)(*this)(x,y,z+1); else if (label!=(*this)(x,y,z+1)) is_same_label = false; }
-          else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z+1),x,y,z+1);
+          else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z+1),x,y,z+1);
         }
         if (is_same_label) (*this)(x,y,z) = label;
       }
@@ -23920,13 +23920,13 @@ namespace cimg_library_suffixed {
       if (fill_lines) {
 
         // Sort all non-labeled pixels with labeled neighbors.
-        in_queue = false;
+        is_queued = false;
         const T *ptrs = _data;
         cimg_forXYZ(*this,x,y,z) if (!*(ptrs++) &&
                                      ((x-1>=0 && (*this)(x-1,y,z)) || (x+1<width() && (*this)(x+1,y,z)) ||
                                       (y-1>=0 && (*this)(x,y-1,z)) || (y+1<height() && (*this)(x,y+1,z)) ||
                                       (z-1>=0 && (*this)(x,y,z-1)) || (z+1>depth() && (*this)(x,y,z+1))))
-          Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z),x,y,z);
+          Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z),x,y,z);
 
         // Start line filling process.
         while (sizeQ) {
@@ -23936,27 +23936,27 @@ namespace cimg_library_suffixed {
           int xmax = 0, ymax = 0, zmax = 0;
           if (x-1>=0) {
             if ((*this)(x-1,y,z)) { if (priority(x-1,y,z)>pmax) { pmax = priority(x-1,y,z); xmax = x-1; ymax = y; zmax = z; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x-1,y,z),x-1,y,z);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x-1,y,z),x-1,y,z);
           }
           if (x+1<width()) {
             if ((*this)(x+1,y,z)) { if (priority(x+1,y,z)>pmax) { pmax = priority(x+1,y,z); xmax = x+1; ymax = y; zmax = z; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x+1,y,z),x+1,y,z);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x+1,y,z),x+1,y,z);
           }
           if (y-1>=0) {
             if ((*this)(x,y-1,z)) { if (priority(x,y-1,z)>pmax) { pmax = priority(x,y-1,z); xmax = x; ymax = y-1; zmax = z; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y-1,z),x,y-1,z);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y-1,z),x,y-1,z);
           }
           if (y+1<height()) {
             if ((*this)(x,y+1,z)) { if (priority(x,y+1,z)>pmax) { pmax = priority(x,y+1,z); xmax = x; ymax = y+1; zmax = z; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y+1,z),x,y+1,z);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y+1,z),x,y+1,z);
           }
           if (z-1>=0) {
             if ((*this)(x,y,z-1)) { if (priority(x,y,z-1)>pmax) { pmax = priority(x,y,z-1); xmax = x; ymax = y; zmax = z-1; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z-1),x,y,z-1);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z-1),x,y,z-1);
           }
           if (z+1<depth()) {
             if ((*this)(x,y,z+1)) { if (priority(x,y,z+1)>pmax) { pmax = priority(x,y,z+1); xmax = x; ymax = y; zmax = z+1; }}
-            else Q._priority_queue_insert(in_queue,sizeQ,priority(x,y,z+1),x,y,z+1);
+            else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z+1),x,y,z+1);
           }
           (*this)(x,y,z) = (*this)(xmax,ymax,zmax);
         }
@@ -23972,9 +23972,9 @@ namespace cimg_library_suffixed {
 
     // [internal] Insert/Remove items in priority queue, for watershed/distance transforms.
     template<typename t>
-    bool _priority_queue_insert(CImg<boolT>& in_queue, unsigned int& siz, const t value, const unsigned int x, const unsigned int y, const unsigned int z) {
-      if (in_queue(x,y,z)) return false;
-      in_queue(x,y,z) = true;
+    bool _priority_queue_insert(CImg<boolT>& is_queued, unsigned int& siz, const t value, const unsigned int x, const unsigned int y, const unsigned int z) {
+      if (is_queued(x,y,z)) return false;
+      is_queued(x,y,z) = true;
       if (++siz>=_width) { if (!is_empty()) resize(_width*2,4,1,1,0); else assign(64,4); }
       (*this)(siz-1,0) = (T)value; (*this)(siz-1,1) = (T)x; (*this)(siz-1,2) = (T)y; (*this)(siz-1,3) = (T)z;
       for (unsigned int pos = siz - 1, par = 0; pos && value>(*this)(par=(pos+1)/2-1,0); pos = par) {
@@ -25906,12 +25906,12 @@ namespace cimg_library_suffixed {
                                     "distance_dijkstra(): image instance is not a scalar image.",
                                     cimg_instance);
       CImg<Tfloat> res(_width,_height,_depth,2);
-      CImg<boolT> in_queue(_width,_height,_depth,1,0);
+      CImg<boolT> is_queued(_width,_height,_depth,1,0);
       CImg<Tint> Q;
       unsigned int sizeQ = 0;
 
       // Put specified point in priority queue.
-      Q._priority_queue_insert(in_queue,sizeQ,0,x,y,z);
+      Q._priority_queue_insert(is_queued,sizeQ,0,x,y,z);
       res(x,y,z) = 0; res(x,y,z,1) = 0;
 
       // Start distance propagation.
@@ -25924,22 +25924,22 @@ namespace cimg_library_suffixed {
 
         // Update neighbors.
         Tfloat npot = 0;
-        if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x-1,y,z)+potential),x-1,y,z)) {
+        if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x-1,y,z)+potential),x-1,y,z)) {
           res(x-1,y,z) = npot; res(x-1,y,z,1) = 1;
         }
-        if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x+1,y,z)+potential),x+1,y,z)) {
+        if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x+1,y,z)+potential),x+1,y,z)) {
           res(x+1,y,z) = npot; res(x+1,y,z,1) = 2;
         }
-        if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y-1,z)+potential),x,y-1,z)) {
+        if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y-1,z)+potential),x,y-1,z)) {
           res(x,y-1,z) = npot; res(x,y-1,z,1) = 4;
         }
-        if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y+1,z)+potential),x,y+1,z)) {
+        if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y+1,z)+potential),x,y+1,z)) {
           res(x,y+1,z) = npot; res(x,y+1,z,1) = 8;
         }
-        if (z-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z-1)+potential),x,y,z-1)) {
+        if (z-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y,z-1)+potential),x,y,z-1)) {
           res(x,y,z-1) = npot; res(x,y,z-1,1) = 16;
         }
-        if (z+1<depth() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z+1)+potential),x,y,z+1)) {
+        if (z+1<depth() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y,z+1)+potential),x,y,z+1)) {
           res(x,y,z+1) = npot; res(x,y,z+1,1) = 32;
         }
 
@@ -25947,69 +25947,69 @@ namespace cimg_library_suffixed {
           const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
 
           // Diagonal neighbors on slice z.
-          if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y-1,z)+potential),x-1,y-1,z)) {
+          if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y-1,z)+potential),x-1,y-1,z)) {
             res(x-1,y-1,z) = npot; res(x-1,y-1,z,1) = 5;
           }
-          if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y-1,z)+potential),x+1,y-1,z)) {
+          if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y-1,z)+potential),x+1,y-1,z)) {
             res(x+1,y-1,z) = npot; res(x+1,y-1,z,1) = 6;
           }
-          if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y+1,z)+potential),x-1,y+1,z)) {
+          if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y+1,z)+potential),x-1,y+1,z)) {
             res(x-1,y+1,z) = npot; res(x-1,y+1,z,1) = 9;
           }
-          if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y+1,z)+potential),x+1,y+1,z)) {
+          if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y+1,z)+potential),x+1,y+1,z)) {
             res(x+1,y+1,z) = npot; res(x+1,y+1,z,1) = 10;
           }
 
           if (z-1>=0) { // Diagonal neighbors on slice z-1.
-            if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z-1)+potential),x-1,y,z-1)) {
+            if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z-1)+potential),x-1,y,z-1)) {
               res(x-1,y,z-1) = npot; res(x-1,y,z-1,1) = 17;
             }
-            if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z-1)+potential),x+1,y,z-1)) {
+            if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z-1)+potential),x+1,y,z-1)) {
               res(x+1,y,z-1) = npot; res(x+1,y,z-1,1) = 18;
             }
-            if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z-1)+potential),x,y-1,z-1)) {
+            if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z-1)+potential),x,y-1,z-1)) {
               res(x,y-1,z-1) = npot; res(x,y-1,z-1,1) = 20;
             }
-            if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z-1)+potential),x,y+1,z-1)) {
+            if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z-1)+potential),x,y+1,z-1)) {
               res(x,y+1,z-1) = npot; res(x,y+1,z-1,1) = 24;
             }
-            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z-1)+potential),x-1,y-1,z-1)) {
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z-1)+potential),x-1,y-1,z-1)) {
               res(x-1,y-1,z-1) = npot; res(x-1,y-1,z-1,1) = 21;
             }
-            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z-1)+potential),x+1,y-1,z-1)) {
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z-1)+potential),x+1,y-1,z-1)) {
               res(x+1,y-1,z-1) = npot; res(x+1,y-1,z-1,1) = 22;
             }
-            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z-1)+potential),x-1,y+1,z-1)) {
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z-1)+potential),x-1,y+1,z-1)) {
               res(x-1,y+1,z-1) = npot; res(x-1,y+1,z-1,1) = 25;
             }
-            if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z-1)+potential),x+1,y+1,z-1)) {
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z-1)+potential),x+1,y+1,z-1)) {
               res(x+1,y+1,z-1) = npot; res(x+1,y+1,z-1,1) = 26;
             }
           }
 
           if (z+1<depth()) { // Diagonal neighbors on slice z+1.
-            if (x-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z+1)+potential),x-1,y,z+1)) {
+            if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z+1)+potential),x-1,y,z+1)) {
               res(x-1,y,z+1) = npot; res(x-1,y,z+1,1) = 33;
             }
-            if (x+1<width() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z+1)+potential),x+1,y,z+1)) {
+            if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z+1)+potential),x+1,y,z+1)) {
               res(x+1,y,z+1) = npot; res(x+1,y,z+1,1) = 34;
             }
-            if (y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z+1)+potential),x,y-1,z+1)) {
+            if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z+1)+potential),x,y-1,z+1)) {
               res(x,y-1,z+1) = npot; res(x,y-1,z+1,1) = 36;
             }
-            if (y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z+1)+potential),x,y+1,z+1)) {
+            if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z+1)+potential),x,y+1,z+1)) {
               res(x,y+1,z+1) = npot; res(x,y+1,z+1,1) = 40;
             }
-            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z+1)+potential),x-1,y-1,z+1)) {
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z+1)+potential),x-1,y-1,z+1)) {
               res(x-1,y-1,z+1) = npot; res(x-1,y-1,z+1,1) = 37;
             }
-            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z+1)+potential),x+1,y-1,z+1)) {
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z+1)+potential),x+1,y-1,z+1)) {
               res(x+1,y-1,z+1) = npot; res(x+1,y-1,z+1,1) = 38;
             }
-            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z+1)+potential),x-1,y+1,z+1)) {
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z+1)+potential),x-1,y+1,z+1)) {
               res(x-1,y+1,z+1) = npot; res(x-1,y+1,z+1,1) = 41;
             }
-            if (x+1<width() && y+1<height() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z+1)+potential),x+1,y+1,z+1)) {
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z+1)+potential),x+1,y+1,z+1)) {
               res(x+1,y+1,z+1) = npot; res(x+1,y+1,z+1,1) = 42;
             }
           }
