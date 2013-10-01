@@ -25731,7 +25731,7 @@ namespace cimg_library_suffixed {
       return U;
     }
 
-    //! Compute distance to a specified value.
+    //! Compute unsigned distance function to a specified value.
     /**
         \param value Reference value.
         \param metric Type of metric. Can be <tt>{ 0=Chebyshev | 1=Manhattan | 2=Euclidean | 3=Squared-euclidean }</tt>.
