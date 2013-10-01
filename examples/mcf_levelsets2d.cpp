@@ -56,37 +56,6 @@ CImg<unsigned char> get_level0(const CImg<T>& img) {
   return dest;
 }
 
-// Update signed distance function to 0-valued isophote, with PDE-based eikonal equation solver.
-/**
-   \param nb_iterations Number of PDE iterations.
-   \param band_size Size of the narrow band.
-   \param time_step Time step of the PDE iterations.
-**/
-template<typename T>
-void distance_eikonal2d(CImg<T>& img, const unsigned int nb_iterations, const float band_size=0, const float time_step=0.5f) {
-  if (img.is_empty()) return;
-  CImg<float> velocity(img);
-  for (unsigned int iteration = 0; iteration<nb_iterations; ++iteration) {
-    float *ptrd = velocity._data, veloc_max = 0;
-    CImg_3x3(I,float);
-    cimg_forC(img,c) cimg_for3x3(img,x,y,0,c,I,float) if (band_size<=0 || cimg::abs(Icc)<band_size) {
-      const float
-        gx = (Inc - Ipc)/2,
-        gy = (Icn - Icp)/2,
-        sgn = -cimg::sign(Icc),
-        ix = gx*sgn>0?(Inc - Icc):(Icc - Ipc),
-        iy = gy*sgn>0?(Icn - Icc):(Icc - Icp),
-        ng = (float)(1e-5f + std::sqrt(gx*gx + gy*gy)),
-        ngx = gx/ng,
-        ngy = gy/ng,
-        veloc = sgn*(ngx*ix + ngy*iy - 1);
-      *(ptrd++) = veloc;
-      if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
-    } else *(ptrd++) = 0;
-    if (veloc_max>0) img+=(velocity*=time_step/veloc_max);
-  }
-}
-
 /*--------------------
 
    Main procedure
@@ -119,7 +88,7 @@ int main(int argc,char **argv) {
   CImg<> img = CImg<>(curve.get_shared_channel(0)).normalize(-1,1);
 
   // Perform the "Mean Curvature Flow".
-  distance_eikonal2d(img,10);
+  img.distance_eikonal(10);
   CImg_3x3(I,float);
   for (unsigned int iteration = 0; iteration<nb_iterations && !disp.is_closed() &&
          !disp.is_keyQ() && !disp.is_keyESC(); ++iteration) {
@@ -142,7 +111,7 @@ int main(int argc,char **argv) {
       get_level0(img).resize(disp.width(),disp.height()).draw_grid(20,20,0,0,false,false,col3,0.4f,0xCCCCCCCC,0xCCCCCCCC).
         draw_text(5,5,"Iteration %d",col3,0,1,13,iteration).display(disp);
     }
-    if (!(iteration%60)) distance_eikonal2d(img,1,3);
+    if (!(iteration%60)) img.distance_eikonal(1,3);
     if (disp.is_resized()) disp.resize();
   }
 

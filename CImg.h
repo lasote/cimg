@@ -25731,7 +25731,7 @@ namespace cimg_library_suffixed {
       return U;
     }
 
-    //! Compute unsigned distance function to a specified value.
+    //! Compute Euclidean distance function to a specified value.
     /**
         \param value Reference value.
         \param metric Type of metric. Can be <tt>{ 0=Chebyshev | 1=Manhattan | 2=Euclidean | 3=Squared-euclidean }</tt>.
@@ -25880,243 +25880,273 @@ namespace cimg_library_suffixed {
       return CImg<Tfloat>(*this,false).distance(value,metric_mask);
     }
 
-    //! Compute distance map to one source point, using dijkstra algorithm.
+    //! Compute distance to a specified value, according to a custom metric (use dijkstra algorithm).
     /**
-       \param x X-coordinate of the source point.
-       \param y Y-coordinate of the source point.
-       \param z Z-coordinate of the source point.
-       \param is_high_connectivity Boolean that choose between 4(false)- or 8(true)-connectivity
-       in 2d case, and between 6(false)- or 26(true)-connectivity in 3d case.
-       \note At input, image instance represents a field of potentials.
-    **/
-    CImg<T>& distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0,
-                               const bool is_high_connectivity=false) {
-      return get_distance_dijkstra(x,y,z,is_high_connectivity).move_to(*this);
+       \param value Reference value.
+       \param metric Field of distance potentials.
+       \param is_high_connectivity Tells if the algorithm uses low or high connectivity.
+     **/
+    template<typename t, typename to>
+    CImg<T>& distance_dijkstra(const T value, const CImg<t>& metric, const bool is_high_connectivity, CImg<to>& return_path) {
+      return get_distance_dijkstra(value,metric,is_high_connectivity,return_path).move_to(*this);
     }
 
-    //! Compute distance map to one source point, using dijkstra algorithm. \newinstance.
-    CImg<Tfloat> get_distance_dijkstra(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0,
-                                       const bool is_high_connectivity=false) const {
-      if (is_empty()) return *this;
-      if (!containsXYZC(x,y,z,0))
-        throw CImgArgumentException(_cimg_instance
-                                    "distance_dijkstra(): image instance does not contain specified starting point (%u,%u,%u).",
-                                    cimg_instance,
-                                    x,y,z);
+    //! Compute distance map to a specified value, according to a custom metric (use dijkstra algorithm). \newinstance.
+    template<typename t, typename to>
+    CImg<Tfloat> get_distance_dijkstra(const T value, const CImg<t>& metric, const bool is_high_connectivity, CImg<to>& return_path) const {
+      if (is_empty()) return return_path.assign();
       if (_spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "distance_dijkstra(): image instance is not a scalar image.",
+                                    "distance_dijkstra(): image instance must be a scalar image.",
                                     cimg_instance);
-      CImg<Tfloat> res(_width,_height,_depth,2);
-      CImg<boolT> is_queued(_width,_height,_depth,1,0);
+      if (!is_sameXYZ(metric))
+        throw CImgArgumentException(_cimg_instance
+                                    "distance_dijkstra(): image instance and metric map (%u,%u,%u,%u) have incompatible dimensions.",
+                                    cimg_instance,
+                                    metric._width,metric._height,metric._depth,metric._spectrum);
+      CImg<Tfloat> result(_width,_height,_depth,_spectrum);
+      CImg<boolT> is_queued(_width,_height,_depth,1);
       CImg<Tint> Q;
-      unsigned int sizeQ = 0;
+      if (return_path) return_path.assign(_width,_height,_depth,_spectrum);
 
-      // Put specified point in priority queue.
-      Q._priority_queue_insert(is_queued,sizeQ,0,x,y,z);
-      res(x,y,z) = 0; res(x,y,z,1) = 0;
+      cimg_forC(*this,c) {
+        const CImg<T> img = get_shared_channel(c);
+        const CImg<t> met = metric.get_shared_channel(c%metric._spectrum);
+        CImg<Tfloat> res = result.get_shared_channel(c);
+        CImg<to> path = return_path?return_path.get_shared_channel(c):CImg<to>();
+        unsigned int sizeQ = 0;
 
-      // Start distance propagation.
-      while (sizeQ) {
-
-        // Get and remove point with minimal potential from the queue.
-        const int x = (int)Q(0,1), y = (int)Q(0,2), z = (int)Q(0,3);
-        const Tfloat potential = (Tfloat)-Q(0,0);
-        Q._priority_queue_remove(sizeQ);
-
-        // Update neighbors.
-        Tfloat npot = 0;
-        if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x-1,y,z)+potential),x-1,y,z)) {
-          res(x-1,y,z) = npot; res(x-1,y,z,1) = 1;
-        }
-        if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x+1,y,z)+potential),x+1,y,z)) {
-          res(x+1,y,z) = npot; res(x+1,y,z,1) = 2;
-        }
-        if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y-1,z)+potential),x,y-1,z)) {
-          res(x,y-1,z) = npot; res(x,y-1,z,1) = 4;
-        }
-        if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y+1,z)+potential),x,y+1,z)) {
-          res(x,y+1,z) = npot; res(x,y+1,z,1) = 8;
-        }
-        if (z-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y,z-1)+potential),x,y,z-1)) {
-          res(x,y,z-1) = npot; res(x,y,z-1,1) = 16;
-        }
-        if (z+1<depth() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=(*this)(x,y,z+1)+potential),x,y,z+1)) {
-          res(x,y,z+1) = npot; res(x,y,z+1,1) = 32;
+        // Detect initial seeds.
+        is_queued.fill(0);
+        cimg_forXYZ(img,x,y,z) if (img(x,y,z)==value) {
+          Q._priority_queue_insert(is_queued,sizeQ,0,x,y,z);
+          res(x,y,z) = 0;
+          if (path) path(x,y,z) = (to)0;
         }
 
-        if (is_high_connectivity) {
-          const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
+        // Start distance propagation.
+        while (sizeQ) {
 
-          // Diagonal neighbors on slice z.
-          if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y-1,z)+potential),x-1,y-1,z)) {
-            res(x-1,y-1,z) = npot; res(x-1,y-1,z,1) = 5;
+          // Get and remove point with minimal potential from the queue.
+          const int x = (int)Q(0,1), y = (int)Q(0,2), z = (int)Q(0,3);
+          const Tfloat P = (Tfloat)-Q(0,0);
+          Q._priority_queue_remove(sizeQ);
+
+          // Update neighbors.
+          Tfloat npot = 0;
+          if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x-1,y,z)+P),x-1,y,z)) {
+            res(x-1,y,z) = npot; if (path) path(x-1,y,z) = (to)2;
           }
-          if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y-1,z)+potential),x+1,y-1,z)) {
-            res(x+1,y-1,z) = npot; res(x+1,y-1,z,1) = 6;
+          if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x+1,y,z)+P),x+1,y,z)) {
+            res(x+1,y,z) = npot; if (path) path(x+1,y,z) = (to)1;
           }
-          if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y+1,z)+potential),x-1,y+1,z)) {
-            res(x-1,y+1,z) = npot; res(x-1,y+1,z,1) = 9;
+          if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y-1,z)+P),x,y-1,z)) {
+            res(x,y-1,z) = npot; if (path) path(x,y-1,z) = (to)8;
           }
-          if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y+1,z)+potential),x+1,y+1,z)) {
-            res(x+1,y+1,z) = npot; res(x+1,y+1,z,1) = 10;
+          if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y+1,z)+P),x,y+1,z)) {
+            res(x,y+1,z) = npot; if (path) path(x,y+1,z) = (to)4;
+          }
+          if (z-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y,z-1)+P),x,y,z-1)) {
+            res(x,y,z-1) = npot; if (path) path(x,y,z-1) = (to)32;
+          }
+          if (z+1<depth() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y,z+1)+P),x,y,z+1)) {
+            res(x,y,z+1) = npot; if (path) path(x,y,z+1) = (to)16;
           }
 
-          if (z-1>=0) { // Diagonal neighbors on slice z-1.
-            if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z-1)+potential),x-1,y,z-1)) {
-              res(x-1,y,z-1) = npot; res(x-1,y,z-1,1) = 17;
-            }
-            if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z-1)+potential),x+1,y,z-1)) {
-              res(x+1,y,z-1) = npot; res(x+1,y,z-1,1) = 18;
-            }
-            if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z-1)+potential),x,y-1,z-1)) {
-              res(x,y-1,z-1) = npot; res(x,y-1,z-1,1) = 20;
-            }
-            if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z-1)+potential),x,y+1,z-1)) {
-              res(x,y+1,z-1) = npot; res(x,y+1,z-1,1) = 24;
-            }
-            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z-1)+potential),x-1,y-1,z-1)) {
-              res(x-1,y-1,z-1) = npot; res(x-1,y-1,z-1,1) = 21;
-            }
-            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z-1)+potential),x+1,y-1,z-1)) {
-              res(x+1,y-1,z-1) = npot; res(x+1,y-1,z-1,1) = 22;
-            }
-            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z-1)+potential),x-1,y+1,z-1)) {
-              res(x-1,y+1,z-1) = npot; res(x-1,y+1,z-1,1) = 25;
-            }
-            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z-1)+potential),x+1,y+1,z-1)) {
-              res(x+1,y+1,z-1) = npot; res(x+1,y+1,z-1,1) = 26;
-            }
-          }
+          if (is_high_connectivity) {
+            const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
 
-          if (z+1<depth()) { // Diagonal neighbors on slice z+1.
-            if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x-1,y,z+1)+potential),x-1,y,z+1)) {
-              res(x-1,y,z+1) = npot; res(x-1,y,z+1,1) = 33;
+            // Diagonal neighbors on slice z.
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y-1,z)+P),x-1,y-1,z)) {
+              res(x-1,y-1,z) = npot; if (path) path(x-1,y-1,z) = (to)10;
             }
-            if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x+1,y,z+1)+potential),x+1,y,z+1)) {
-              res(x+1,y,z+1) = npot; res(x+1,y,z+1,1) = 34;
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y-1,z)+P),x+1,y-1,z)) {
+              res(x+1,y-1,z) = npot; if (path) path(x+1,y-1,z) = (to)9;
             }
-            if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y-1,z+1)+potential),x,y-1,z+1)) {
-              res(x,y-1,z+1) = npot; res(x,y-1,z+1,1) = 36;
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y+1,z)+P),x-1,y+1,z)) {
+              res(x-1,y+1,z) = npot; if (path) path(x-1,y+1,z) = (to)6;
             }
-            if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*(*this)(x,y+1,z+1)+potential),x,y+1,z+1)) {
-              res(x,y+1,z+1) = npot; res(x,y+1,z+1,1) = 40;
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y+1,z)+P),x+1,y+1,z)) {
+              res(x+1,y+1,z) = npot; if (path) path(x+1,y+1,z) = (to)5;
             }
-            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y-1,z+1)+potential),x-1,y-1,z+1)) {
-              res(x-1,y-1,z+1) = npot; res(x-1,y-1,z+1,1) = 37;
+
+            if (z-1>=0) { // Diagonal neighbors on slice z-1.
+              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y,z-1)+P),x-1,y,z-1)) {
+                res(x-1,y,z-1) = npot; if (path) path(x-1,y,z-1) = (to)34;
+              }
+              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y,z-1)+P),x+1,y,z-1)) {
+                res(x+1,y,z-1) = npot; if (path) path(x+1,y,z-1) = (to)33;
+              }
+              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y-1,z-1)+P),x,y-1,z-1)) {
+                res(x,y-1,z-1) = npot; if (path) path(x,y-1,z-1) = (to)40;
+              }
+              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y+1,z-1)+P),x,y+1,z-1)) {
+                res(x,y+1,z-1) = npot; if (path) path(x,y+1,z-1) = (to)36;
+              }
+              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y-1,z-1)+P),x-1,y-1,z-1)) {
+                res(x-1,y-1,z-1) = npot; if (path) path(x-1,y-1,z-1) = (to)42;
+              }
+              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y-1,z-1)+P),x+1,y-1,z-1)) {
+                res(x+1,y-1,z-1) = npot; if (path) path(x+1,y-1,z-1) = (to)41;
+              }
+              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y+1,z-1)+P),x-1,y+1,z-1)) {
+                res(x-1,y+1,z-1) = npot; if (path) path(x-1,y+1,z-1) = (to)38;
+              }
+              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y+1,z-1)+P),x+1,y+1,z-1)) {
+                res(x+1,y+1,z-1) = npot; if (path) path(x+1,y+1,z-1) = (to)37;
+              }
             }
-            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y-1,z+1)+potential),x+1,y-1,z+1)) {
-              res(x+1,y-1,z+1) = npot; res(x+1,y-1,z+1,1) = 38;
-            }
-            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x-1,y+1,z+1)+potential),x-1,y+1,z+1)) {
-              res(x-1,y+1,z+1) = npot; res(x-1,y+1,z+1,1) = 41;
-            }
-            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*(*this)(x+1,y+1,z+1)+potential),x+1,y+1,z+1)) {
-              res(x+1,y+1,z+1) = npot; res(x+1,y+1,z+1,1) = 42;
+
+            if (z+1<depth()) { // Diagonal neighbors on slice z+1.
+              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y,z+1)+P),x-1,y,z+1)) {
+                res(x-1,y,z+1) = npot; if (path) path(x-1,y,z+1) = (to)18;
+              }
+              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y,z+1)+P),x+1,y,z+1)) {
+                res(x+1,y,z+1) = npot; if (path) path(x+1,y,z+1) = (to)17;
+              }
+              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y-1,z+1)+P),x,y-1,z+1)) {
+                res(x,y-1,z+1) = npot; if (path) path(x,y-1,z+1) = (to)24;
+              }
+              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y+1,z+1)+P),x,y+1,z+1)) {
+                res(x,y+1,z+1) = npot; if (path) path(x,y+1,z+1) = (to)20;
+              }
+              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y-1,z+1)+P),x-1,y-1,z+1)) {
+                res(x-1,y-1,z+1) = npot; if (path) path(x-1,y-1,z+1) = (to)26;
+              }
+              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y-1,z+1)+P),x+1,y-1,z+1)) {
+                res(x+1,y-1,z+1) = npot; if (path) path(x+1,y-1,z+1) = (to)25;
+              }
+              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y+1,z+1)+P),x-1,y+1,z+1)) {
+                res(x-1,y+1,z+1) = npot; if (path) path(x-1,y+1,z+1) = (to)22;
+              }
+              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y+1,z+1)+P),x+1,y+1,z+1)) {
+                res(x+1,y+1,z+1) = npot; if (path) path(x+1,y+1,z+1) = (to)21;
+              }
             }
           }
         }
       }
-      return res;
+      return result;
     }
 
-    //! Compute distance map to one source point, using fast marching algorithm.
+    //! Compute distance map to a specified value, according to a custom metric (use dijkstra algorithm). \overloading.
+    template<typename t>
+    CImg<T>& distance_dijkstra(const T value, const CImg<t>& metric, const bool is_high_connectivity=false) {
+      return get_distance_dijkstra(value,metric,is_high_connectivity).move_to(*this);
+    }
+
+    //! Compute distance map to a specified value, according to a custom metric (use dijkstra algorithm). \newinstance.
+    template<typename t>
+    CImg<Tfloat> get_distance_dijkstra(const T value, const CImg<t>& metric, const bool is_high_connectivity=false) const {
+      CImg<T> return_path;
+      return get_distance_dijkstra(value,metric,is_high_connectivity,return_path);
+    }
+
+    //! Compute distance map to one source point, according to a custom metric (use fast marching algorithm).
     /**
-       \param x X-coordinate of the source point.
-       \param y Y-coordinate of the source point.
-       \param z Z-coordinate of the source point.
-       \note At input, image instance represents a field of potentials.
-    **/
-    CImg<Tfloat> get_distance_eikonal(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0) const {
+       \param value Reference value.
+       \param metric Field of distance potentials.
+     **/
+    template<typename t>
+    CImg& distance_eikonal(const T value, const CImg<t>& metric) {
+      return get_distance_eikonal(value,metric).move_to(*this);
+    }
+
+    //! Compute distance map to one source point, according to a custom metric (use fast marching algorithm).
+    template<typename t>
+    CImg<Tfloat> get_distance_eikonal(const T value, const CImg<t>& metric) const {
       if (is_empty()) return *this;
-      if (!containsXYZC(x,y,z,0))
+      if (!is_sameXYZ(metric))
         throw CImgArgumentException(_cimg_instance
-                                    "distance_eikonal(): image instance does not contain specified starting point (%u,%u,%u).",
+                                    "distance_eikonal(): image instance and metric map (%u,%u,%u,%u) have incompatible dimensions.",
                                     cimg_instance,
-                                    x,y,z);
-      if (_spectrum!=1)
-        throw CImgInstanceException(_cimg_instance
-                                    "distance_eikonal(): image instance is not a scalar image.",
-                                    cimg_instance);
+                                    metric._width,metric._height,metric._depth,metric._spectrum);
+      CImg<Tfloat> result(_width,_height,_depth,_spectrum,cimg::type<Tfloat>::max()),Q;
+      CImg<charT> state(_width,_height,_depth); // -1=far away, 0=narrow, 1=frozen.
 
-      CImg<Tfloat> res(_width,_height,_depth,1,cimg::type<Tfloat>::max()), Q;
-      CImg<charT> state(_width,_height,_depth,1,-1); // -1=far away, 0=narrow, 1=frozen.
-      unsigned int sizeQ = 0;
+      cimg_forC(*this,c) {
+        const CImg<T> img = get_shared_channel(c);
+        const CImg<t> met = metric.get_shared_channel(c%metric._spectrum);
+        CImg<Tfloat> res = result.get_shared_channel(c);
+        unsigned int sizeQ = 0;
+        state.fill(-1);
 
-      // Initialization phase.
-      res(x,y,z) = 0; state(x,y,z) = 1;
-      if ((int)x-1>=0) {
-        const Tfloat dist = res(x-1,y,z) = _distance_eikonal(res,x-1,y,z);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x-1,y,z);
-      }
-      if (x+1<_width) {
-        const Tfloat dist = res(x+1,y,z) = _distance_eikonal(res,x+1,y,z);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x+1,y,z);
-      }
-      if ((int)y-1>=0) {
-        const Tfloat dist = res(x,y-1,z) = _distance_eikonal(res,x,y-1,z);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y-1,z);
-      }
-      if (y+1<_height) {
-        const Tfloat dist = res(x,y+1,z) = _distance_eikonal(res,x,y+1,z);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y+1,z);
-      }
-      if ((int)z-1>=0) {
-        const Tfloat dist = res(x,y,z-1) = _distance_eikonal(res,x,y,z-1);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z-1);
-      }
-      if (z+1<_depth) {
-        const Tfloat dist = res(x,y,z+1) = _distance_eikonal(res,x,y,z+1);
-        Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z+1);
-      }
+        // Detect initial seeds.
+        Tfloat *ptr1 = res._data; char *ptr2 = state._data;
+        cimg_for(img,ptr0,T) { if (*ptr0==value) { *ptr1 = 0; *ptr2 = 1; } ++ptr1; ++ptr2; }
 
-      // Propagate front.
-      while (sizeQ) {
-        int x = -1, y = -1, z = -1;
-        while (sizeQ && x<0) {
-          x = (int)Q(0,1); y = (int)Q(0,2); z = (int)Q(0,3);
-          Q._priority_queue_remove(sizeQ);
-          if (state(x,y,z)==1) x = -1; else state(x,y,z) = 1;
-        }
-
-        if (x>=0) {
+        // Initialize seeds neighbors.
+        ptr2 = state._data;
+        cimg_forXYZ(img,x,y,z) if (*(ptr2++)==1) {
           if (x-1>=0 && state(x-1,y,z)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x-1,y,z);
-            if (dist<res(x-1,y,z)) { res(x-1,y,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x-1,y,z); }
+            const Tfloat dist = res(x-1,y,z) = __distance_eikonal(res,met(x-1,y,z),x-1,y,z);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x-1,y,z);
           }
           if (x+1<width() && state(x+1,y,z)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x+1,y,z);
-            if (dist<res(x+1,y,z)) { res(x+1,y,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x+1,y,z); }
+            const Tfloat dist = res(x+1,y,z) = __distance_eikonal(res,met(x+1,y,z),x+1,y,z);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x+1,y,z);
           }
           if (y-1>=0 && state(x,y-1,z)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x,y-1,z);
-            if (dist<res(x,y-1,z)) { res(x,y-1,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y-1,z); }
+            const Tfloat dist = res(x,y-1,z) = __distance_eikonal(res,met(x,y-1,z),x,y-1,z);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y-1,z);
           }
           if (y+1<height() && state(x,y+1,z)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x,y+1,z);
-            if (dist<res(x,y+1,z)) { res(x,y+1,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y+1,z); }
+            const Tfloat dist = res(x,y+1,z) = __distance_eikonal(res,met(x,y+1,z),x,y+1,z);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y+1,z);
           }
           if (z-1>=0 && state(x,y,z-1)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x,y,z-1);
-            if (dist<res(x,y,z-1)) { res(x,y,z-1) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z-1); }
+            const Tfloat dist = res(x,y,z-1) = __distance_eikonal(res,met(x,y,z-1),x,y,z-1);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z-1);
           }
-          if (z+1<depth() && state(x,y,z+1)!=1) {
-            const Tfloat dist = _distance_eikonal(res,x,y,z+1);
-            if (dist<res(x,y,z+1)) { res(x,y,z+1) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z+1); }
+          if (z+1<depth() && state(x,y,z+1)) {
+            const Tfloat dist = res(x,y,z+1) = __distance_eikonal(res,met(x,y,z+1),x,y,z+1);
+            Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z+1);
+          }
+        }
+
+        // Propagate front.
+        while (sizeQ) {
+          int x = -1, y = -1, z = -1;
+          while (sizeQ && x<0) {
+            x = (int)Q(0,1); y = (int)Q(0,2); z = (int)Q(0,3);
+            Q._priority_queue_remove(sizeQ);
+            if (state(x,y,z)==1) x = -1; else state(x,y,z) = 1;
+          }
+          if (x>=0) {
+            if (x-1>=0 && state(x-1,y,z)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x-1,y,z),x-1,y,z);
+              if (dist<res(x-1,y,z)) { res(x-1,y,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x-1,y,z); }
+            }
+            if (x+1<width() && state(x+1,y,z)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x+1,y,z),x+1,y,z);
+              if (dist<res(x+1,y,z)) { res(x+1,y,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x+1,y,z); }
+            }
+            if (y-1>=0 && state(x,y-1,z)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x,y-1,z),x,y-1,z);
+              if (dist<res(x,y-1,z)) { res(x,y-1,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y-1,z); }
+            }
+            if (y+1<height() && state(x,y+1,z)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x,y+1,z),x,y+1,z);
+              if (dist<res(x,y+1,z)) { res(x,y+1,z) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y+1,z); }
+            }
+            if (z-1>=0 && state(x,y,z-1)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x,y,z-1),x,y,z-1);
+              if (dist<res(x,y,z-1)) { res(x,y,z-1) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z-1); }
+            }
+            if (z+1<depth() && state(x,y,z+1)!=1) {
+              const Tfloat dist = __distance_eikonal(res,met(x,y,z+1),x,y,z+1);
+              if (dist<res(x,y,z+1)) { res(x,y,z+1) = dist; Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z+1); }
+            }
           }
         }
       }
-      return res;
+      return result;
     }
 
-    CImg& distance_eikonal(const unsigned int x=0, const unsigned int y=0, const unsigned int z=0) {
-      return get_distance_eikonal(x,y,z).move_to(*this);
-    }
-
-    Tfloat _distance_eikonal(const CImg<Tfloat>& res, const int x=0, const int y=0, const int z=0) const {
+    // Locally solve eikonal equation.
+    Tfloat __distance_eikonal(const CImg<Tfloat>& res, const Tfloat P, const int x=0, const int y=0, const int z=0) const {
       const T M = cimg::type<T>::max();
       T T1 = cimg::min(x-1>=0?res(x-1,y,z):M,x+1<width()?res(x+1,y,z):M);
-      const Tfloat P = (Tfloat)(*this)(x,y,z);
       Tfloat root = 0;
       if (_depth>1) { // 3d.
         T
@@ -26126,14 +26156,14 @@ namespace cimg_library_suffixed {
         if (T2>T3) cimg::swap(T2,T3);
         if (T1>T2) cimg::swap(T1,T2);
         if (P<=0) return (Tfloat)T1;
-        if (T3<M && __distance_eikonal(3,-2*(T1+T2+T3),T1*T1+T2*T2+T3*T3-P*P,root)) return cimg::max((Tfloat)T3,root);
-        if (T2<M && __distance_eikonal(2,-2*(T1+T2),T1*T1+T2*T2-P*P,root)) return cimg::max((Tfloat)T2,root);
+        if (T3<M && ___distance_eikonal(3,-2*(T1+T2+T3),T1*T1+T2*T2+T3*T3-P*P,root)) return cimg::max((Tfloat)T3,root);
+        if (T2<M && ___distance_eikonal(2,-2*(T1+T2),T1*T1+T2*T2-P*P,root)) return cimg::max((Tfloat)T2,root);
         return P + T1;
       } else if (_height>1) { // 2d.
         T T2 = cimg::min(y-1>=0?res(x,y-1,z):M,y+1<height()?res(x,y+1,z):M);
         if (T1>T2) cimg::swap(T1,T2);
         if (P<=0) return (Tfloat)T1;
-        if (T2<M && __distance_eikonal(2,-2*(T1+T2),T1*T1+T2*T2-P*P,root)) return cimg::max((Tfloat)T2,root);
+        if (T2<M && ___distance_eikonal(2,-2*(T1+T2),T1*T1+T2*T2-P*P,root)) return cimg::max((Tfloat)T2,root);
         return P + T1;
       } else { // 1d.
         if (P<=0) return (Tfloat)T1;
@@ -26142,13 +26172,15 @@ namespace cimg_library_suffixed {
       return 0;
     }
 
-    static bool __distance_eikonal(const Tfloat a, const Tfloat b, const Tfloat c, Tfloat &root) {
+    // Find max root of a 2nd-order polynomial.
+    static bool ___distance_eikonal(const Tfloat a, const Tfloat b, const Tfloat c, Tfloat &root) {
       const Tfloat delta = b*b - 4*a*c;
       if (delta<0) return false;
       root = 0.5f*(-b + std::sqrt(delta))/a;
       return true;
     }
 
+    // Insert new point in heap.
     template<typename t>
     void _eik_priority_queue_insert(CImg<charT>& state, unsigned int& siz, const t value, const unsigned int x, const unsigned int y, const unsigned int z) {
       if (state(x,y,z)>0) return;
@@ -26159,6 +26191,63 @@ namespace cimg_library_suffixed {
         cimg::swap((*this)(pos,0),(*this)(par,0)); cimg::swap((*this)(pos,1),(*this)(par,1));
         cimg::swap((*this)(pos,2),(*this)(par,2)); cimg::swap((*this)(pos,3),(*this)(par,3));
       }
+    }
+
+    //! Compute distance function to 0-valued isophotes, using the Eikonal PDE.
+    /**
+       \param nb_iterations Number of PDE iterations.
+       \param band_size Size of the narrow band.
+       \param time_step Time step of the PDE iterations.
+    **/
+    CImg<T>& distance_eikonal(const unsigned int nb_iterations, const float band_size=0, const float time_step=0.5f) {
+      if (is_empty()) return *this;
+      CImg<Tfloat> velocity(*this);
+      for (unsigned int iteration = 0; iteration<nb_iterations; ++iteration) {
+        Tfloat *ptrd = velocity._data, veloc_max = 0;
+        if (_depth>1) { // 3d
+          CImg_3x3x3(I,Tfloat);
+          cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) if (band_size<=0 || cimg::abs(Iccc)<band_size) {
+            const Tfloat
+              gx = (Incc - Ipcc)/2,
+              gy = (Icnc - Icpc)/2,
+              gz = (Iccn - Iccp)/2,
+              sgn = -cimg::sign(Iccc),
+              ix = gx*sgn>0?(Incc - Iccc):(Iccc - Ipcc),
+              iy = gy*sgn>0?(Icnc - Iccc):(Iccc - Icpc),
+              iz = gz*sgn>0?(Iccn - Iccc):(Iccc - Iccp),
+              ng = (Tfloat)(1e-5f + std::sqrt(gx*gx + gy*gy + gz*gz)),
+              ngx = gx/ng,
+              ngy = gy/ng,
+              ngz = gz/ng,
+              veloc = sgn*(ngx*ix + ngy*iy + ngz*iz - 1);
+            *(ptrd++) = veloc;
+            if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+          } else *(ptrd++) = 0;
+        } else { // 2d version
+          CImg_3x3(I,Tfloat);
+          cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat) if (band_size<=0 || cimg::abs(Icc)<band_size) {
+            const Tfloat
+              gx = (Inc - Ipc)/2,
+              gy = (Icn - Icp)/2,
+              sgn = -cimg::sign(Icc),
+              ix = gx*sgn>0?(Inc - Icc):(Icc - Ipc),
+              iy = gy*sgn>0?(Icn - Icc):(Icc - Icp),
+              ng = (Tfloat)(1e-5f + std::sqrt(gx*gx + gy*gy)),
+              ngx = gx/ng,
+              ngy = gy/ng,
+              veloc = sgn*(ngx*ix + ngy*iy - 1);
+            *(ptrd++) = veloc;
+            if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+          } else *(ptrd++) = 0;
+        }
+        if (veloc_max>0) *this+=(velocity*=time_step/veloc_max);
+      }
+      return *this;
+    }
+
+    //! Compute distance function to 0-valued isophotes, using the Eikonal PDE \newinstance.
+    CImg<Tfloat> get_distance_eikonal(const unsigned int nb_iterations, const float band_size=0, const float time_step=0.5f) const {
+      return CImg<Tfloat>(*this,false).distance_eikonal(nb_iterations,band_size,time_step);
     }
 
     //! Compute Haar multiscale wavelet transform.

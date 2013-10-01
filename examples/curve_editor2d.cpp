@@ -344,7 +344,7 @@ int main(int argc, char **argv) {
     const float zero = 0.0f, one = 1.0f;
     CImg<> distance =
       CImg<>(img0.width(),img0.height(),1,1,-1.0f).draw_line(ncurve,&zero).draw_fill(0,0,&one).
-      distance_eikonal(200);
+      distance(0);
     std::fprintf(stderr,"\n - Save distance function in '%s'\n",cimg::basename(file_od));
     distance.save(file_od);
   }

@@ -80,40 +80,6 @@ template<typename T> CImg<T>& mcf_PDE(CImg<T>& img, const unsigned int nb_iterat
   return img;
 }
 
-// Update signed distance function to 0-valued isophote, with PDE-based eikonal equation solver.
-/**
-   \param nb_iterations Number of PDE iterations.
-   \param band_size Size of the narrow band.
-   \param time_step Time step of the PDE iterations.
-**/
-template<typename T>
-void distance_eikonal3d(CImg<T>& img, const unsigned int nb_iterations, const float band_size=0, const float time_step=0.5f) {
-  if (img.is_empty()) return;
-  CImg<float> velocity(img);
-  for (unsigned int iteration = 0; iteration<nb_iterations; ++iteration) {
-    float *ptrd = velocity._data, veloc_max = 0;
-    CImg_3x3x3(I,float);
-    cimg_forC(img,c) cimg_for3x3x3(img,x,y,z,c,I,float) if (band_size<=0 || cimg::abs(Iccc)<band_size) {
-      const float
-        gx = (Incc - Ipcc)/2,
-        gy = (Icnc - Icpc)/2,
-        gz = (Iccn - Iccp)/2,
-        sgn = -cimg::sign(Iccc),
-        ix = gx*sgn>0?(Incc - Iccc):(Iccc - Ipcc),
-        iy = gy*sgn>0?(Icnc - Iccc):(Iccc - Icpc),
-        iz = gz*sgn>0?(Iccn - Iccc):(Iccc - Iccp),
-        ng = (float)(1e-5f + std::sqrt(gx*gx + gy*gy + gz*gz)),
-        ngx = gx/ng,
-        ngy = gy/ng,
-        ngz = gz/ng,
-        veloc = sgn*(ngx*ix + ngy*iy + ngz*iz - 1);
-      *(ptrd++) = veloc;
-      if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
-    } else *(ptrd++) = 0;
-    if (veloc_max>0) img+=(velocity*=time_step/veloc_max);
-  }
-}
-
 /*----------------------
 
    Main procedure
@@ -146,7 +112,7 @@ int main(int argc,char **argv) {
     img.fill(*exte).draw_rectangle(15,15,15,45,45,45,inte).draw_rectangle(25,25,0,35,35,img.depth()-1,exte).
       draw_rectangle(0,25,25,img.width()-1,35,35,exte).draw_rectangle(25,0,25,35,img.height()-1,35,exte).noise(0.7);
   }
-  distance_eikonal3d(img,10,0,0.1f);
+  img.distance_eikonal(10,0,0.1f);
 
   // Compute corresponding surface triangularization by the marching cube algorithm (isovalue 0).
   CImg<> points0;
@@ -165,7 +131,7 @@ int main(int argc,char **argv) {
 
     // Apply PDE on the distance function.
     mcf_PDE(img,1,dt,narrow); // Do one iteration of mean curvature flow.
-    if (!(iteration%10)) distance_eikonal3d(img,1,narrow,0.5f); // Every 10 steps, do one iteration of distance function re-initialization.
+    if (!(iteration%10)) img.distance_eikonal(1,narrow,0.5f); // Every 10 steps, do one iteration of distance function re-initialization.
 
     // Compute surface triangularization by the marching cube algorithm (isovalue 0)
     CImgList<unsigned int> faces;
