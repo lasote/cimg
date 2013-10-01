@@ -25895,10 +25895,6 @@ namespace cimg_library_suffixed {
     template<typename t, typename to>
     CImg<Tfloat> get_distance_dijkstra(const T value, const CImg<t>& metric, const bool is_high_connectivity, CImg<to>& return_path) const {
       if (is_empty()) return return_path.assign();
-      if (_spectrum!=1)
-        throw CImgInstanceException(_cimg_instance
-                                    "distance_dijkstra(): image instance must be a scalar image.",
-                                    cimg_instance);
       if (!is_sameXYZ(metric))
         throw CImgArgumentException(_cimg_instance
                                     "distance_dijkstra(): image instance and metric map (%u,%u,%u,%u) have incompatible dimensions.",
