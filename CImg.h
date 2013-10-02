@@ -25930,22 +25930,22 @@ namespace cimg_library_suffixed {
 
           // Update neighbors.
           Tfloat npot = 0;
-          if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x-1,y,z)+P),x-1,y,z)) {
+          if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x-1,y,z)+P),x-1,y,z)) {
             res(x-1,y,z) = npot; if (path) path(x-1,y,z) = (to)2;
           }
-          if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x+1,y,z)+P),x+1,y,z)) {
+          if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x+1,y,z)+P),x+1,y,z)) {
             res(x+1,y,z) = npot; if (path) path(x+1,y,z) = (to)1;
           }
-          if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y-1,z)+P),x,y-1,z)) {
+          if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x,y-1,z)+P),x,y-1,z)) {
             res(x,y-1,z) = npot; if (path) path(x,y-1,z) = (to)8;
           }
-          if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y+1,z)+P),x,y+1,z)) {
+          if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x,y+1,z)+P),x,y+1,z)) {
             res(x,y+1,z) = npot; if (path) path(x,y+1,z) = (to)4;
           }
-          if (z-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y,z-1)+P),x,y,z-1)) {
+          if (z-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x,y,z-1)+P),x,y,z-1)) {
             res(x,y,z-1) = npot; if (path) path(x,y,z-1) = (to)32;
           }
-          if (z+1<depth() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=metric(x,y,z+1)+P),x,y,z+1)) {
+          if (z+1<depth() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=met(x,y,z+1)+P),x,y,z+1)) {
             res(x,y,z+1) = npot; if (path) path(x,y,z+1) = (to)16;
           }
 
@@ -25953,69 +25953,69 @@ namespace cimg_library_suffixed {
             const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
 
             // Diagonal neighbors on slice z.
-            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y-1,z)+P),x-1,y-1,z)) {
+            if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x-1,y-1,z)+P),x-1,y-1,z)) {
               res(x-1,y-1,z) = npot; if (path) path(x-1,y-1,z) = (to)10;
             }
-            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y-1,z)+P),x+1,y-1,z)) {
+            if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x+1,y-1,z)+P),x+1,y-1,z)) {
               res(x+1,y-1,z) = npot; if (path) path(x+1,y-1,z) = (to)9;
             }
-            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y+1,z)+P),x-1,y+1,z)) {
+            if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x-1,y+1,z)+P),x-1,y+1,z)) {
               res(x-1,y+1,z) = npot; if (path) path(x-1,y+1,z) = (to)6;
             }
-            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y+1,z)+P),x+1,y+1,z)) {
+            if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x+1,y+1,z)+P),x+1,y+1,z)) {
               res(x+1,y+1,z) = npot; if (path) path(x+1,y+1,z) = (to)5;
             }
 
             if (z-1>=0) { // Diagonal neighbors on slice z-1.
-              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y,z-1)+P),x-1,y,z-1)) {
+              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x-1,y,z-1)+P),x-1,y,z-1)) {
                 res(x-1,y,z-1) = npot; if (path) path(x-1,y,z-1) = (to)34;
               }
-              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y,z-1)+P),x+1,y,z-1)) {
+              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x+1,y,z-1)+P),x+1,y,z-1)) {
                 res(x+1,y,z-1) = npot; if (path) path(x+1,y,z-1) = (to)33;
               }
-              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y-1,z-1)+P),x,y-1,z-1)) {
+              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x,y-1,z-1)+P),x,y-1,z-1)) {
                 res(x,y-1,z-1) = npot; if (path) path(x,y-1,z-1) = (to)40;
               }
-              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y+1,z-1)+P),x,y+1,z-1)) {
+              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x,y+1,z-1)+P),x,y+1,z-1)) {
                 res(x,y+1,z-1) = npot; if (path) path(x,y+1,z-1) = (to)36;
               }
-              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y-1,z-1)+P),x-1,y-1,z-1)) {
+              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x-1,y-1,z-1)+P),x-1,y-1,z-1)) {
                 res(x-1,y-1,z-1) = npot; if (path) path(x-1,y-1,z-1) = (to)42;
               }
-              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y-1,z-1)+P),x+1,y-1,z-1)) {
+              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x+1,y-1,z-1)+P),x+1,y-1,z-1)) {
                 res(x+1,y-1,z-1) = npot; if (path) path(x+1,y-1,z-1) = (to)41;
               }
-              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y+1,z-1)+P),x-1,y+1,z-1)) {
+              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x-1,y+1,z-1)+P),x-1,y+1,z-1)) {
                 res(x-1,y+1,z-1) = npot; if (path) path(x-1,y+1,z-1) = (to)38;
               }
-              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y+1,z-1)+P),x+1,y+1,z-1)) {
+              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x+1,y+1,z-1)+P),x+1,y+1,z-1)) {
                 res(x+1,y+1,z-1) = npot; if (path) path(x+1,y+1,z-1) = (to)37;
               }
             }
 
             if (z+1<depth()) { // Diagonal neighbors on slice z+1.
-              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x-1,y,z+1)+P),x-1,y,z+1)) {
+              if (x-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x-1,y,z+1)+P),x-1,y,z+1)) {
                 res(x-1,y,z+1) = npot; if (path) path(x-1,y,z+1) = (to)18;
               }
-              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x+1,y,z+1)+P),x+1,y,z+1)) {
+              if (x+1<width() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x+1,y,z+1)+P),x+1,y,z+1)) {
                 res(x+1,y,z+1) = npot; if (path) path(x+1,y,z+1) = (to)17;
               }
-              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y-1,z+1)+P),x,y-1,z+1)) {
+              if (y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x,y-1,z+1)+P),x,y-1,z+1)) {
                 res(x,y-1,z+1) = npot; if (path) path(x,y-1,z+1) = (to)24;
               }
-              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*metric(x,y+1,z+1)+P),x,y+1,z+1)) {
+              if (y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x,y+1,z+1)+P),x,y+1,z+1)) {
                 res(x,y+1,z+1) = npot; if (path) path(x,y+1,z+1) = (to)20;
               }
-              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y-1,z+1)+P),x-1,y-1,z+1)) {
+              if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x-1,y-1,z+1)+P),x-1,y-1,z+1)) {
                 res(x-1,y-1,z+1) = npot; if (path) path(x-1,y-1,z+1) = (to)26;
               }
-              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y-1,z+1)+P),x+1,y-1,z+1)) {
+              if (x+1<width() && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x+1,y-1,z+1)+P),x+1,y-1,z+1)) {
                 res(x+1,y-1,z+1) = npot; if (path) path(x+1,y-1,z+1) = (to)25;
               }
-              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x-1,y+1,z+1)+P),x-1,y+1,z+1)) {
+              if (x-1>=0 && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x-1,y+1,z+1)+P),x-1,y+1,z+1)) {
                 res(x-1,y+1,z+1) = npot; if (path) path(x-1,y+1,z+1) = (to)22;
               }
-              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*metric(x+1,y+1,z+1)+P),x+1,y+1,z+1)) {
+              if (x+1<width() && y+1<height() && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt3*met(x+1,y+1,z+1)+P),x+1,y+1,z+1)) {
                 res(x+1,y+1,z+1) = npot; if (path) path(x+1,y+1,z+1) = (to)21;
               }
             }
