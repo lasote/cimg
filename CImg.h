@@ -2360,14 +2360,14 @@ namespace cimg_library_suffixed {
 #ifdef isinf
         return (bool)isinf(val);
 #else
-        return !is_nan(val) && val+1==val;
+        return !is_nan(val) && (val<cimg::type<double>::min() || val>cimg::type<double>::max());
 #endif
       }
       static bool is_nan(const double val) {
 #ifdef isnan
         return (bool)isnan(val);
 #else
-        return !(val<=0 || val>=0);
+        return !(val==val);
 #endif
       }
       static double min() { return -1.7E308; }
@@ -2382,8 +2382,20 @@ namespace cimg_library_suffixed {
     template<> struct type<float> {
       static const char* string() { static const char *const s = "float"; return s; }
       static bool is_float() { return true; }
-      static bool is_inf(const float val) { return cimg::type<double>::is_inf((double)val); }
-      static bool is_nan(const float val) { return cimg::type<double>::is_nan((double)val); }
+      static bool is_inf(const float val) {
+#ifdef isinf
+        return (bool)isinf(val);
+#else
+        return !is_nan(val) && (val<cimg::type<float>::min() || val>cimg::type<float>::max());
+#endif
+      }
+      static bool is_nan(const float val) {
+#ifdef isnan
+        return (bool)isnan(val);
+#else
+        return !(val==val);
+#endif
+      }
       static float min() { return -3.4E38f; }
       static float max() { return  3.4E38f; }
       static float inf() { return (float)cimg::type<double>::inf(); }
@@ -14468,11 +14480,11 @@ namespace cimg_library_suffixed {
       }
       double mp_isnan() {
         const double val = mem[opcode(2)];
-        return !(val==val);
+        return cimg::type<double>::is_nan(val);
       }
       double mp_isinf() {
         const double val = mem[opcode(2)];
-        return val==(val+1);
+        return cimg::type<double>::is_inf(val);
       }
       double mp_isint() {
         const double val = mem[opcode(2)];
@@ -34927,42 +34939,7 @@ namespace cimg_library_suffixed {
         if (oX!=X || oY!=Y || oZ!=Z || !visu0 || (_depth>1 && !view3d)) {
 
           if (!visu0) { // Create image of projected planes.
-            CImg<Tuchar> tmp, tmp0;
-            if (_depth!=1) {
-              tmp0 = get_projections2d(phase?X1:X0,phase?Y1:Y0,phase?Z1:Z0);
-              tmp = tmp0.get_channels(0,cimg::min(2,spectrum() - 1));
-            } else tmp = get_channels(0,cimg::min(2,spectrum() - 1));
-
-            if (cimg::type<Tuchar>::is_float()) { // Replace +-inf values.
-              Tuchar m = cimg::type<Tuchar>::max(), M = cimg::type<Tuchar>::min();
-              bool is_inf = false;
-              cimg_for(tmp,ptr,Tuchar)
-                if (cimg::type<Tuchar>::is_inf(*ptr)) is_inf = true;
-                else if (*ptr<m) m = *ptr;
-                else if (*ptr>M) M = *ptr;
-              if (is_inf) {
-                const Tuchar
-                  minf = m - (M-m)*20 - 1,
-                  pinf = M + (M-m)*20 + 1;
-                cimg_for(tmp,ptr,Tuchar) if (cimg::type<Tuchar>::is_inf(*ptr)) *ptr = (float)*ptr<0?minf:pinf;
-              }
-            }
-
-            switch (old_normalization) {
-            case 0 : tmp.move_to(visu0); break;
-            case 1 : tmp.normalize(0,255).move_to(visu0); break;
-            case 2 : {
-              const float m = disp._min, M = disp._max;
-              ((tmp-=m)*=255.0f/(M-m>0?M-m:1)).move_to(visu0);
-            }
-            case 3 :
-              if (cimg::type<T>::is_float()) (tmp.normalize(0,255)).move_to(visu0);
-              else {
-                const float m = (float)cimg::type<T>::min(), M = (float)cimg::type<T>::max();
-                ((tmp-=m)*=255.0f/(M-m)).move_to(visu0);
-              } break;
-            }
-            visu0.resize(disp);
+            __get_select(disp,old_normalization,phase?X1:X0,phase?Y1:Y0,phase?Z1:Z0).move_to(visu0).resize(disp);
             view3d.assign();
             points3d.assign();
           }
@@ -35186,6 +35163,44 @@ namespace cimg_library_suffixed {
       disp._is_resized = old_is_resized;
       if (key!=~0U) disp.set_key(key);
       return res;
+    }
+
+    // Return a visualizable uchar8 image for display routines.
+    CImg<ucharT> __get_select(const CImgDisplay& disp, const int normalization, const int x, const int y, const int z) const {
+      if (is_empty()) return CImg<ucharT>(1,1,1,1,0);
+      const CImg<T> crop = get_shared_channels(0,cimg::min(2,spectrum()-1));
+      CImg<Tuchar> img2d;
+      if (_depth>1) crop.get_projections2d(x,y,z).move_to(img2d);
+      else CImg<Tuchar>(crop,false).move_to(img2d);
+
+      if (cimg::type<T>::is_float()) { // Check for inf values.
+        bool is_inf = false;
+        cimg_for(img2d,ptr,T) if (!cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
+        if (is_inf) { // Replace +-inf values.
+          T m0 = cimg::type<T>::max(), M0 = cimg::type<T>::min();
+          cimg_for(img2d,ptr,T) if (!cimg::type<T>::is_inf(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
+          const T
+            val_minf = m0 - (M0-m0)*20 - 1,
+            val_pinf = M0 + (M0-m0)*20 + 1;
+          cimg_for(img2d,ptr,T) if (cimg::type<T>::is_inf(*ptr)) *ptr = (float)*ptr<0?val_minf:val_pinf;
+        }
+      }
+
+      switch (normalization) {
+      case 1 : img2d.normalize(0,255); break;
+      case 2 : {
+        const float m = disp._min, M = disp._max;
+        (img2d-=m)*=255.0f/(M-m>0?M-m:1);
+      } break;
+      case 3 :
+        if (cimg::type<T>::is_float()) img2d.normalize(0,255);
+        else {
+          const float m = (float)cimg::type<T>::min(), M = (float)cimg::type<T>::max();
+          (img2d-=m)*=255.0f/(M-m>0?M-m:1);
+        } break;
+      }
+
+      return img2d;
     }
 
     //! Select sub-graph in a graph.
@@ -43873,12 +43888,9 @@ namespace cimg_library_suffixed {
               while (x<indices._width && indices[++x]==ind) {}
               const CImg<T>
                 onexone(1,1,1,1,0),
-                &src = _data[ind]?_data[ind]:onexone,
-                _img2d = src._depth>1?src.get_projections2d(src._width/2,src._height/2,src._depth/2):CImg<T>(),
-                &img2d = _img2d?_img2d:src;
-              CImg<ucharT> res = old_normalization==1 || (old_normalization==3 && cimg::type<T>::string()!=cimg::type<unsigned char>::string())?
-                CImg<ucharT>(img2d.get_channels(0,cimg::min(2,img2d.spectrum()-1)).normalize(0,255)):
-                CImg<ucharT>(img2d.get_channels(0,cimg::min(2,img2d.spectrum()-1)));
+                &src = _data[ind]?_data[ind]:onexone;
+              CImg<ucharT> res;
+              src.__get_select(disp,old_normalization,src._width/2,src._height/2,src._depth/2).move_to(res);
               const unsigned int h = CImgDisplay::_fitscreen(res._width,res._height,1,128,-85,true);
               res.resize(x - x0,cimg::max(32U,h*disp._height/max_height),1,res._spectrum==1?3:-100);
               positions(ind,0) = positions(ind,2) = (int)x0;
