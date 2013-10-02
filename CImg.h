@@ -26074,27 +26074,27 @@ namespace cimg_library_suffixed {
         // Initialize seeds neighbors.
         ptr2 = state._data;
         cimg_forXYZ(img,x,y,z) if (*(ptr2++)==1) {
-          if (x-1>=0 && state(x-1,y,z)!=1) {
+          if (x-1>=0 && state(x-1,y,z)==-1) {
             const Tfloat dist = res(x-1,y,z) = __distance_eikonal(res,met(x-1,y,z),x-1,y,z);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x-1,y,z);
           }
-          if (x+1<width() && state(x+1,y,z)!=1) {
+          if (x+1<width() && state(x+1,y,z)==-1) {
             const Tfloat dist = res(x+1,y,z) = __distance_eikonal(res,met(x+1,y,z),x+1,y,z);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x+1,y,z);
           }
-          if (y-1>=0 && state(x,y-1,z)!=1) {
+          if (y-1>=0 && state(x,y-1,z)==-1) {
             const Tfloat dist = res(x,y-1,z) = __distance_eikonal(res,met(x,y-1,z),x,y-1,z);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y-1,z);
           }
-          if (y+1<height() && state(x,y+1,z)!=1) {
+          if (y+1<height() && state(x,y+1,z)==-1) {
             const Tfloat dist = res(x,y+1,z) = __distance_eikonal(res,met(x,y+1,z),x,y+1,z);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y+1,z);
           }
-          if (z-1>=0 && state(x,y,z-1)!=1) {
+          if (z-1>=0 && state(x,y,z-1)==-1) {
             const Tfloat dist = res(x,y,z-1) = __distance_eikonal(res,met(x,y,z-1),x,y,z-1);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z-1);
           }
-          if (z+1<depth() && state(x,y,z+1)) {
+          if (z+1<depth() && state(x,y,z+1)==-1) {
             const Tfloat dist = res(x,y,z+1) = __distance_eikonal(res,met(x,y,z+1),x,y,z+1);
             Q._eik_priority_queue_insert(state,sizeQ,-dist,x,y,z+1);
           }
