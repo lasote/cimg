@@ -35175,14 +35175,14 @@ namespace cimg_library_suffixed {
 
       if (cimg::type<T>::is_float()) { // Check for inf values.
         bool is_inf = false;
-        cimg_for(img2d,ptr,T) if (!cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
+        cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
         if (is_inf) { // Replace +-inf values.
           T m0 = cimg::type<T>::max(), M0 = cimg::type<T>::min();
-          cimg_for(img2d,ptr,T) if (!cimg::type<T>::is_inf(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
+          cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
           const T
             val_minf = m0 - (M0-m0)*20 - 1,
             val_pinf = M0 + (M0-m0)*20 + 1;
-          cimg_for(img2d,ptr,T) if (cimg::type<T>::is_inf(*ptr)) *ptr = (float)*ptr<0?val_minf:val_pinf;
+          cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_inf(*ptr)) *ptr = (float)*ptr<0?val_minf:val_pinf;
         }
       }
 
