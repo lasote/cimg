@@ -14241,7 +14241,8 @@ namespace cimg_library_suffixed {
         for ( ; p_code<pE; ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;
-          mem[opcode(1)] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int target = opcode(1);
+          mem[target] = (this->*mp_funcs[opcode[0]])();
         }
         --p_code;
         return (double)(bool)mem[mem_B];
@@ -14254,7 +14255,8 @@ namespace cimg_library_suffixed {
         for ( ; p_code<pE; ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;
-          mem[opcode(1)] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int target = opcode(1);
+          mem[target] = (this->*mp_funcs[opcode[0]])();
         }
         --p_code;
         return (double)(bool)mem[mem_B];
@@ -14291,7 +14293,8 @@ namespace cimg_library_suffixed {
         for ( ; p_code<pE; ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;
-          mem[opcode(1)] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int target = opcode(1);
+          mem[target] = (this->*mp_funcs[opcode[0]])();
         }
         --p_code;
         return A*(double)mem[mem_B];
@@ -14391,8 +14394,8 @@ namespace cimg_library_suffixed {
           for ( ; p_code<pB; ++p_code) {
             const CImg<uintT> &op = *p_code;
             opcode._data = op._data; opcode._height = op._height;
-            const unsigned int mempos = opcode(1);
-            mem[mempos] = (this->*mp_funcs[opcode[0]])();
+            const unsigned int target = opcode(1);
+            mem[target] = (this->*mp_funcs[opcode[0]])();
           }
           p_code = pE - 1;
           return mem[mem_A];
@@ -14400,8 +14403,8 @@ namespace cimg_library_suffixed {
         for (p_code = pB; p_code<pE; ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;
-          const unsigned int mempos = opcode(1);
-          mem[mempos] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int target = opcode(1);
+          mem[target] = (this->*mp_funcs[opcode[0]])();
         }
         --p_code;
         return mem[mem_B];
@@ -14650,11 +14653,12 @@ namespace cimg_library_suffixed {
         this->mp_funcs = mp_funcs;
         mem[9] = x; mem[10] = y; mem[11] = z; mem[12] = c;
         opcode._is_shared = true; opcode._width = opcode._depth = opcode._spectrum = 1;
+
         for (p_code = code._data; p_code<code.end(); ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;  // Allows to avoid parameter passing to evaluation functions.
-          const unsigned int mempos = opcode(1);
-          mem[mempos] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int target = opcode(1);
+          mem[target] = (this->*mp_funcs[opcode[0]])();
         }
         return mem[result];
       }
