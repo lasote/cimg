@@ -14391,7 +14391,8 @@ namespace cimg_library_suffixed {
           for ( ; p_code<pB; ++p_code) {
             const CImg<uintT> &op = *p_code;
             opcode._data = op._data; opcode._height = op._height;
-            mem[opcode(1)] = (this->*mp_funcs[opcode[0]])();
+            const unsigned int opcode1 = opcode(1);
+            mem[opcode1] = (this->*mp_funcs[opcode[0]])();
           }
           p_code = pE - 1;
           return mem[mem_A];
@@ -14651,7 +14652,8 @@ namespace cimg_library_suffixed {
         for (p_code = code._data; p_code<code.end(); ++p_code) {
           const CImg<uintT> &op = *p_code;
           opcode._data = op._data; opcode._height = op._height;  // Allows to avoid parameter passing to evaluation functions.
-          mem[opcode(1)] = (this->*mp_funcs[opcode[0]])();
+          const unsigned int opcode1 = opcode(1);
+          mem[opcode1] = (this->*mp_funcs[opcode[0]])();
         }
         return mem[result];
       }
