@@ -7566,13 +7566,15 @@ namespace cimg_library_suffixed {
     static void wait_all() {
       Display *const dpy = cimg::X11_attr().display;
       if (!dpy) return;
-      bool stop_flag = true;
+
+      bool stop_flag = false;
       XEvent event;
       if (cimg::mutex(13,2)) { // Another thread is already waiting.
         cimg::mutex(13);       // Wait for the other thread to finish.
         cimg::mutex(13,0);
         return;
       }
+
       while (!stop_flag) {
         XLockDisplay(dpy);
         XNextEvent(dpy,&event);
