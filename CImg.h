@@ -5428,11 +5428,11 @@ namespace cimg_library_suffixed {
     }
 
     //! Generate a numbered version of a filename.
-    inline char* number_filename(const char *const filename, const int number, const unsigned int n, char *const str) {
+    inline char* number_filename(const char *const filename, const int number, const unsigned int digits, char *const str) {
       if (!filename) { if (str) *str = 0; return 0; }
       char format[1024] = { 0 }, body[1024] = { 0 };
       const char *const ext = cimg::split_filename(filename,body);
-      cimg_snprintf(format,sizeof(format),"%%s_%%.%ud.%%s",n);
+      cimg_snprintf(format,sizeof(format),"%%s_%%.%ud.%%s",digits);
       std::sprintf(str,format,body,number,ext);
       return str;
     }
@@ -39448,12 +39448,14 @@ namespace cimg_library_suffixed {
     //! Save image as a file.
     /**
        \param filename Filename, as a C-string.
-       \param number When positive, represents an index added to the filename.
+       \param number When positive, represents an index added to the filename. Otherwise, no number is added.
+       \param digits Number of digits used for adding the number to the filename.
        \note
        - The used file format is defined by the file extension in the filename \p filename.
        - Parameter \p number can be used to add a 6-digit number to the filename before saving.
+
     **/
-    const CImg<T>& save(const char *const filename, const int number=-1) const {
+    const CImg<T>& save(const char *const filename, const int number=-1, const unsigned int digits=6) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
                                     "save(): Specified filename is (null).",
@@ -39461,7 +39463,7 @@ namespace cimg_library_suffixed {
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
       const char *const ext = cimg::split_filename(filename);
       char nfilename[1024] = { 0 };
-      const char *const fn = (number>=0)?cimg::number_filename(filename,number,6,nfilename):filename;
+      const char *const fn = (number>=0)?cimg::number_filename(filename,number,digits,nfilename):filename;
 
 #ifdef cimg_save_plugin
       cimg_save_plugin(fn);
@@ -45266,9 +45268,10 @@ namespace cimg_library_suffixed {
     //! Save list into a file.
     /**
       \param filename Filename to write data to.
-      \param number Number of digits used when chosen format requires the saving of multiple files.
+      \param number When positive, represents an index added to the filename. Otherwise, no number is added.
+      \param digits Number of digits used for adding the number to the filename.
     **/
-    const CImgList<T>& save(const char *const filename, const int number=-1) const {
+    const CImgList<T>& save(const char *const filename, const int number=-1, const unsigned int digits=6) const {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
                                     "save(): Specified filename is (null).",
@@ -45276,7 +45279,7 @@ namespace cimg_library_suffixed {
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
       const char *const ext = cimg::split_filename(filename);
       char nfilename[1024] = { 0 };
-      const char *const fn = (number>=0)?cimg::number_filename(filename,number,6,nfilename):filename;
+      const char *const fn = (number>=0)?cimg::number_filename(filename,number,digits,nfilename):filename;
 
 #ifdef cimglist_save_plugin
       cimglist_save_plugin(fn);
