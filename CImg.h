@@ -7569,16 +7569,17 @@ namespace cimg_library_suffixed {
 
       bool stop_flag = false;
       XEvent event;
-      if (cimg::mutex(13,2)) { // Another thread is already waiting.
+      /*      if (cimg::mutex(13,2)) { // Another thread is already waiting.
         cimg::mutex(13);       // Wait for the other thread to finish.
         cimg::mutex(13,0);
         return;
       }
+      */
 
       while (!stop_flag) {
-        XLockDisplay(dpy);
+        //        XLockDisplay(dpy);
         XNextEvent(dpy,&event);
-        XUnlockDisplay(dpy);
+        //        XUnlockDisplay(dpy);
         for (unsigned int i = 0; i<cimg::X11_attr().nb_wins; ++i)
           if (!cimg::X11_attr().wins[i]->_is_closed && event.xany.window==cimg::X11_attr().wins[i]->_window) {
             XLockDisplay(dpy);
@@ -7587,7 +7588,7 @@ namespace cimg_library_suffixed {
             XUnlockDisplay(dpy);
           }
       }
-      cimg::mutex(13,0);
+      //      cimg::mutex(13,0);
     }
 
     void _handle_events(const XEvent *const pevent) {
@@ -8735,7 +8736,7 @@ namespace cimg_library_suffixed {
       WaitForSingleObject(cimg::Win32_attr().wait_event,INFINITE);
     }
 
-    static LRESULT APIENTRY _handle_events(HWND window,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static LRESULT APIENTRY _handle_events(HWND window, UINT msg, WPARAM wParam, LPARAM lParam) {
 #ifdef _WIN64
       CImgDisplay *const disp = (CImgDisplay*)GetWindowLongPtr(window,GWLP_USERDATA);
 #else

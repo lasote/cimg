@@ -582,15 +582,16 @@ void* item_plasma() {
       v0 = cplasma, v1 = (cplasma + 1)%plasma.spectrum(),
       v2 = (cplasma + 2)%plasma.spectrum(), v3 = (cplasma + 3)%plasma.spectrum();
     const float umalpha = 1 - alpha;
+
     unsigned char *ptr_r = visu.data(0,0,0,0), *ptr_g = visu.data(0,0,0,1), *ptr_b = visu.data(0,0,0,2);
     cimg_forY(visu,y) {
       const float
-        *ptr_r1 = plasma.data((unsigned int)(camp(0)*(1.1 + std::sin(tx+cfreq(0)*y))),y,v0),
-        *ptr_g1 = plasma.data((unsigned int)(camp(1)*(1.1 + std::sin(tx+cfreq(1)*y))),y,v1),
-        *ptr_b1 = plasma.data((unsigned int)(camp(2)*(2 + std::sin(tx+cfreq(2)*y))),y,v2),
-        *ptr_r2 = plasma.data((unsigned int)(namp(0)*(1.1 + std::sin(tx+nfreq(0)*y))),y,v1),
-        *ptr_g2 = plasma.data((unsigned int)(namp(1)*(1.1 + std::sin(tx+nfreq(1)*y))),y,v2),
-        *ptr_b2 = plasma.data((unsigned int)(namp(2)*(2 + std::sin(tx+nfreq(2)*y))),y,v3);
+        *ptr_r1 = plasma.data((unsigned int)cimg::max(0.0f,camp(0)*(1.1 + std::sin(tx+cfreq(0)*y))),y,v0),
+        *ptr_g1 = plasma.data((unsigned int)cimg::max(0.0f,camp(1)*(1.1 + std::sin(tx+cfreq(1)*y))),y,v1),
+        *ptr_b1 = plasma.data((unsigned int)cimg::max(0.0f,camp(2)*(2 + std::sin(tx+cfreq(2)*y))),y,v2),
+        *ptr_r2 = plasma.data((unsigned int)cimg::max(0.0f,namp(0)*(1.1 + std::sin(tx+nfreq(0)*y))),y,v1),
+        *ptr_g2 = plasma.data((unsigned int)cimg::max(0.0f,namp(1)*(1.1 + std::sin(tx+nfreq(1)*y))),y,v2),
+        *ptr_b2 = plasma.data((unsigned int)cimg::max(0.0f,namp(2)*(2 + std::sin(tx+nfreq(2)*y))),y,v3);
       cimg_forX(visu,x) {
         *(ptr_r++) = (unsigned char)(umalpha*(*(ptr_r1++)) + alpha*(*(ptr_r2++)));
         *(ptr_g++) = (unsigned char)(umalpha*(*(ptr_g1++)) + alpha*(*(ptr_g2++)));
