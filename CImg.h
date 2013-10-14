@@ -2506,7 +2506,7 @@ namespace cimg_library_suffixed {
 #if cimg_display==1
     struct X11_info {
       volatile unsigned int nb_wins;
-      pthread_t*       event_thread;
+      pthread_t*       events_thread;
       CImgDisplay*     wins[1024];
       Display*         display;
       unsigned int     nb_bits;
@@ -2519,8 +2519,9 @@ namespace cimg_library_suffixed {
       unsigned int curr_resolution;
       unsigned int nb_resolutions;
 #endif
-      X11_info():nb_wins(0),event_thread(0),display(0),
+      X11_info():nb_wins(0),events_thread(0),display(0),
                  nb_bits(0),is_blue_first(false),is_shm_enabled(false),byte_order(false) {
+        XInitThreads();
 #ifdef cimg_use_xrandr
         resolutions = 0;
         curr_rotation = 0;
@@ -7949,8 +7950,6 @@ namespace cimg_library_suffixed {
       // Open X11 display and retrieve graphical properties.
       Display* &dpy = cimg::X11_attr().display;
       if (!dpy) {
-        static const int xinit_status = XInitThreads();
-        cimg::unused(xinit_status);
         dpy = XOpenDisplay(0);
         if (!dpy)
           throw CImgDisplayException(_cimgdisplay_instance
@@ -7973,8 +7972,8 @@ namespace cimg_library_suffixed {
 	XFree(vinfo);
 
         XLockDisplay(dpy);
-        cimg::X11_attr().event_thread = new pthread_t;
-        pthread_create(cimg::X11_attr().event_thread,0,_events_thread,0);
+        cimg::X11_attr().events_thread = new pthread_t;
+        pthread_create(cimg::X11_attr().events_thread,0,_events_thread,0);
       } else XLockDisplay(dpy);
 
       // Set display variables.
@@ -8095,7 +8094,7 @@ namespace cimg_library_suffixed {
       _colormap = 0;
       XSync(dpy,0);
 
-      // Reset display variables
+      // Reset display variables.
       delete[] _title;
       _width = _height = _normalization = _window_width = _window_height = 0;
       _window_x = _window_y = 0;
@@ -8105,18 +8104,18 @@ namespace cimg_library_suffixed {
       _title = 0;
       flush();
 
-      // End event thread and close display if necessary
+      // End event thread and close display if necessary.
       XUnlockDisplay(dpy);
       if (!cimg::X11_attr().nb_wins) {
-        // Kill event thread
-        //pthread_cancel(*cimg::X11_attr().event_thread);
-        //XUnlockDisplay(cimg::X11_attr().display);
-        //pthread_join(*cimg::X11_attr().event_thread,0);
-        //delete cimg::X11_attr().event_thread;
-        //cimg::X11_attr().event_thread = 0;
-        // XUnlockDisplay(cimg::X11_attr().display); // <- This call make the library hang sometimes (fix required).
-        // XCloseDisplay(cimg::X11_attr().display); // <- This call make the library hang sometimes (fix required).
-        //cimg::X11_attr().display = 0;
+
+        // Kill event thread.
+        pthread_cancel(*cimg::X11_attr().events_thread);
+        pthread_join(*cimg::X11_attr().events_thread,0);
+        delete cimg::X11_attr().events_thread;
+        cimg::X11_attr().events_thread = 0;
+        XCloseDisplay(cimg::X11_attr().display); // <- This call make the X11 library hang sometimes (fix required).
+        cimg::X11_attr().display = 0;
+        cimg::X11_attr().nb_wins = 0;
       }
       return *this;
     }
