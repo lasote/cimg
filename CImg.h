@@ -7569,17 +7569,8 @@ namespace cimg_library_suffixed {
 
       bool stop_flag = false;
       XEvent event;
-      /*      if (cimg::mutex(13,2)) { // Another thread is already waiting.
-        cimg::mutex(13);       // Wait for the other thread to finish.
-        cimg::mutex(13,0);
-        return;
-      }
-      */
-
       while (!stop_flag) {
-        //        XLockDisplay(dpy);
-        XNextEvent(dpy,&event);
-        //        XUnlockDisplay(dpy);
+        XNextEvent(dpy,&event); // Strange, but apparently, no need to be called inside X[Un]LockDisplay !
         for (unsigned int i = 0; i<cimg::X11_attr().nb_wins; ++i)
           if (!cimg::X11_attr().wins[i]->_is_closed && event.xany.window==cimg::X11_attr().wins[i]->_window) {
             XLockDisplay(dpy);
@@ -7588,7 +7579,6 @@ namespace cimg_library_suffixed {
             XUnlockDisplay(dpy);
           }
       }
-      //      cimg::mutex(13,0);
     }
 
     void _handle_events(const XEvent *const pevent) {
