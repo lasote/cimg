@@ -7568,10 +7568,18 @@ namespace cimg_library_suffixed {
       Display *const dpy = cimg::X11_attr().display;
       if (!dpy) return;
 
+      if (cimg::mutex(13,2)) { // Another thread is already waiting.
+        cimg::mutex(13); // Wait for the other thread to release the mutex.
+        cimg::mutex(13,0);
+        return;
+      }
+
       bool stop_flag = false;
       XEvent event;
       while (!stop_flag) {
+        //        XLockDisplay(dpy);
         XNextEvent(dpy,&event); // Strange, but apparently, no need to be called inside X[Un]LockDisplay !
+        //        XUnlockDisplay(dpy);
         for (unsigned int i = 0; i<cimg::X11_attr().nb_wins; ++i)
           if (!cimg::X11_attr().wins[i]->_is_closed && event.xany.window==cimg::X11_attr().wins[i]->_window) {
             XLockDisplay(dpy);
@@ -7580,6 +7588,8 @@ namespace cimg_library_suffixed {
             XUnlockDisplay(dpy);
           }
       }
+
+      cimg::mutex(13,0);
     }
 
     void _handle_events(const XEvent *const pevent) {
@@ -8113,9 +8123,8 @@ namespace cimg_library_suffixed {
         pthread_join(*cimg::X11_attr().events_thread,0);
         delete cimg::X11_attr().events_thread;
         cimg::X11_attr().events_thread = 0;
-        XCloseDisplay(cimg::X11_attr().display); // <- This call make the X11 library hang sometimes (fix required).
-        cimg::X11_attr().display = 0;
-        cimg::X11_attr().nb_wins = 0;
+        // XCloseDisplay(cimg::X11_attr().display); // <- This call make the X11 library hang sometimes (fix required).
+        // cimg::X11_attr().display = 0;
       }
       return *this;
     }
@@ -8137,7 +8146,7 @@ namespace cimg_library_suffixed {
                         const bool fullscreen_flag=false, const bool closed_flag=false) {
       if (!img) return assign();
       CImg<T> tmp;
-      const CImg<T>& nimg = (img._depth==1)?img:(tmp=img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      const CImg<T>& nimg = (img._depth==1)?img:(tmp=img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
       _assign(nimg._width,nimg._height,title,normalization_type,fullscreen_flag,closed_flag);
       if (_normalization==2) _min = (float)nimg.min_max(_max);
       return render(nimg).paint();
@@ -8149,7 +8158,7 @@ namespace cimg_library_suffixed {
                         const bool fullscreen_flag=false, const bool closed_flag=false) {
       if (!list) return assign();
       CImg<T> tmp;
-      const CImg<T> img = list>'x', &nimg = (img._depth==1)?img:(tmp=img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      const CImg<T> img = list>'x', &nimg = (img._depth==1)?img:(tmp=img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
       _assign(nimg._width,nimg._height,title,normalization_type,fullscreen_flag,closed_flag);
       if (_normalization==2) _min = (float)nimg.min_max(_max);
       return render(nimg).paint();
@@ -8326,7 +8335,7 @@ namespace cimg_library_suffixed {
                                     "render(): Empty specified image.",
                                     cimgdisplay_instance);
       if (is_empty()) return *this;
-      if (img._depth!=1) return render(img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      if (img._depth!=1) return render(img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
       if (cimg::X11_attr().nb_bits==8 && (img._width!=_width || img._height!=_height)) return render(img.get_resize(_width,_height,1,-100,1));
       if (cimg::X11_attr().nb_bits==8 && !flag8 && img._spectrum==3) {
         static const CImg<typename CImg<T>::ucharT> default_colormap = CImg<typename CImg<T>::ucharT>::default_LUT256();
@@ -9018,7 +9027,7 @@ namespace cimg_library_suffixed {
                         const bool fullscreen_flag=false, const bool closed_flag=false) {
       if (!img) return assign();
       CImg<T> tmp;
-      const CImg<T>& nimg = (img._depth==1)?img:(tmp=img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      const CImg<T>& nimg = (img._depth==1)?img:(tmp=img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
       _assign(nimg._width,nimg._height,title,normalization_type,fullscreen_flag,closed_flag);
       if (_normalization==2) _min = (float)nimg.min_max(_max);
       return display(nimg);
@@ -9030,7 +9039,7 @@ namespace cimg_library_suffixed {
                         const bool fullscreen_flag=false, const bool closed_flag=false) {
       if (!list) return assign();
       CImg<T> tmp;
-      const CImg<T> img = list>'x', &nimg = (img._depth==1)?img:(tmp=img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      const CImg<T> img = list>'x', &nimg = (img._depth==1)?img:(tmp=img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
       _assign(nimg._width,nimg._height,title,normalization_type,fullscreen_flag,closed_flag);
       if (_normalization==2) _min = (float)nimg.min_max(_max);
       return display(nimg);
@@ -9185,7 +9194,7 @@ namespace cimg_library_suffixed {
                                     cimgdisplay_instance);
 
       if (is_empty()) return *this;
-      if (img._depth!=1) return render(img.get_projections2d(img._width/2,img._height/2,img._depth/2));
+      if (img._depth!=1) return render(img.get_projections2d((img._width-1)/2,(img._height-1)/2,(img._depth-1)/2));
 
       const T
         *data1 = img._data,
@@ -33671,8 +33680,8 @@ namespace cimg_library_suffixed {
               dly = lighty - Y,
               dlz = lightz - Z,
               nl = (float)std::sqrt(dlx*dlx + dly*dly + dlz*dlz),
-              nlx = default_light_texture._width/2*(1 + dlx/nl),
-              nly = default_light_texture._height/2*(1 + dly/nl),
+              nlx = (default_light_texture._width - 1)/2*(1 + dlx/nl),
+              nly = (default_light_texture._height - 1)/2*(1 + dly/nl),
               white[] = { 1 };
             default_light_texture.draw_gaussian(nlx,nly,default_light_texture._width/3.0f,white);
             cimg_forXY(default_light_texture,x,y) {
@@ -34717,7 +34726,9 @@ namespace cimg_library_suffixed {
       unsigned char foreground_color[] = { 255,255,255 }, background_color[] = { 0,0,0 };
 
       int area = 0, starting_area = 0, clicked_area = 0, phase = 0,
-        X0 = (int)((XYZ?XYZ[0]:_width/2)%_width), Y0 = (int)((XYZ?XYZ[1]:_height/2)%_height), Z0 = (int)((XYZ?XYZ[2]:_depth/2)%_depth),
+        X0 = (int)((XYZ?XYZ[0]:(_width-1)/2)%_width),
+        Y0 = (int)((XYZ?XYZ[1]:(_height-1)/2)%_height),
+        Z0 = (int)((XYZ?XYZ[2]:(_depth-1)/2)%_depth),
         X1 =-1, Y1 = -1, Z1 = -1,
         X = -1, Y = -1, Z = -1, X3d = -1, Y3d = -1,
         oX = X, oY = Y, oZ = Z, oX3d = X3d, oY3d = -1;
@@ -43891,7 +43902,7 @@ namespace cimg_library_suffixed {
                 onexone(1,1,1,1,0),
                 &src = _data[ind]?_data[ind]:onexone;
               CImg<ucharT> res;
-              src.__get_select(disp,old_normalization,src._width/2,src._height/2,src._depth/2).move_to(res);
+              src.__get_select(disp,old_normalization,(src._width-1)/2,(src._height-1)/2,(src._depth-1)/2).move_to(res);
               const unsigned int h = CImgDisplay::_fitscreen(res._width,res._height,1,128,-85,true);
               res.resize(x - x0,cimg::max(32U,h*disp._height/max_height),1,res._spectrum==1?3:-100);
               positions(ind,0) = positions(ind,2) = (int)x0;
@@ -43905,7 +43916,7 @@ namespace cimg_library_suffixed {
               while (y<visu0._height && indices[++y]==ind) {}
               const CImg<T>
                 &src = _data[ind],
-                _img2d = src._depth>1?src.get_projections2d(src._width/2,src._height/2,src._depth/2):CImg<T>(),
+                _img2d = src._depth>1?src.get_projections2d((src._width-1)/2,(src._height-1)/2,(src._depth-1)/2):CImg<T>(),
                 &img2d = _img2d?_img2d:src;
               CImg<ucharT> res = old_normalization==1 || (old_normalization==3 && cimg::type<T>::string()!=cimg::type<unsigned char>::string())?
                 CImg<ucharT>(img2d.get_normalize(0,255)):
