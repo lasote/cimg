@@ -8119,10 +8119,10 @@ namespace cimg_library_suffixed {
       if (!cimg::X11_attr().nb_wins) {
 
         // Kill event thread.
-        pthread_cancel(*cimg::X11_attr().events_thread);
-        pthread_join(*cimg::X11_attr().events_thread,0);
-        delete cimg::X11_attr().events_thread;
-        cimg::X11_attr().events_thread = 0;
+        // pthread_cancel(*cimg::X11_attr().events_thread);
+        // pthread_join(*cimg::X11_attr().events_thread,0);
+        // delete cimg::X11_attr().events_thread;
+        // cimg::X11_attr().events_thread = 0;
         // XCloseDisplay(cimg::X11_attr().display); // <- This call make the X11 library hang sometimes (fix required).
         // cimg::X11_attr().display = 0;
       }
@@ -37883,12 +37883,12 @@ namespace cimg_library_suffixed {
       // Read primitive data
       primitives.assign();
       colors.assign();
-      bool stopflag = false;
-      while (!stopflag) {
+      bool stop_flag = false;
+      while (!stop_flag) {
         float c0 = 0.7f, c1 = 0.7f, c2 = 0.7f;
         unsigned int prim = 0, i0 = 0, i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0, i7 = 0;
         *line = 0;
-        if ((err = std::fscanf(nfile,"%u",&prim))!=1) stopflag=true;
+        if ((err = std::fscanf(nfile,"%u",&prim))!=1) stop_flag = true;
         else {
           ++nb_read;
           switch (prim) {
@@ -44629,7 +44629,7 @@ namespace cimg_library_suffixed {
 
       CImg<ucharT> tmp(size_x,size_y,1,3), UV(size_x/2,size_y/2,1,2);
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
-      bool stopflag = false;
+      bool stop_flag = false;
       int err;
       if (nfirst_frame) {
         err = std::fseek(nfile,nfirst_frame*(size_x*size_y + size_x*size_y/2),SEEK_CUR);
@@ -44642,12 +44642,12 @@ namespace cimg_library_suffixed {
         }
       }
       unsigned int frame;
-      for (frame = nfirst_frame; !stopflag && frame<=nlast_frame; frame+=nstep_frame) {
+      for (frame = nfirst_frame; !stop_flag && frame<=nlast_frame; frame+=nstep_frame) {
         tmp.fill(0);
         // *TRY* to read the luminance part, do not replace by cimg::fread!
         err = (int)std::fread((void*)(tmp._data),1,(unsigned long)tmp._width*tmp._height,nfile);
         if (err!=(int)(tmp._width*tmp._height)) {
-          stopflag = true;
+          stop_flag = true;
           if (err>0)
             cimg::warn(_cimglist_instance
                        "load_yuv(): File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
@@ -44658,7 +44658,7 @@ namespace cimg_library_suffixed {
           // *TRY* to read the luminance part, do not replace by cimg::fread!
           err = (int)std::fread((void*)(UV._data),1,(size_t)(UV.size()),nfile);
           if (err!=(int)(UV.size())) {
-            stopflag = true;
+            stop_flag = true;
             if (err>0)
               cimg::warn(_cimglist_instance
                          "load_yuv(): File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
@@ -44676,7 +44676,7 @@ namespace cimg_library_suffixed {
           }
         }
       }
-      if (stopflag && nlast_frame!=~0U && frame!=nlast_frame)
+      if (stop_flag && nlast_frame!=~0U && frame!=nlast_frame)
         cimg::warn(_cimglist_instance
                    "load_yuv(): Frame %d not reached since only %u frames were found in file '%s'.",
                    cimglist_instance,
@@ -44883,11 +44883,11 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       assign();
       unsigned int i = 1;
-      for (bool stopflag = false; !stopflag; ++i) {
+      for (bool stop_flag = false; !stop_flag; ++i) {
         cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_%.6u.ppm",filetmp,i);
         CImg<T> img;
         try { img.load_pnm(filetmp2); }
-        catch (CImgException&) { stopflag = true; }
+        catch (CImgException&) { stop_flag = true; }
         if (img) { img.move_to(*this); std::remove(filetmp2); }
       }
       cimg::exception_mode() = omode;
@@ -44966,12 +44966,12 @@ namespace cimg_library_suffixed {
       if (img) { img.move_to(*this); std::remove(filetmp2); }
       else { // Try to read animated gif.
         unsigned int i = 0;
-        for (bool stopflag = false; !stopflag; ++i) {
+        for (bool stop_flag = false; !stop_flag; ++i) {
           if (use_graphicsmagick) cimg_snprintf(filetmp2,sizeof(filetmp2),"%s.png.%u",filetmp,i);
           else cimg_snprintf(filetmp2,sizeof(filetmp2),"%s-%u.png",filetmp,i);
           CImg<T> img;
           try { img.load_png(filetmp2); }
-          catch (CImgException&) { stopflag = true; }
+          catch (CImgException&) { stop_flag = true; }
           if (img) { img.move_to(*this); std::remove(filetmp2); }
         }
       }
@@ -46518,9 +46518,9 @@ namespace cimg {
     CImgDisplay disp(canvas,title?title:" ",0,false,is_centered?true:false);
     if (is_centered) disp.move((CImgDisplay::screen_width() - disp.width())/2,
                              (CImgDisplay::screen_height() - disp.height())/2);
-    bool stopflag = false, refresh = false;
+    bool stop_flag = false, refresh = false;
     int oselected = -1, oclicked = -1, selected = -1, clicked = -1;
-    while (!disp.is_closed() && !stopflag) {
+    while (!disp.is_closed() && !stop_flag) {
       if (refresh) {
         if (clicked>=0) CImg<unsigned char>(canvas).draw_image(xbuttons[clicked],by,cbuttons[clicked]).display(disp);
         else {
@@ -46542,13 +46542,13 @@ namespace cimg {
             refresh = true;
           }
         if (clicked!=oclicked) refresh = true;
-      } else if (clicked>=0) stopflag = true;
+      } else if (clicked>=0) stop_flag = true;
 
       if (disp.key()) {
         oselected = selected;
         switch (disp.key()) {
-        case cimg::keyESC : selected=-1; stopflag=true; break;
-        case cimg::keyENTER : if (selected<0) selected = 0; stopflag = true; break;
+        case cimg::keyESC : selected=-1; stop_flag = true; break;
+        case cimg::keyENTER : if (selected<0) selected = 0; stop_flag = true; break;
         case cimg::keyTAB :
         case cimg::keyARROWRIGHT :
         case cimg::keyARROWDOWN : selected = (selected+1)%buttons._width; break;
