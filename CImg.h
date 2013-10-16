@@ -2535,6 +2535,7 @@ namespace cimg_library_suffixed {
 
       ~X11_info() {
         pthread_cond_destroy(&wait_event);
+        pthread_mutex_unlock(&wait_event_mutex);
         pthread_mutex_destroy(&wait_event_mutex);
       }
     };
