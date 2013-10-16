@@ -2507,6 +2507,8 @@ namespace cimg_library_suffixed {
     struct X11_info {
       volatile unsigned int nb_wins;
       pthread_t*       events_thread;
+      pthread_cond_t   wait_event;
+      pthread_mutex_t  wait_event_mutex;
       CImgDisplay*     wins[1024];
       Display*         display;
       unsigned int     nb_bits;
@@ -2522,11 +2524,18 @@ namespace cimg_library_suffixed {
       X11_info():nb_wins(0),events_thread(0),display(0),
                  nb_bits(0),is_blue_first(false),is_shm_enabled(false),byte_order(false) {
         XInitThreads();
+        pthread_mutex_init(&wait_event_mutex,0);
+        pthread_cond_init(&wait_event,0);
 #ifdef cimg_use_xrandr
         resolutions = 0;
         curr_rotation = 0;
         curr_resolution = nb_resolutions = 0;
 #endif
+      }
+
+      ~X11_info() {
+        pthread_cond_destroy(&wait_event);
+        pthread_mutex_destroy(&wait_event_mutex);
       }
     };
 #if defined(cimg_module)
@@ -7238,6 +7247,11 @@ namespace cimg_library_suffixed {
     CImgDisplay& set_button() {
       _button = 0;
       _is_event = true;
+#if cimg_display==1
+      pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+      SetEvent(cimg::Win32_attr().wait_event);
+#endif
       return *this;
     }
 
@@ -7250,6 +7264,13 @@ namespace cimg_library_suffixed {
       const unsigned int buttoncode = button==1?1:button==2?2:button==3?4:0;
       if (is_pressed) _button |= buttoncode; else _button &= ~buttoncode;
       _is_event = buttoncode?true:false;
+      if (buttoncode) {
+#if cimg_display==1
+        pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+        SetEvent(cimg::Win32_attr().wait_event);
+#endif
+      }
       return *this;
     }
 
@@ -7260,6 +7281,11 @@ namespace cimg_library_suffixed {
     CImgDisplay& set_wheel() {
       _wheel = 0;
       _is_event = true;
+#if cimg_display==1
+      pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+      SetEvent(cimg::Win32_attr().wait_event);
+#endif
       return *this;
     }
 
@@ -7271,6 +7297,13 @@ namespace cimg_library_suffixed {
     CImgDisplay& set_wheel(const int amplitude) {
       _wheel+=amplitude;
       _is_event = amplitude?true:false;
+      if (amplitude) {
+#if cimg_display==1
+        pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+        SetEvent(cimg::Win32_attr().wait_event);
+#endif
+      }
       return *this;
     }
 
@@ -7292,6 +7325,11 @@ namespace cimg_library_suffixed {
         _is_keyPAD3 = _is_keyPAD4 = _is_keyPAD5 = _is_keyPAD6 = _is_keyPAD7 = _is_keyPAD8 = _is_keyPAD9 = _is_keyPADADD = _is_keyPADSUB =
         _is_keyPADMUL = _is_keyPADDIV = false;
       _is_event = true;
+#if cimg_display==1
+      pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+      SetEvent(cimg::Win32_attr().wait_event);
+#endif
       return *this;
     }
 
@@ -7347,6 +7385,13 @@ namespace cimg_library_suffixed {
         *_released_keys = keycode;
       }
       _is_event = keycode?true:false;
+      if (keycode) {
+#if cimg_display==1
+        pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+#elif cimg_display==2
+        SetEvent(cimg::Win32_attr().wait_event);
+#endif
+      }
       return *this;
     }
 
@@ -7380,34 +7425,34 @@ namespace cimg_library_suffixed {
 
     //! Wait for any event occuring on the display \c disp1.
     static void wait(CImgDisplay& disp1) {
-      disp1._is_event = 0;
+      disp1._is_event = false;
       while (!disp1._is_closed && !disp1._is_event) wait_all();
     }
 
     //! Wait for any event occuring either on the display \c disp1 or \c disp2.
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2) {
-      disp1._is_event = disp2._is_event = 0;
+      disp1._is_event = disp2._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed) &&
              !disp1._is_event && !disp2._is_event) wait_all();
     }
 
     //! Wait for any event occuring either on the display \c disp1, \c disp2 or \c disp3.
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3) {
-      disp1._is_event = disp2._is_event = disp3._is_event = 0;
+      disp1._is_event = disp2._is_event = disp3._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event) wait_all();
     }
 
     //! Wait for any event occuring either on the display \c disp1, \c disp2, \c disp3 or \c disp4.
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4) {
-      disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = 0;
+      disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event) wait_all();
     }
 
     //! Wait for any event occuring either on the display \c disp1, \c disp2, \c disp3, \c disp4 or \c disp5.
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5) {
-      disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event = 0;
+      disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event) wait_all();
     }
@@ -7416,7 +7461,7 @@ namespace cimg_library_suffixed {
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5,
                      CImgDisplay& disp6) {
       disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event =
-        disp6._is_event = 0;
+        disp6._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed ||
               !disp6._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event &&
@@ -7427,7 +7472,7 @@ namespace cimg_library_suffixed {
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5,
                      CImgDisplay& disp6, CImgDisplay& disp7) {
       disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event =
-        disp6._is_event = disp7._is_event = 0;
+        disp6._is_event = disp7._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed ||
               !disp6._is_closed || !disp7._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event &&
@@ -7438,7 +7483,7 @@ namespace cimg_library_suffixed {
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5,
                      CImgDisplay& disp6, CImgDisplay& disp7, CImgDisplay& disp8) {
       disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event =
-        disp6._is_event = disp7._is_event = disp8._is_event = 0;
+        disp6._is_event = disp7._is_event = disp8._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed ||
               !disp6._is_closed || !disp7._is_closed || !disp8._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event &&
@@ -7449,7 +7494,7 @@ namespace cimg_library_suffixed {
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5,
                      CImgDisplay& disp6, CImgDisplay& disp7, CImgDisplay& disp8, CImgDisplay& disp9) {
       disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event =
-        disp6._is_event = disp7._is_event = disp8._is_event = disp9._is_event = 0;
+        disp6._is_event = disp7._is_event = disp8._is_event = disp9._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed ||
               !disp6._is_closed || !disp7._is_closed || !disp8._is_closed || !disp9._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event &&
@@ -7460,7 +7505,7 @@ namespace cimg_library_suffixed {
     static void wait(CImgDisplay& disp1, CImgDisplay& disp2, CImgDisplay& disp3, CImgDisplay& disp4, CImgDisplay& disp5,
                      CImgDisplay& disp6, CImgDisplay& disp7, CImgDisplay& disp8, CImgDisplay& disp9, CImgDisplay& disp10) {
       disp1._is_event = disp2._is_event = disp3._is_event = disp4._is_event = disp5._is_event =
-        disp6._is_event = disp7._is_event = disp8._is_event = disp9._is_event = disp10._is_event = 0;
+        disp6._is_event = disp7._is_event = disp8._is_event = disp9._is_event = disp10._is_event = false;
       while ((!disp1._is_closed || !disp2._is_closed || !disp3._is_closed || !disp4._is_closed || !disp5._is_closed ||
               !disp6._is_closed || !disp7._is_closed || !disp8._is_closed || !disp9._is_closed || !disp10._is_closed) &&
              !disp1._is_event && !disp2._is_event && !disp3._is_event && !disp4._is_event && !disp5._is_event &&
@@ -7567,28 +7612,12 @@ namespace cimg_library_suffixed {
     static void wait_all() {
       Display *const dpy = cimg::X11_attr().display;
       if (!dpy) return;
-
       if (cimg::mutex(13,2)) { // Another thread is already waiting.
         cimg::mutex(13); // Wait for the other thread to release the mutex.
         cimg::mutex(13,0);
         return;
       }
-
-      bool stop_flag = false;
-      XEvent event;
-      while (!stop_flag) {
-        //        XLockDisplay(dpy);
-        XNextEvent(dpy,&event); // Strange, but apparently, no need to be called inside X[Un]LockDisplay !
-        //        XUnlockDisplay(dpy);
-        for (unsigned int i = 0; i<cimg::X11_attr().nb_wins; ++i)
-          if (!cimg::X11_attr().wins[i]->_is_closed && event.xany.window==cimg::X11_attr().wins[i]->_window) {
-            XLockDisplay(dpy);
-            cimg::X11_attr().wins[i]->_handle_events(&event);
-            if (cimg::X11_attr().wins[i]->_is_event) stop_flag = true;
-            XUnlockDisplay(dpy);
-          }
-      }
-
+      pthread_cond_wait(&cimg::X11_attr().wait_event,&cimg::X11_attr().wait_event_mutex);
       cimg::mutex(13,0);
     }
 
@@ -7601,6 +7630,7 @@ namespace cimg_library_suffixed {
             (int)event.xclient.data.l[0]==(int)_wm_window_atom) {
           XUnmapWindow(cimg::X11_attr().display,_window);
           _is_closed = _is_event = true;
+          pthread_cond_broadcast(&cimg::X11_attr().wait_event);
         }
       } break;
       case ConfigureNotify : {
@@ -7611,8 +7641,12 @@ namespace cimg_library_suffixed {
           _window_width = nw; _window_height = nh; _mouse_x = _mouse_y = -1;
           XResizeWindow(dpy,_window,_window_width,_window_height);
           _is_resized = _is_event = true;
+          pthread_cond_broadcast(&cimg::X11_attr().wait_event);
         }
-        if (nx!=_window_x || ny!=_window_y) { _window_x = nx; _window_y = ny; _is_moved = _is_event = true; }
+        if (nx!=_window_x || ny!=_window_y) {
+          _window_x = nx; _window_y = ny; _is_moved = _is_event = true;
+          pthread_cond_broadcast(&cimg::X11_attr().wait_event);
+        }
       } break;
       case Expose : {
         while (XCheckWindowEvent(dpy,_window,ExposureMask,&event)) {}
@@ -7673,6 +7707,7 @@ namespace cimg_library_suffixed {
       case LeaveNotify : {
         while (XCheckWindowEvent(dpy,_window,LeaveWindowMask,&event)) {}
         _mouse_x = _mouse_y =-1; _is_event = true;
+        pthread_cond_broadcast(&cimg::X11_attr().wait_event);
       } break;
       case MotionNotify : {
         while (XCheckWindowEvent(dpy,_window,PointerMotionMask,&event)) {}
@@ -7680,6 +7715,7 @@ namespace cimg_library_suffixed {
         _mouse_y = event.xmotion.y;
         if (_mouse_x<0 || _mouse_y<0 || _mouse_x>=width() || _mouse_y>=height()) _mouse_x = _mouse_y = -1;
         _is_event = true;
+        pthread_cond_broadcast(&cimg::X11_attr().wait_event);
       } break;
       }
     }
