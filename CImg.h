@@ -7611,15 +7611,8 @@ namespace cimg_library_suffixed {
     }
 
     static void wait_all() {
-      Display *const dpy = cimg::X11_attr().display;
-      if (!dpy) return;
-      if (cimg::mutex(13,2)) { // Another thread is already waiting.
-        cimg::mutex(13); // Wait for the other thread to release the mutex.
-        cimg::mutex(13,0);
-        return;
-      }
+      if (!cimg::X11_attr().display) return;
       pthread_cond_wait(&cimg::X11_attr().wait_event,&cimg::X11_attr().wait_event_mutex);
-      cimg::mutex(13,0);
     }
 
     void _handle_events(const XEvent *const pevent) {
