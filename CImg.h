@@ -2534,6 +2534,9 @@ namespace cimg_library_suffixed {
       }
 
       ~X11_info() {
+        pthread_cancel(*events_thread);
+        delete events_thread;
+        XCloseDisplay(display);
         pthread_cond_destroy(&wait_event);
         pthread_mutex_unlock(&wait_event_mutex);
         pthread_mutex_destroy(&wait_event_mutex);
@@ -8144,18 +8147,7 @@ namespace cimg_library_suffixed {
       _title = 0;
       flush();
 
-      // End event thread and close display if necessary.
       XUnlockDisplay(dpy);
-      if (!cimg::X11_attr().nb_wins) {
-
-        // Kill event thread.
-        // pthread_cancel(*cimg::X11_attr().events_thread);
-        // pthread_join(*cimg::X11_attr().events_thread,0);
-        // delete cimg::X11_attr().events_thread;
-        // cimg::X11_attr().events_thread = 0;
-        // XCloseDisplay(cimg::X11_attr().display); // <- This call make the X11 library hang sometimes (fix required).
-        // cimg::X11_attr().display = 0;
-      }
       return *this;
     }
 
