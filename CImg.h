@@ -7818,11 +7818,7 @@ namespace cimg_library_suffixed {
       } else { // Repaint directly (may be called from the expose event).
         GC gc = DefaultGC(dpy,DefaultScreen(dpy));
 #ifdef cimg_use_xshm
-        if (_shminfo) {
-          const int completion_type = XShmGetEventBase(dpy) + ShmCompletion;
-          XEvent event;
-          XShmPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height,1);
-          do { XNextEvent(dpy,&event); } while (event.type!=completion_type);  // Wait for the image drawing to be completed.
+        if (_shminfo) XShmPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height,1);
         } else XPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height);
 #else
         XPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height);
