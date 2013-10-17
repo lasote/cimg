@@ -7819,7 +7819,7 @@ namespace cimg_library_suffixed {
         GC gc = DefaultGC(dpy,DefaultScreen(dpy));
 #ifdef cimg_use_xshm
         if (_shminfo) XShmPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height,1);
-        } else XPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height);
+        else XPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height);
 #else
         XPutImage(dpy,_window,gc,_image,0,0,0,0,_width,_height);
 #endif
