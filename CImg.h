@@ -7984,6 +7984,7 @@ namespace cimg_library_suffixed {
     void _assign(const unsigned int dimw, const unsigned int dimh, const char *const ptitle=0,
                  const unsigned int normalization_type=3,
                  const bool fullscreen_flag=false, const bool closed_flag=false) {
+      cimg::mutex(14);
 
       // Allocate space for window title
       const char *const nptitle = ptitle?ptitle:"";
@@ -8108,6 +8109,7 @@ namespace cimg_library_suffixed {
       cimg::X11_attr().wins[cimg::X11_attr().nb_wins++]=this;
       if (!_is_closed) _map_window(); else { _window_x = _window_y = cimg::type<int>::min(); }
       XUnlockDisplay(dpy);
+      cimg::mutex(14,0);
     }
 
     CImgDisplay& assign() {
