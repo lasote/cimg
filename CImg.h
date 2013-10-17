@@ -7617,7 +7617,9 @@ namespace cimg_library_suffixed {
 
     static void wait_all() {
       if (!cimg::X11_attr().display) return;
+      if (cimg::mutex(13,2)) { cimg::sleep(10); return; }
       pthread_cond_wait(&cimg::X11_attr().wait_event,&cimg::X11_attr().wait_event_mutex);
+      cimg::mutex(13,0);
     }
 
     void _handle_events(const XEvent *const pevent) {
@@ -7728,7 +7730,7 @@ namespace cimg_library_suffixed {
         XLockDisplay(dpy);
         bool event_flag = XCheckTypedEvent(dpy,ClientMessage,&event);
         if (!event_flag) event_flag = XCheckMaskEvent(dpy,
-                                                      ExposureMask | StructureNotifyMask | ButtonPressMask|
+                                                      ExposureMask | StructureNotifyMask | ButtonPressMask |
                                                       KeyPressMask | PointerMotionMask | EnterWindowMask | LeaveWindowMask|
                                                       ButtonReleaseMask | KeyReleaseMask,&event);
         if (event_flag)
