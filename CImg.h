@@ -43971,8 +43971,12 @@ namespace cimg_library_suffixed {
             const int yt = (int)text_down?visu.height()-13:0;
             if (is_clicked) visu.draw_text(0,yt," Images %u - %u, Size = %u",foreground_color,background_color,0.7f,13,
                                            orig + indm,orig + indM,indM - indm + 1);
-            else visu.draw_text(0,yt," Image %u",foreground_color,background_color,0.7f,13,
-                                orig + indice0);
+            else visu.draw_text(0,yt," Image %u (%u,%u,%u,%u)",foreground_color,background_color,0.7f,13,
+                                orig + indice0,
+                                _data[orig+indice0]._width,
+                                _data[orig+indice0]._height,
+                                _data[orig+indice0]._depth,
+                                _data[orig+indice0]._spectrum);
             update_display = true;
           } else visu.assign();
         }
