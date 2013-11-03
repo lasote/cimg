@@ -137,7 +137,8 @@ endif
 
 # Flags to enable OpenCV support.
 CIMG_OPENCV_CFLAGS = -Dcimg_use_opencv -I/usr/include/opencv
-CIMG_OPENCV_LDFLAGS = -lcv -lhighgui
+CIMG_OPENCV_LDFLAGS = -lopencv_core -lopencv_highgui
+#CIMG_OPENCV_LDFLAGS = -lcv -lhighgui    #-> Use this for OpenCV < 2.2.0
 
 # Flags used to disable display capablities of CImg
 CIMG_NODISPLAY_CFLAGS = -Dcimg_display=0
@@ -359,7 +360,6 @@ $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS) \
 $(CIMG_XRANDR_CFLAGS) \
 $(CIMG_TIFF_CFLAGS) \
-$(CIMG_MINC2_CFLAGS) \
 $(CIMG_EXR_CFLAGS) \
 $(CIMG_PNG_CFLAGS) \
 $(CIMG_JPEG_CFLAGS) \
@@ -371,8 +371,7 @@ $(CIMG_FFTW3_CFLAGS)" \
 $(CIMG_X11_LDFLAGS) \
 $(CIMG_XSHM_LDFLAGS) \
 $(CIMG_XRANDR_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) \
-$(CIMG_MINC2_LDFLAGS) \
+$(CIMG_TIFF_LDFLAGS) -ltiffxx \
 $(CIMG_EXR_LDFLAGS) \
 $(CIMG_PNG_LDFLAGS) \
 $(CIMG_JPEG_LDFLAGS) \
