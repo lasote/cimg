@@ -13845,28 +13845,28 @@ namespace cimg_library_suffixed {
 
       // Insert code instructions.
       unsigned int opcode0(const char op) {
-        if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+        if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
         const unsigned int pos = mempos++;
         CImg<uintT>::vector(op,pos).move_to(code);
         return pos;
       }
 
       unsigned int opcode1(const char op, const unsigned int arg1) {
-        if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+        if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
         const unsigned int pos = mempos++;
         CImg<uintT>::vector(op,pos,arg1).move_to(code);
         return pos;
       }
 
       unsigned int opcode2(const char op, const unsigned int arg1, const unsigned int arg2) {
-        if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+        if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
         const unsigned int pos = mempos++;
         CImg<uintT>::vector(op,pos,arg1,arg2).move_to(code);
         return pos;
       }
 
       unsigned int opcode3(const char op, const unsigned int arg1, const unsigned int arg2, const unsigned int arg3) {
-        if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+        if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
         const unsigned int pos = mempos++;
         CImg<uintT>::vector(op,pos,arg1,arg2,arg3).move_to(code);
         return pos;
@@ -13874,7 +13874,7 @@ namespace cimg_library_suffixed {
 
       unsigned int opcode6(const char op, const unsigned int arg1, const unsigned int arg2, const unsigned int arg3,
                            const unsigned int arg4, const unsigned int arg5, const unsigned int arg6) {
-        if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+        if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
         const unsigned int pos = mempos++;
         CImg<uintT>::vector(op,pos,arg1,arg2,arg3,arg4,arg5,arg6).move_to(code);
         return pos;
@@ -13903,7 +13903,7 @@ namespace cimg_library_suffixed {
           if (val==0) _cimg_mp_return(0);
           if (val==1) _cimg_mp_return(1);
           if (val==2) _cimg_mp_return(2);
-          if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+          if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
           const unsigned int pos = mempos++;
           mem[pos] = val;
           _cimg_mp_return(pos);
@@ -13912,7 +13912,7 @@ namespace cimg_library_suffixed {
           if (val==0) _cimg_mp_return(0);
           if (val==100) _cimg_mp_return(1);
           if (val==200) _cimg_mp_return(2);
-          if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+          if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
           const unsigned int pos = mempos++;
           mem[pos] = val/100;
           _cimg_mp_return(pos);
@@ -14014,7 +14014,7 @@ namespace cimg_library_suffixed {
                                              se<&expr.back()?"...":"");
                }
              const unsigned int src_pos = compile(s+1,se);
-             if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
+             if (mempos>=mem.size()) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
              const unsigned int dest_pos = mempos++;
              variable_name.move_to(label[dest_pos]);
              CImg<uintT>::vector(7,dest_pos,src_pos).move_to(code);
@@ -14024,14 +14024,14 @@ namespace cimg_library_suffixed {
         // Look for unary/binary operators. The operator precedences is defined as in C++.
         for (char *s = se3, *ns = se2; s>ss; --s, --ns) if (*s=='|' && *ns=='|' && level[s-expr._data]==clevel) {
             const unsigned int mem_A = compile(ss,s), bp1 = code._width, mem_B = compile(s+2,se);
-            if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(8,pos,mem_A,mem_B,code._width-bp1).move_to(code,bp1);
             _cimg_mp_return(pos);
           }
         for (char *s = se3, *ns = se2; s>ss; --s, --ns) if (*s=='&' && *ns=='&' && level[s-expr._data]==clevel) {
             const unsigned int mem_A = compile(ss,s), bp1 = code._width, mem_B = compile(s+2,se);
-            if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(9,pos,mem_A,mem_B,code._width-bp1).move_to(code,bp1);
             _cimg_mp_return(pos);
@@ -14058,7 +14058,7 @@ namespace cimg_library_suffixed {
             _cimg_mp_opcode2(20,compile(ss,s),compile(s+1,se));
         for (char *s = se2; s>ss; --s) if (*s=='*' && level[s-expr._data]==clevel) {
             const unsigned int mem_A = compile(ss,s), bp1 = code._width, mem_B = compile(s+1,se);
-            if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(22,pos,mem_A,mem_B,code._width-bp1).move_to(code,bp1);
             _cimg_mp_return(pos);
@@ -14103,7 +14103,7 @@ namespace cimg_library_suffixed {
             char *s2 = s1+1; while (s2<se2 && (*s2!=',' || level[s2-expr._data]!=clevel1)) ++s2;
             const unsigned int mem_cond = compile(ss3,s1), bp1 = code._width, mem_A = compile(s1+1,s2),
               bp2 = code._width, mem_B = compile(s2+1,se1);
-            if (mempos>=mem._width) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem._width) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(45,pos,mem_cond,mem_A,mem_B,bp2-bp1,code._width-bp2).move_to(code,bp1);
             _cimg_mp_return(pos);
@@ -14157,7 +14157,7 @@ namespace cimg_library_suffixed {
           }
           if (!std::strncmp(ss,"min(",4) || !std::strncmp(ss,"max(",4)) {
             CImgList<uintT> opcode;
-            if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem.size()) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(ss[1]=='i'?48:49,pos).move_to(opcode);
             for (char *s = ss4; s<se; ++s) {
@@ -14170,7 +14170,7 @@ namespace cimg_library_suffixed {
           }
           if (!std::strncmp(ss,"arg(",4)) {
             CImgList<uintT> opcode;
-            if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem.size()) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             CImg<uintT>::vector(69,pos).move_to(opcode);
             for (char *s = ss4; s<se; ++s) {
@@ -14189,7 +14189,7 @@ namespace cimg_library_suffixed {
               ++nb_args; s = ns;
             }
             if (nb_args==0 || nb_args==1) _cimg_mp_return(nb_args);
-            if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
+            if (mempos>=mem.size()) { mem.resize(-200,1,1,1,0); label.insert(label._width); }
             const unsigned int pos = mempos++;
             mem[pos] = nb_args;
             _cimg_mp_return(pos);
@@ -14221,6 +14221,7 @@ namespace cimg_library_suffixed {
         // No known item found, assuming this is an already initialized variable.
         CImg<charT> variable_name(ss,(unsigned int)(se-ss+1));
         variable_name.back() = 0;
+        //        for (unsigned int i = 0; i<mempos; ++i) if (label[i]._data && !std::strcmp(variable_name,label[i])) _cimg_mp_return(i);
         for (unsigned int i = 0; i<mempos; ++i) if (label[i]._data && !std::strcmp(variable_name,label[i])) _cimg_mp_return(i);
         *se = saved_char;
         throw CImgArgumentException("[_cimg_math_parser] "
