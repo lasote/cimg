@@ -13845,7 +13845,7 @@ namespace cimg_library_suffixed {
         label1pos['h'] = 4;
         label1pos['d'] = 5;
         label1pos['s'] = 6;
-        label1pos[127] = 7; // pi
+        label1pos[0] = 7; // pi
         label1pos['e'] = 8;
         label1pos['x'] = 9;
         label1pos['y'] = 10;
@@ -13927,29 +13927,30 @@ namespace cimg_library_suffixed {
         if (ss1==se) switch (*ss) {
           case 'w' : case 'h' : case 'd' : case 's' :
           case 'x' : case 'y' : case 'z' : case 'c' : case 'e' : _cimg_mp_return(label1pos[*ss]);
-          case 'u' : case '?' : _cimg_mp_opcode2(0,0,1);
-          case 'g' : _cimg_mp_opcode0(1);
-          case 'i' : _cimg_mp_opcode0(2);
+          case 'u' : if (label1pos['u']!=~0U) _cimg_mp_return(label1pos['u']); _cimg_mp_opcode2(0,0,1);
+          case 'g' : if (label1pos['g']!=~0U) _cimg_mp_return(label1pos['g']); _cimg_mp_opcode0(1);
+          case 'i' : if (label1pos['i']!=~0U) _cimg_mp_return(label1pos['i']); _cimg_mp_opcode0(2);
+          case '?' : _cimg_mp_opcode2(0,0,1);
           }
         if (ss1==se1) {
-          if (*ss=='p' && *ss1=='i') _cimg_mp_return(label1pos[127]); // pi
+          if (*ss=='p' && *ss1=='i') _cimg_mp_return(label1pos[0]); // pi
           if (*ss=='i') {
-            if (*ss1=='m') _cimg_mp_opcode0(57); // im
-            if (*ss1=='M') _cimg_mp_opcode0(58); // iM
-            if (*ss1=='a') _cimg_mp_opcode0(59); // ia
-            if (*ss1=='v') _cimg_mp_opcode0(60); // iv
+            if (*ss1=='m') { if (label1pos[1]!=~0U) _cimg_mp_return(label1pos[1]); _cimg_mp_opcode0(57); } // im
+            if (*ss1=='M') { if (label1pos[2]!=~0U) _cimg_mp_return(label1pos[2]); _cimg_mp_opcode0(58); } // iM
+            if (*ss1=='a') { if (label1pos[3]!=~0U) _cimg_mp_return(label1pos[3]); _cimg_mp_opcode0(59); } // ia
+            if (*ss1=='v') { if (label1pos[4]!=~0U) _cimg_mp_return(label1pos[4]); _cimg_mp_opcode0(60); } // iv
           }
           if (*ss1=='m') {
-            if (*ss=='x') _cimg_mp_opcode0(61); // xm
-            if (*ss=='y') _cimg_mp_opcode0(62); // ym
-            if (*ss=='z') _cimg_mp_opcode0(63); // zm
-            if (*ss=='c') _cimg_mp_opcode0(64); // cm
+            if (*ss=='x') { if (label1pos[5]!=~0U) _cimg_mp_return(label1pos[5]); _cimg_mp_opcode0(61); } // xm
+            if (*ss=='y') { if (label1pos[6]!=~0U) _cimg_mp_return(label1pos[6]); _cimg_mp_opcode0(62); } // ym
+            if (*ss=='z') { if (label1pos[7]!=~0U) _cimg_mp_return(label1pos[7]); _cimg_mp_opcode0(63); } // zm
+            if (*ss=='c') { if (label1pos[8]!=~0U) _cimg_mp_return(label1pos[8]); _cimg_mp_opcode0(64); } // cm
           }
           if (*ss1=='M') {
-            if (*ss=='x') _cimg_mp_opcode0(65); // xM
-            if (*ss=='y') _cimg_mp_opcode0(66); // yM
-            if (*ss=='z') _cimg_mp_opcode0(67); // zM
-            if (*ss=='c') _cimg_mp_opcode0(6); // cM
+            if (*ss=='x') { if (label1pos[9]!=~0U) _cimg_mp_return(label1pos[9]); _cimg_mp_opcode0(65); } // xM
+            if (*ss=='y') { if (label1pos[10]!=~0U) _cimg_mp_return(label1pos[10]); _cimg_mp_opcode0(66); } // yM
+            if (*ss=='z') { if (label1pos[11]!=~0U) _cimg_mp_return(label1pos[11]); _cimg_mp_opcode0(67); } // zM
+            if (*ss=='c') { if (label1pos[12]!=~0U) _cimg_mp_return(label1pos[12]); _cimg_mp_opcode0(6); } // cM
           }
         }
 
@@ -13960,45 +13961,42 @@ namespace cimg_library_suffixed {
             CImg<charT> variable_name(ss,(unsigned int)(s-ss+1));
             variable_name.back() = 0;
             bool is_valid_name = true;
-            if ((*ss>='0' && *ss<='9') ||
-                (s==ss+1 && (*ss=='u' || *ss=='g' || *ss=='i')) ||
-                (s==ss+2 && ((*ss=='i' && (*(ss+1)=='m' || *(ss+1)=='M' || *(ss+1)=='a' || *(ss+1)=='v')) ||
-                             (*ss=='x' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
-                             (*ss=='y' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
-                             (*ss=='z' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
-                             (*ss=='c' && (*(ss+1)=='m' || *(ss+1)=='M'))))) is_valid_name = false;
-            for (const char *ns = ss; ns<s; ++ns)
-              if ((*ns<'a' || *ns>'z') && (*ns<'A' || *ns>'Z') && (*ns<'0' || *ns>'9') && *ns!='_') {
-                is_valid_name = false; break;
-              }
+            if (*ss>='0' && *ss<='9') is_valid_name = false;
+            else for (const char *ns = ss+1; ns<s; ++ns)
+                   if ((*ns<'a' || *ns>'z') && (*ns<'A' || *ns>'Z') && (*ns<'0' || *ns>'9') && *ns!='_') {
+                     is_valid_name = false; break;
+                   }
             if (!is_valid_name) {
               *se = saved_char;
-              if (!std::strcmp(variable_name,"u") || !std::strcmp(variable_name,"g") || !std::strcmp(variable_name,"i") ||
-                  !std::strcmp(variable_name,"im") || !std::strcmp(variable_name,"iM") ||
-                  !std::strcmp(variable_name,"ia") || !std::strcmp(variable_name,"iv") ||
-                  !std::strcmp(variable_name,"xm") || !std::strcmp(variable_name,"ym") ||
-                  !std::strcmp(variable_name,"zm") || !std::strcmp(variable_name,"cm") ||
-                  !std::strcmp(variable_name,"xM") || !std::strcmp(variable_name,"yM") ||
-                  !std::strcmp(variable_name,"zM") || !std::strcmp(variable_name,"cM"))
-                throw CImgArgumentException("[_cimg_math_parser] "
-                                            "CImg<%s>::%s(): Invalid assignment of reserved variable name '%s' in specified expression '%s%s%s'.",
-                                            pixel_type(),calling_function,
-                                            variable_name._data,
-                                            (ss-8)>expr._data?"...":"",
-                                            (ss-8)>expr._data?ss-8:expr._data,
-                                            se<&expr.back()?"...":"");
-              else
-                 throw CImgArgumentException("[_cimg_math_parser] "
-                                             "CImg<%s>::%s(): Invalid variable name '%s' in specified expression '%s%s%s'.",
-                                             pixel_type(),calling_function,
-                                             variable_name._data,
-                                             (ss-8)>expr._data?"...":"",
-                                             (ss-8)>expr._data?ss-8:expr._data,
-                                             se<&expr.back()?"...":"");
+              throw CImgArgumentException("[_cimg_math_parser] "
+                                          "CImg<%s>::%s(): Invalid variable name '%s' in specified expression '%s%s%s'.",
+                                          pixel_type(),calling_function,
+                                          variable_name._data,
+                                          (ss-8)>expr._data?"...":"",
+                                          (ss-8)>expr._data?ss-8:expr._data,
+                                          se<&expr.back()?"...":"");
             }
-
             const unsigned int pos = compile(s+1,se);
-            if (!std::strcmp(variable_name,"pi")) variable_name.fill(127,0);  // Specific case for 'pi'.
+            if (variable_name[0] && variable_name[1] && !variable_name[2]) { // Check for particular case of a reserved variable.
+              const char c1 = variable_name[0], c2 = variable_name[1];
+              if (c1=='p' && c2=='i') variable_name.fill((char)0,(char)0); // pi
+              else if (c1=='i') {
+                if (c2=='m') variable_name.fill(1,0); // im
+                else if (c2=='M') variable_name.fill(2,0); // iM
+                else if (c2=='a') variable_name.fill(3,0); // ia
+                else if (c2=='v') variable_name.fill(4,0); // iv
+              } else if (c2=='m') {
+                if (c1=='x') variable_name.fill(5,0); // xm
+                else if (c1=='y') variable_name.fill(6,0); // ym
+                else if (c1=='z') variable_name.fill(7,0); // zm
+                else if (c1=='c') variable_name.fill(8,0); // cm
+              } else if (c2=='M') {
+                if (c1=='x') variable_name.fill(9,0); // xM
+                else if (c1=='y') variable_name.fill(10,0); // yM
+                else if (c1=='z') variable_name.fill(11,0); // zM
+                else if (c1=='c') variable_name.fill(12,0); // cM
+              }
+            }
             if (variable_name[1]) { // Multi-char variable.
               int label_pos = -1;
               cimglist_for(labelM,i) if (!std::strcmp(variable_name,labelM[i])) { label_pos = i; break; } // Check for existing variable with same name.
