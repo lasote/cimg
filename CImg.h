@@ -14002,22 +14002,15 @@ namespace cimg_library_suffixed {
                                              (ss-8)>expr._data?ss-8:expr._data,
                                              se<&expr.back()?"...":"");
             }
-
-            cimglist_for(label,i) // Check for existing variable with same name.
-              if (!std::strcmp(variable_name,label[i])) {
-                *se = saved_char;
-                throw CImgArgumentException("[_cimg_math_parser] "
-                                            "CImg<%s>::%s(): Invalid multiple assignments of variable '%s' in specified expression '%s%s%s'.",
-                                            pixel_type(),calling_function,
-                                            variable_name._data,
-                                            (ss-8)>expr._data?"...":"",
-                                            (ss-8)>expr._data?ss-8:expr._data,
-                                            se<&expr.back()?"...":"");
-              }
+            int label_pos = -1;
+            cimglist_for(label,i) if (!std::strcmp(variable_name,label[i])) { label_pos = i; break; } // Check for existing variable with same name.
             const unsigned int pos = compile(s+1,se);
-            if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);
-            labelpos[label._width] = pos;
-            variable_name.move_to(label);
+            if (label_pos>=0) labelpos[label_pos] = pos;  // Reassign existing variable.
+            else { // Define new variable.
+              if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);
+              labelpos[label._width] = pos;
+              variable_name.move_to(label);
+            }
             _cimg_mp_return(pos);
           }
 
