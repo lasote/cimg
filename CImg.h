@@ -14002,6 +14002,7 @@ namespace cimg_library_suffixed {
                                              (ss-8)>expr._data?ss-8:expr._data,
                                              se<&expr.back()?"...":"");
             }
+
             cimglist_for(label,i) // Check for existing variable with same name.
               if (!std::strcmp(variable_name,label[i])) {
                 *se = saved_char;
@@ -14013,14 +14014,11 @@ namespace cimg_library_suffixed {
                                             (ss-8)>expr._data?ss-8:expr._data,
                                             se<&expr.back()?"...":"");
               }
-            const unsigned int src_pos = compile(s+1,se);
-            if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
-            const unsigned int dest_pos = mempos++;
-            if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);}
-            labelpos[label._width] = dest_pos;
+            const unsigned int pos = compile(s+1,se);
+            if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);
+            labelpos[label._width] = pos;
             variable_name.move_to(label);
-            CImg<uintT>::vector(7,dest_pos,src_pos).move_to(code);
-            _cimg_mp_return(dest_pos);
+            _cimg_mp_return(pos);
           }
 
         // Look for unary/binary operators. The operator precedences is defined as in C++.
@@ -14155,7 +14153,7 @@ namespace cimg_library_suffixed {
                 }
               }
             }
-            _cimg_mp_opcode6(is_relative?72:47,indx,indy,indz,indc,interpolation,borders);
+            _cimg_mp_opcode6(is_relative?7:47,indx,indy,indz,indc,interpolation,borders);
           }
           if (!std::strncmp(ss,"min(",4) || !std::strncmp(ss,"max(",4)) {
             CImgList<uintT> opcode;
@@ -14256,9 +14254,6 @@ namespace cimg_library_suffixed {
       }
       double mp_cs() {
         return mem[12]/reference.spectrum();
-      }
-      double mp_equal() {
-        return mem[opcode[2]];
       }
       double mp_logical_and() {
         const bool is_A = (bool)mem[opcode(2)];
@@ -14609,7 +14604,7 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_yh,           // 4
           &_cimg_math_parser::mp_zd,           // 5
           &_cimg_math_parser::mp_cs,           // 6
-          &_cimg_math_parser::mp_equal,        // 7
+          &_cimg_math_parser::mp_jxyzc,        // 7
           &_cimg_math_parser::mp_logical_or,   // 8
           &_cimg_math_parser::mp_logical_and,  // 9
           &_cimg_math_parser::mp_bitwise_or,   // 10
@@ -14673,8 +14668,7 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_cM,           // 68
           &_cimg_math_parser::mp_arg,          // 69
           &_cimg_math_parser::mp_int,          // 70
-          &_cimg_math_parser::mp_log2,         // 71
-          &_cimg_math_parser::mp_jxyzc         // 72
+          &_cimg_math_parser::mp_log2          // 71
         };
         if (!mem) return 0;
         this->mp_funcs = mp_funcs;
