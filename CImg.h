@@ -13949,7 +13949,7 @@ namespace cimg_library_suffixed {
             if (*ss=='x') _cimg_mp_opcode0(65); // xM
             if (*ss=='y') _cimg_mp_opcode0(66); // yM
             if (*ss=='z') _cimg_mp_opcode0(67); // zM
-            if (*ss=='c') _cimg_mp_opcode0(68); // cM
+            if (*ss=='c') _cimg_mp_opcode0(6); // cM
           }
         }
 
@@ -14079,7 +14079,7 @@ namespace cimg_library_suffixed {
           if (!std::strncmp(ss,"cosh(",5)) _cimg_mp_opcode1(36,compile(ss5,se1));
           if (!std::strncmp(ss,"tanh(",5)) _cimg_mp_opcode1(37,compile(ss5,se1));
           if (!std::strncmp(ss,"log10(",6)) _cimg_mp_opcode1(38,compile(ss6,se1));
-          if (!std::strncmp(ss,"log2(",5)) _cimg_mp_opcode1(71,compile(ss5,se1));
+          if (!std::strncmp(ss,"log2(",5)) _cimg_mp_opcode1(3,compile(ss5,se1));
           if (!std::strncmp(ss,"log(",4)) _cimg_mp_opcode1(39,compile(ss4,se1));
           if (!std::strncmp(ss,"exp(",4)) _cimg_mp_opcode1(40,compile(ss4,se1));
           if (!std::strncmp(ss,"sqrt(",5)) _cimg_mp_opcode1(41,compile(ss5,se1));
@@ -14163,7 +14163,7 @@ namespace cimg_library_suffixed {
             CImgList<uintT> opcode;
             if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
             const unsigned int pos = mempos++;
-            CImg<uintT>::vector(69,pos).move_to(opcode);
+            CImg<uintT>::vector(5,pos).move_to(opcode);
             for (char *s = ss4; s<se; ++s) {
               char *ns = s; while (ns<se && (*ns!=',' || level[ns-expr._data]!=clevel1) && (*ns!=')' || level[ns-expr._data]!=clevel)) ++ns;
               CImg<uintT>::vector(compile(s,ns)).move_to(opcode);
@@ -14206,7 +14206,7 @@ namespace cimg_library_suffixed {
           }
 
           if (!std::strncmp(ss,"sinc(",5)) _cimg_mp_opcode1(56,compile(ss5,se1));
-          if (!std::strncmp(ss,"int(",4)) _cimg_mp_opcode1(70,compile(ss4,se1));
+          if (!std::strncmp(ss,"int(",4)) _cimg_mp_opcode1(4,compile(ss4,se1));
         }
 
         // No known item found, assuming this is an already initialized variable.
@@ -14580,14 +14580,10 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_u,            // 0
           &_cimg_math_parser::mp_g,            // 1
           &_cimg_math_parser::mp_i,            // 2
-
-          0,0,0,0,
-          /*          &_cimg_math_parser::mp_xw,           // 3
-          &_cimg_math_parser::mp_yh,           // 4
-          &_cimg_math_parser::mp_zd,           // 5
-          &_cimg_math_parser::mp_cs,           // 6
-          */
-
+          &_cimg_math_parser::mp_log2,         // 3
+          &_cimg_math_parser::mp_int,          // 4
+          &_cimg_math_parser::mp_arg,          // 5
+          &_cimg_math_parser::mp_cM,           // 6
           &_cimg_math_parser::mp_jxyzc,        // 7
           &_cimg_math_parser::mp_logical_or,   // 8
           &_cimg_math_parser::mp_logical_and,  // 9
@@ -14648,11 +14644,7 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_cm,           // 64
           &_cimg_math_parser::mp_xM,           // 65
           &_cimg_math_parser::mp_yM,           // 66
-          &_cimg_math_parser::mp_zM,           // 67
-          &_cimg_math_parser::mp_cM,           // 68
-          &_cimg_math_parser::mp_arg,          // 69
-          &_cimg_math_parser::mp_int,          // 70
-          &_cimg_math_parser::mp_log2          // 71
+          &_cimg_math_parser::mp_zM            // 67
         };
         if (!mem) return 0;
         this->mp_funcs = mp_funcs;
