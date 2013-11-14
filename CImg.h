@@ -13829,7 +13829,7 @@ namespace cimg_library_suffixed {
         }
         // Init constant values.
         mem.assign(512);
-        labelpos.assign(64);
+        labelpos.assign(16);
         mem[0] = 0;
         mem[1] = 1;
         mem[2] = 2;
@@ -14016,7 +14016,7 @@ namespace cimg_library_suffixed {
             const unsigned int src_pos = compile(s+1,se);
             if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
             const unsigned int dest_pos = mempos++;
-            if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);
+            if (label._width>=labelpos._width) labelpos.resize(-200,1,1,1,0);}
             labelpos[label._width] = dest_pos;
             variable_name.move_to(label);
             CImg<uintT>::vector(7,dest_pos,src_pos).move_to(code);
