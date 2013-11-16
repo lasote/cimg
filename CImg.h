@@ -22931,6 +22931,7 @@ namespace cimg_library_suffixed {
     **/
     CImgList<T> get_split(const char axis, const int nb=0) const {
       CImgList<T> res;
+      if (is_empty()) return res;
       const char _axis = cimg::uncase(axis);
 
       if (nb<=0) { // Split by bloc size.
@@ -23006,6 +23007,7 @@ namespace cimg_library_suffixed {
     **/
     CImgList<T> get_split(const T value, const bool keep_values, const bool is_shared) const {
       CImgList<T> res;
+      if (is_empty()) return res;
       for (const T *ps = _data, *_ps = ps, *const pe = end(); ps<pe; ) {
         while (_ps<pe && *_ps==value) ++_ps;
         unsigned int siz = _ps - ps;
@@ -23027,9 +23029,10 @@ namespace cimg_library_suffixed {
      **/
     template<typename t>
     CImgList<T> get_split(const CImg<t>& values, const bool keep_values, const bool is_shared) const {
+      CImgList<T> res;
+      if (is_empty()) return res;
       if (!values) return CImgList<T>(*this);
       if (values.size()==1) return get_split(*values,keep_values,is_shared);
-      CImgList<T> res;
       const t *pve = values.end();
       for (const T *ps = _data, *_ps = ps, *const pe = end(); ps<pe; ) {
 
@@ -23067,8 +23070,8 @@ namespace cimg_library_suffixed {
 
     //! Split the image into a list of one-column vectors each having same values.
     CImgList<T> get_split(const bool is_shared) const {
-      if (is_empty()) return CImgList<T>();
       CImgList<T> res;
+      if (is_empty()) return res;
       T *p0 = _data, current = *p0;
       cimg_for(*this,p,T) if (*p!=current) { res.insert(CImg<T>(p0,1,p-p0,1,1,is_shared),~0U,is_shared); p0 = p; current = *p; }
       res.insert(CImg<T>(p0,1,end()-p0,1,1,is_shared),~0U,is_shared);
