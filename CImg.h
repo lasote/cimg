@@ -23065,6 +23065,16 @@ namespace cimg_library_suffixed {
       return res;
     }
 
+    //! Split the image into a list of one-column vectors each having same values.
+    CImgList<T> get_split(const bool is_shared) const {
+      if (is_empty()) return CImgList<T>();
+      CImgList<T> res;
+      T *p0 = _data, current = *p0;
+      cimg_for(*this,p,T) if (*p!=current) { res.insert(CImg<T>(p0,1,p-p0,1,1,is_shared),~0U,is_shared); p0 = p; current = *p; }
+      res.insert(CImg<T>(p0,1,end()-p0,1,1,is_shared),~0U,is_shared);
+      return res;
+    }
+
     //! Append two images along specified axis.
     /**
        \param img Image to append with instance image.
