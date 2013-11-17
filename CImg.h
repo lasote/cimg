@@ -13615,7 +13615,6 @@ namespace cimg_library_suffixed {
                                         nb_points,nb_primitives);
         return false;
       }
-      if (!is_full_check) return true;
 
       // Check consistency of primitive data.
       if (ptrs==ptre) {
@@ -13624,6 +13623,9 @@ namespace cimg_library_suffixed {
                                         nb_points,nb_primitives);
         return false;
       }
+
+      if (!is_full_check) return true;
+
       for (unsigned int p = 0; p<nb_primitives; ++p) {
         const unsigned int nb_inds = (unsigned int)*(ptrs++);
         switch (nb_inds) {
