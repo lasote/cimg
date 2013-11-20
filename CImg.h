@@ -23942,7 +23942,7 @@ namespace cimg_library_suffixed {
           if ((*this)(x,y,z+1)) { if (!label) label = (unsigned int)(*this)(x,y,z+1); else if (label!=(*this)(x,y,z+1)) is_same_label = false; }
           else Q._priority_queue_insert(is_queued,sizeQ,priority(x,y,z+1),x,y,z+1);
         }
-        if (is_same_label) (*this)(x,y,z) = label;
+        if (is_same_label) (*this)(x,y,z) = (T)label;
       }
 
       // Fill lines.
@@ -26797,11 +26797,13 @@ namespace cimg_library_suffixed {
 
 #ifdef cimg_use_fftw3
       cimg::mutex(12);
-      const unsigned int _nb_threads = nb_threads?nb_threads:cimg::nb_cpus();
 #ifndef cimg_use_fftw3_singlethread
+      const unsigned int _nb_threads = nb_threads?nb_threads:cimg::nb_cpus();
       static int fftw_st = fftw_init_threads();
       cimg::unused(fftw_st);
       fftw_plan_with_nthreads(_nb_threads);
+#else
+      cimg::unused(nb_threads);
 #endif
       fftw_complex *data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*real._width*real._height*real._depth);
       if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u).",
