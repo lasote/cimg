@@ -16513,7 +16513,7 @@ namespace cimg_library_suffixed {
                                     cimg_instance,
                                     A._width,A._height,A._depth,A._spectrum,A._data);
       typedef _cimg_Ttfloat Ttfloat;
-      const Ttfloat epsilon = 1e-4;
+      const Ttfloat epsilon = 1e-4f;
       CImg<Ttfloat> B = A.get_column(1), V(*this,false);
       for (int i = 1; i<(int)siz; ++i) {
         const Ttfloat m = A(0,i)/(B[i-1]?B[i-1]:epsilon);
@@ -25683,7 +25683,7 @@ namespace cimg_library_suffixed {
                     Uz = 0.5f*(U(x,y,_n1z,c) - U(x,y,_p1z,c)),
                     N2 = Ux*Ux + Uy*Uy + Uz*Uz,
                     N = std::sqrt(N2),
-                    N3 = 1e-5 + N2*N,
+                    N3 = 1e-5f + N2*N,
                     coef_a = (1 - Ux*Ux/N2)/N,
                     coef_b = -2*Ux*Uy/N3,
                     coef_c = -2*Ux*Uz/N3,
@@ -25737,7 +25737,7 @@ namespace cimg_library_suffixed {
                     Uy = 0.5f*(U(x,_n1y,c) - U(x,_p1y,c)),
                     N2 = Ux*Ux + Uy*Uy,
                     N = std::sqrt(N2),
-                    N3 = 1e-5 + N2*N,
+                    N3 = 1e-5f + N2*N,
                     coef_a = Uy*Uy/N3,
                     coef_b = -2*Ux*Uy/N3,
                     coef_c = Ux*Ux/N3,
@@ -25979,7 +25979,7 @@ namespace cimg_library_suffixed {
           }
 
           if (is_high_connectivity) {
-            const float sqrt2 = std::sqrt(2), sqrt3 = std::sqrt(3);
+            const float sqrt2 = std::sqrt(2.0f), sqrt3 = std::sqrt(3.0f);
 
             // Diagonal neighbors on slice z.
             if (x-1>=0 && y-1>=0 && Q._priority_queue_insert(is_queued,sizeQ,-(npot=sqrt2*met(x-1,y-1,z)+P),x-1,y-1,z)) {
@@ -28325,7 +28325,7 @@ namespace cimg_library_suffixed {
     //---------------------------
 
 #define cimg_init_scanline(color,opacity) \
-  const float _sc_nopacity = cimg::abs(opacity), _sc_copacity = 1 - cimg::max(opacity,0); \
+    const float _sc_nopacity = cimg::abs((float)opacity), _sc_copacity = 1 - cimg::max((float)opacity,0); \
   const unsigned long _sc_whd = (unsigned long)_width*_height*_depth
 
 #define cimg_draw_scanline(x0,x1,y,color,opacity,brightness) _draw_scanline(x0,x1,y,color,opacity,brightness,_sc_nopacity,_sc_copacity,_sc_whd)
