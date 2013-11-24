@@ -2568,14 +2568,14 @@ namespace cimg_library_suffixed {
 
     struct Mutex_info {
 #if cimg_OS==2
-      HANDLE mutex[16];
-      Mutex_info() { for (unsigned int i = 0; i<16; ++i) mutex[i] = CreateMutex(0,FALSE,0); }
+      HANDLE mutex[32];
+      Mutex_info() { for (unsigned int i = 0; i<32; ++i) mutex[i] = CreateMutex(0,FALSE,0); }
       void lock(const unsigned int n) { WaitForSingleObject(mutex[n],INFINITE); }
       void unlock(const unsigned int n) { ReleaseMutex(mutex[n]); }
       int trylock(const unsigned int) { return 0; }
 #elif defined(_PTHREAD_H)
-      pthread_mutex_t mutex[16];
-      Mutex_info() { for (unsigned int i = 0; i<16; ++i) pthread_mutex_init(&mutex[i],0); }
+      pthread_mutex_t mutex[32];
+      Mutex_info() { for (unsigned int i = 0; i<32; ++i) pthread_mutex_init(&mutex[i],0); }
       void lock(const unsigned int n) { pthread_mutex_lock(&mutex[n]); }
       void unlock(const unsigned int n) { pthread_mutex_unlock(&mutex[n]); }
       int trylock(const unsigned int n) { return pthread_mutex_trylock(&mutex[n]); }
