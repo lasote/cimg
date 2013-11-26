@@ -31745,7 +31745,7 @@ namespace cimg_library_suffixed {
       --p;
       if ((int)points(p,0)==cx0 && (int)points(p,1)==cy0) --nb_points;
 
-      if (nb_points==1) return draw_point((int)npoints(0,0),(int)npoints(0,1),color,opacity);
+      if (nb_points<=1) return draw_point((int)npoints(0,0),(int)npoints(0,1),color,opacity);
       if (nb_points==2) return draw_line((int)npoints(0,0),(int)npoints(0,1),
                                          (int)npoints(1,0),(int)npoints(1,1),color,opacity);
       if (nb_points==3) return draw_triangle((int)npoints(0,0),(int)npoints(0,1),
