@@ -8269,8 +8269,8 @@ namespace cimg_library_suffixed {
 
     CImgDisplay& move(const int posx, const int posy) {
       if (is_empty()) return *this;
-      Display *const dpy = cimg::X11_attr().display;
       show();
+      Display *const dpy = cimg::X11_attr().display;
       XLockDisplay(dpy);
       XMoveWindow(dpy,_window,posx,posy);
       _window_x = posx; _window_y = posy;
