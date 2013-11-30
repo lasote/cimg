@@ -13418,10 +13418,10 @@ namespace cimg_library_suffixed {
        \param primitives List of primitives of the 3d object.
        \param colors List of colors of the 3d object.
        \param opacities List (or image) of opacities of the 3d object.
-       \param is_full_check Tells if full checking of the 3d object must be performed.
+       \param full_check Tells if full checking of the 3d object must be performed.
        \param[out] error_message C-string to contain the error message, if the test does not succeed.
        \note
-       - Set \c is_full_checking to \c false to speed-up the 3d object checking. In this case, only the size of
+       - Set \c full_checking to \c false to speed-up the 3d object checking. In this case, only the size of
          each 3d object component is checked.
        - Size of the string \c error_message should be at least 128-bytes long, to be able to contain the error message.
     **/
@@ -13429,7 +13429,7 @@ namespace cimg_library_suffixed {
     bool is_object3d(const CImgList<tp>& primitives,
                      const CImgList<tc>& colors,
                      const to& opacities,
-                     const bool is_full_check=true,
+                     const bool full_check=true,
                      char *const error_message=0) const {
       if (error_message) *error_message = 0;
 
@@ -13463,7 +13463,7 @@ namespace cimg_library_suffixed {
                                         _width,primitives._width,(unsigned long)opacities.size());
         return false;
       }
-      if (!is_full_check) return true;
+      if (!full_check) return true;
 
       // Check consistency of primitives.
       cimglist_for(primitives,l) {
@@ -13565,14 +13565,14 @@ namespace cimg_library_suffixed {
     //! Test if image instance represents a valid serialization of a 3d object.
     /**
        Return \c true if the image instance represents a valid serialization of a 3d object, and \c false otherwise.
-       \param is_full_check Tells if full checking of the instance must be performed.
+       \param full_check Tells if full checking of the instance must be performed.
        \param[out] error_message C-string to contain the error message, if the test does not succeed.
        \note
-       - Set \c is_full_checking to \c false to speed-up the 3d object checking. In this case, only the size of
+       - Set \c full_check to \c false to speed-up the 3d object checking. In this case, only the size of
          each 3d object component is checked.
        - Size of the string \c error_message should be at least 128-bytes long, to be able to contain the error message.
     **/
-    bool is_CImg3d(const bool is_full_check=true, char *const error_message=0) const {
+    bool is_CImg3d(const bool full_check=true, char *const error_message=0) const {
       if (error_message) *error_message = 0;
 
       // Check instance dimension and header.
@@ -13625,7 +13625,7 @@ namespace cimg_library_suffixed {
         return false;
       }
 
-      if (!is_full_check) return true;
+      if (!full_check) return true;
 
       for (unsigned int p = 0; p<nb_primitives; ++p) {
         const unsigned int nb_inds = (unsigned int)*(ptrs++);
@@ -28083,39 +28083,44 @@ namespace cimg_library_suffixed {
        \param primitives Primitives data of the 3d object.
        \param colors Colors data of the 3d object.
        \param opacities Opacities data of the 3d object.
+       \param full_check Tells if full checking of the 3d object must be performed.
     **/
     template<typename tp, typename tc, typename to>
     CImg<T>& object3dtoCImg3d(const CImgList<tp>& primitives,
                               const CImgList<tc>& colors,
-                              const to& opacities) {
-      return get_object3dtoCImg3d(primitives,colors,opacities).move_to(*this);
+                              const to& opacities,
+                              const bool full_check=true) {
+      return get_object3dtoCImg3d(primitives,colors,opacities,full_check).move_to(*this);
     }
 
     //! Convert 3d object into a CImg3d representation \overloading.
     template<typename tp, typename tc>
     CImg<T>& object3dtoCImg3d(const CImgList<tp>& primitives,
-                              const CImgList<tc>& colors) {
-      return get_object3dtoCImg3d(primitives,colors).move_to(*this);
+                              const CImgList<tc>& colors,
+                              const bool full_check=true) {
+      return get_object3dtoCImg3d(primitives,colors,full_check).move_to(*this);
     }
 
     //! Convert 3d object into a CImg3d representation \overloading.
     template<typename tp>
-    CImg<T>& object3dtoCImg3d(const CImgList<tp>& primitives) {
-      return get_object3dtoCImg3d(primitives).move_to(*this);
+    CImg<T>& object3dtoCImg3d(const CImgList<tp>& primitives,
+                              const bool full_check=true) {
+      return get_object3dtoCImg3d(primitives,full_check).move_to(*this);
     }
 
     //! Convert 3d object into a CImg3d representation \overloading.
-    CImg<T>& object3dtoCImg3d() {
-      return get_object3dtoCImg3d().move_to(*this);
+    CImg<T>& object3dtoCImg3d(const bool full_check=true) {
+      return get_object3dtoCImg3d(full_check).move_to(*this);
     }
 
     //! Convert 3d object into a CImg3d representation \newinstance.
     template<typename tp, typename tc, typename to>
     CImg<floatT> get_object3dtoCImg3d(const CImgList<tp>& primitives,
                                       const CImgList<tc>& colors,
-                                      const to& opacities) const {
+                                      const to& opacities,
+                                      const bool full_check=true) const {
       char error_message[1024] = { 0 };
-      if (!is_object3d(primitives,colors,opacities,true,error_message))
+      if (!is_object3d(primitives,colors,opacities,full_check,error_message))
         throw CImgInstanceException(_cimg_instance
                                     "object3dtoCImg3d(): Invalid specified 3d object (%u,%u) (%s).",
                                     cimg_instance,_width,primitives._width,error_message);
@@ -28247,24 +28252,26 @@ namespace cimg_library_suffixed {
     //! Convert 3d object into a CImg3d representation \overloading.
     template<typename tp, typename tc>
     CImg<floatT> get_object3dtoCImg3d(const CImgList<tp>& primitives,
-                                      const CImgList<tc>& colors) const {
+                                      const CImgList<tc>& colors,
+                                      const bool full_check=true) const {
       CImgList<T> opacities;
-      return get_object3dtoCImg3d(primitives,colors,opacities);
+      return get_object3dtoCImg3d(primitives,colors,opacities,full_check);
     }
 
     //! Convert 3d object into a CImg3d representation \overloading.
     template<typename tp>
-    CImg<floatT> get_object3dtoCImg3d(const CImgList<tp>& primitives) const {
+    CImg<floatT> get_object3dtoCImg3d(const CImgList<tp>& primitives,
+                                      const bool full_check=true) const {
       CImgList<T> colors, opacities;
-      return get_object3dtoCImg3d(primitives,colors,opacities);
+      return get_object3dtoCImg3d(primitives,colors,opacities,full_check);
     }
 
     //! Convert 3d object into a CImg3d representation \overloading.
-    CImg<floatT> get_object3dtoCImg3d() const {
+    CImg<floatT> get_object3dtoCImg3d(const bool full_check=true) const {
       CImgList<T> opacities, colors;
       CImgList<uintT> primitives(width(),1,1,1,1);
       cimglist_for(primitives,p) primitives(p,0) = p;
-      return get_object3dtoCImg3d(primitives,colors,opacities);
+      return get_object3dtoCImg3d(primitives,colors,opacities,full_check);
     }
 
     //! Convert CImg3d representation into a 3d object.
@@ -28272,17 +28279,24 @@ namespace cimg_library_suffixed {
        \param[out] primitives Primitives data of the 3d object.
        \param[out] colors Colors data of the 3d object.
        \param[out] opacities Opacities data of the 3d object.
+       \param full_check Tells if full checking of the 3d object must be performed.
     **/
     template<typename tp, typename tc, typename to>
-    CImg<T>& CImg3dtoobject3d(CImgList<tp>& primitives, CImgList<tc>& colors, CImgList<to>& opacities) {
-      return get_CImg3dtoobject3d(primitives,colors,opacities).move_to(*this);
+    CImg<T>& CImg3dtoobject3d(CImgList<tp>& primitives,
+                              CImgList<tc>& colors,
+                              CImgList<to>& opacities,
+                              const bool full_check=true) {
+      return get_CImg3dtoobject3d(primitives,colors,opacities,full_check).move_to(*this);
     }
 
     //! Convert CImg3d representation into a 3d object \newinstance.
     template<typename tp, typename tc, typename to>
-    CImg<T> get_CImg3dtoobject3d(CImgList<tp>& primitives, CImgList<tc>& colors, CImgList<to>& opacities) const {
+    CImg<T> get_CImg3dtoobject3d(CImgList<tp>& primitives,
+                                 CImgList<tc>& colors,
+                                 CImgList<to>& opacities,
+                                 const bool full_check=true) const {
       char error_message[1024] = { 0 };
-      if (!is_CImg3d(true,error_message))
+      if (!is_CImg3d(full_check,error_message))
         throw CImgInstanceException(_cimg_instance
                                     "CImg3dtoobject3d(): image instance is not a CImg3d (%s).",
                                     cimg_instance,error_message);
