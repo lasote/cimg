@@ -13437,8 +13437,8 @@ namespace cimg_library_suffixed {
       if (is_empty()) {
         if (primitives || colors || opacities) {
           if (error_message) std::sprintf(error_message,
-                                          "3d object has no vertices but %u primitives, %u colors and %lu opacities",
-                                          primitives._width,colors._width,(unsigned long)opacities.size());
+                                          "3d object (%u,%u) defines no vertices but %u primitives, %u colors and %lu opacities",
+                                          _width,primitives._width,primitives._width,colors._width,(unsigned long)opacities.size());
           return false;
         }
         return true;
@@ -13447,7 +13447,7 @@ namespace cimg_library_suffixed {
       // Check consistency of vertices.
       if (_height!=3 || _depth>1 || _spectrum>1) { // Check vertices dimensions.
         if (error_message) std::sprintf(error_message,
-                                        "3d object (%u,%u) has invalid vertices dimensions (%u,%u,%u,%u)",
+                                        "3d object (%u,%u) has invalid vertex dimensions (%u,%u,%u,%u)",
                                         _width,primitives._width,_width,_height,_depth,_spectrum);
         return false;
       }
@@ -13474,7 +13474,7 @@ namespace cimg_library_suffixed {
           const unsigned int i0 = (unsigned int)primitive(0);
           if (i0>=_width) {
             if (error_message) std::sprintf(error_message,
-                                            "3d object (%u,%u) refers to invalid vertex indice %u in point primitive %u",
+                                            "3d object (%u,%u) refers to invalid vertex indice %u in point primitive [%u]",
                                             _width,primitives._width,i0,l);
             return false;
           }
@@ -13485,7 +13485,7 @@ namespace cimg_library_suffixed {
             i1 = (unsigned int)primitive(1);
           if (i0>=_width || i1>=_width) {
             if (error_message) std::sprintf(error_message,
-                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u) in sphere primitive %u",
+                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u) in sphere primitive [%u]",
                                             _width,primitives._width,i0,i1,l);
             return false;
           }
@@ -13497,7 +13497,7 @@ namespace cimg_library_suffixed {
             i1 = (unsigned int)primitive(1);
           if (i0>=_width || i1>=_width) {
             if (error_message) std::sprintf(error_message,
-                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u) in segment primitive %u",
+                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u) in segment primitive [%u]",
                                             _width,primitives._width,i0,i1,l);
             return false;
           }
@@ -13510,7 +13510,7 @@ namespace cimg_library_suffixed {
             i2 = (unsigned int)primitive(2);
           if (i0>=_width || i1>=_width || i2>=_width) {
             if (error_message) std::sprintf(error_message,
-                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u,%u) in triangle primitive %u",
+                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u,%u) in triangle primitive [%u]",
                                             _width,primitives._width,i0,i1,i2,l);
             return false;
           }
@@ -13524,15 +13524,15 @@ namespace cimg_library_suffixed {
             i3 = (unsigned int)primitive(3);
           if (i0>=_width || i1>=_width || i2>=_width || i3>=_width) {
             if (error_message) std::sprintf(error_message,
-                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u,%u,%u) in quadrangle primitive %u",
+                                            "3d object (%u,%u) refers to invalid vertex indices (%u,%u,%u,%u) in quadrangle primitive [%u]",
                                             _width,primitives._width,i0,i1,i2,i3,l);
             return false;
           }
         } break;
         default :
           if (error_message) std::sprintf(error_message,
-                                          "3d object has invalid primitive %u of size %u",
-                                          l,(unsigned int)psiz);
+                                          "3d object (%u,%u) defines an invalid primitive [%u] of size %u",
+                                          _width,primitives._width,l,(unsigned int)psiz);
           return false;
         }
       }
@@ -13542,8 +13542,8 @@ namespace cimg_library_suffixed {
         const CImg<tc>& color = colors[c];
         if (!color) {
           if (error_message) std::sprintf(error_message,
-                                          "3d object has empty color for primitive %u",
-                                          c);
+                                          "3d object (%u,%u) defines no color for primitive [%u]",
+                                          _width,primitives._width,c);
           return false;
         }
       }
@@ -13553,8 +13553,8 @@ namespace cimg_library_suffixed {
         const CImg<tc> &light = colors.back();
         if (!light || light._depth>1) {
           if (error_message) std::sprintf(error_message,
-                                          "3d object has invalid light texture (%u,%u,%u,%u)",
-                                          light._width,light._height,light._depth,light._spectrum);
+                                          "3d object (%u,%u) defines an invalid light texture (%u,%u,%u,%u)",
+                                          _width,primitives._width,light._width,light._height,light._depth,light._spectrum);
           return false;
         }
       }
