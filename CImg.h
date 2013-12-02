@@ -35093,11 +35093,11 @@ namespace cimg_library_suffixed {
                 zxc = (zx0 + zx1)/2,
                 zyc = (zy0 + zy1)/2;
               if (_width>1 && _height>1)
-                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
-                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
+                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.3f).
+                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.3f);
               if (_depth>1) {
-                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.5f);
-                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.5f);
+                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.3f);
+                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.3f);
               }
             }
 
