@@ -34777,7 +34777,7 @@ namespace cimg_library_suffixed {
 
       bool shape_selected = false, text_down = false;
       static CImg<floatT> pose3d;
-      static bool is_view3d = false;
+      static bool is_view3d = false, is_axes = true;
       if (reset_view3d) { pose3d.assign(); is_view3d = false; }
       CImg<floatT> points3d, opacities3d, sel_opacities3d;
       CImgList<uintT> primitives3d, sel_primitives3d;
@@ -34809,42 +34809,46 @@ namespace cimg_library_suffixed {
         case 0 : case cimg::keyCTRLLEFT : key = 0; break;
         case cimg::keyPAGEUP : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) { disp.set_wheel(1); key = 0; } break;
         case cimg::keyPAGEDOWN : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) { disp.set_wheel(-1); key = 0; } break;
+        case cimg::keyA : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
+            is_axes = !is_axes; disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
         case cimg::keyD : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          disp.set_fullscreen(false).resize(CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,false),
-                                            CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,true),false).
-            _is_resized = true;
-          disp.set_key(key,false); key = 0; visu0.assign();
-        } break;
+            disp.set_fullscreen(false).resize(CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,false),
+                                              CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,true),false).
+              _is_resized = true;
+            disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
         case cimg::keyC : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          disp.set_fullscreen(false).resize(cimg_fitscreen(2*disp.width()/3,2*disp.height()/3,1),false)._is_resized = true;
-          disp.set_key(key,false); key = 0; visu0.assign();
-        } break;
+            disp.set_fullscreen(false).resize(cimg_fitscreen(2*disp.width()/3,2*disp.height()/3,1),false)._is_resized = true;
+            disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
         case cimg::keyR : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          disp.set_fullscreen(false).resize(cimg_fitscreen(_width,_height,_depth),false)._is_resized = true;
-          disp.set_key(key,false); key = 0; visu0.assign();
-        } break;
+            disp.set_fullscreen(false).resize(cimg_fitscreen(_width,_height,_depth),false)._is_resized = true;
+            disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
         case cimg::keyF : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          disp.resize(disp.screen_width(),disp.screen_height(),false).toggle_fullscreen()._is_resized = true;
-          disp.set_key(key,false); key = 0; visu0.assign();
-        } break;
-        case cimg::keyV : is_view3d = !is_view3d; disp.set_key(key,false); key = 0; visu0.assign(); break;
+            disp.resize(disp.screen_width(),disp.screen_height(),false).toggle_fullscreen()._is_resized = true;
+            disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
+        case cimg::keyV : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
+            is_view3d = !is_view3d; disp.set_key(key,false); key = 0; visu0.assign();
+          } break;
         case cimg::keyS : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          static unsigned int snap_number = 0;
-          char filename[32] = { 0 };
-          std::FILE *file;
-          do {
-            cimg_snprintf(filename,sizeof(filename),cimg_appname "_%.4u.bmp",snap_number++);
-            if ((file=std::fopen(filename,"r"))!=0) cimg::fclose(file);
-          } while (file);
-          if (visu0) {
-            visu.draw_text(0,0," Saving snapshot... ",foreground_color,background_color,1,13).display(disp);
-            visu0.save(filename);
-            visu.draw_text(0,0," Snapshot '%s' saved. ",foreground_color,background_color,1,13,filename).display(disp);
-          }
-          disp.set_key(key,false); key = 0;
-        } break;
-        case cimg::keyO :
-          if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
+            static unsigned int snap_number = 0;
+            char filename[32] = { 0 };
+            std::FILE *file;
+            do {
+              cimg_snprintf(filename,sizeof(filename),cimg_appname "_%.4u.bmp",snap_number++);
+              if ((file=std::fopen(filename,"r"))!=0) cimg::fclose(file);
+            } while (file);
+            if (visu0) {
+              visu.draw_text(0,0," Saving snapshot... ",foreground_color,background_color,1,13).display(disp);
+              visu0.save(filename);
+              visu.draw_text(0,0," Snapshot '%s' saved. ",foreground_color,background_color,1,13,filename).display(disp);
+            }
+            disp.set_key(key,false); key = 0;
+          } break;
+        case cimg::keyO : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
             static unsigned int snap_number = 0;
             char filename[32] = { 0 };
             std::FILE *file;
@@ -35066,128 +35070,156 @@ namespace cimg_library_suffixed {
           }
           visu = visu0;
 
-          const int d = (_depth>1)?_depth:0;
-          if (phase) switch (feature_type) {
-          case 1 : {
-            const int
-              x0 = (int)((X0+0.5f)*disp.width()/(_width+d)),
-              y0 = (int)((Y0+0.5f)*disp.height()/(_height+d)),
-              x1 = (int)((X1+0.5f)*disp.width()/(_width+d)),
-              y1 = (int)((Y1+0.5f)*disp.height()/(_height+d));
-            visu.draw_arrow(x0,y0,x1,y1,background_color,0.9f,30,5,0x55555555).
-              draw_arrow(x0,y0,x1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA);
-            if (d) {
-              const int
-                zx0 = (int)((_width+Z0+0.5f)*disp.width()/(_width+d)),
-                zx1 = (int)((_width+Z1+0.5f)*disp.width()/(_width+d)),
-                zy0 = (int)((_height+Z0+0.5f)*disp.height()/(_height+d)),
-                zy1 = (int)((_height+Z1+0.5f)*disp.height()/(_height+d));
-              visu.draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0x55555555).
-                draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0x55555555).
-                draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA).
-                draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0xAAAAAAAA);
-            }
-          } break;
-          case 2 : {
-            const int
-              x0 = (X0<X1?X0:X1)*disp.width()/(_width+d),
-              y0 = (Y0<Y1?Y0:Y1)*disp.height()/(_height+d),
-              x1 = ((X0<X1?X1:X0)+1)*disp.width()/(_width+d)-1,
-              y1 = ((Y0<Y1?Y1:Y0)+1)*disp.height()/(_height+d)-1;
-            visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,0x55555555);
-            if (d) {
-              const int
-                zx0 = (int)((_width+(Z0<Z1?Z0:Z1))*disp.width()/(_width+d)),
-                zy0 = (int)((_height+(Z0<Z1?Z0:Z1))*disp.height()/(_height+d)),
-                zx1 = (int)((_width+(Z0<Z1?Z1:Z0)+1)*disp.width()/(_width+d))-1,
-                zy1 = (int)((_height+(Z0<Z1?Z1:Z0)+1)*disp.height()/(_height+d))-1;
-              visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,0x55555555).
-                draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,0x55555555);
-            }
-          } break;
-          case 3 : {
-            const int
-              x0 = X0*disp.width()/(_width+d),
-              y0 = Y0*disp.height()/(_height+d),
-              x1 = X1*disp.width()/(_width+d)-1,
-              y1 = Y1*disp.height()/(_height+d)-1;
-            visu.draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
-              draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
-              draw_point(x0,y0,foreground_color,0.6f);
-            if (d) {
-              const int
-                zx0 = (int)((_width+Z0)*disp.width()/(_width+d)),
-                zy0 = (int)((_height+Z0)*disp.height()/(_height+d)),
-                zx1 = (int)((_width+Z1+1)*disp.width()/(_width+d))-1,
-                zy1 = (int)((_height+Z1+1)*disp.height()/(_height+d))-1;
-              visu.draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
-                draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
-                draw_point(zx0,y0,foreground_color,0.6f).
-                draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,background_color,0.2f).
-                draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,foreground_color,0.6f,0x55555555).
-                draw_point(x0,zy0,foreground_color,0.6f);
-            }
-          } break;
-          } else {
-            const int
-              x0 = X*disp.width()/(_width+d),
-              y0 = Y*disp.height()/(_height+d),
-              x1 = (X+1)*disp.width()/(_width+d)-1,
-              y1 = (Y+1)*disp.height()/(_height+d)-1,
-              zx0 = (Z+_width)*disp.width()/(_width+d),
-              zx1 = (Z+_width+1)*disp.width()/(_width+d),
-              zy0 = (Z+_height)*disp.height()/(_height+d),
-              zy1 = (Z+_height+1)*disp.height()/(_height+d);
+          if (X>=0 && Y>=0 && Z>=0) {
+            const int d = (_depth>1)?_depth:0;
+            X = cimg::max(0,cimg::min(width()-1,X));
+            Y = cimg::max(0,cimg::min(height()-1,Y));
+            Z = cimg::max(0,cimg::min(depth()-1,Z));
 
-            if (x1-x0>=4 && y1-y0>=4) visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).
-                                        draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,~0U);
-
-            if (_depth>1) {
-              if (y1-y0>=4 && zx1-zx0>=4) visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).
-                                            draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,~0U);
-              if (x1-x0>=4 && zy1-zy0>=4) visu.draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).
-                                            draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,~0U);
+            if (is_axes) { // Draw axes.
+              const int
+                x0 = X*disp.width()/(_width+d),
+                y0 = Y*disp.height()/(_height+d),
+                x1 = (X+1)*disp.width()/(_width+d)-1,
+                y1 = (Y+1)*disp.height()/(_height+d)-1,
+                zx0 = (Z+_width)*disp.width()/(_width+d),
+                zx1 = (Z+_width+1)*disp.width()/(_width+d)-1,
+                zy0 = (Z+_height)*disp.height()/(_height+d),
+                zy1 = (Z+_height+1)*disp.height()/(_height+d)-1,
+                xM = _width*disp.width()/(_width+d)-1,
+                yM = _height*disp.height()/(_height+d)-1,
+                xc = (x0 + x1)/2,
+                yc = (y0 + y1)/2,
+                zxc = (zx0 + zx1)/2,
+                zyc = (zy0 + zy1)/2;
+              visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
+                draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
+              if (_depth>1)
+                visu.draw_line(zxc,0,zxc,yM,foreground_color,0.5f).
+                  draw_line(0,zyc,xM,zyc,foreground_color,0.5f);
             }
+
+            if (phase) switch (feature_type) {
+              case 1 : {
+                const int
+                  x0 = (int)((X0+0.5f)*disp.width()/(_width+d)),
+                  y0 = (int)((Y0+0.5f)*disp.height()/(_height+d)),
+                  x1 = (int)((X1+0.5f)*disp.width()/(_width+d)),
+                  y1 = (int)((Y1+0.5f)*disp.height()/(_height+d));
+                visu.draw_arrow(x0,y0,x1,y1,background_color,0.9f,30,5,0x55555555).
+                  draw_arrow(x0,y0,x1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA);
+                if (d) {
+                  const int
+                    zx0 = (int)((_width+Z0+0.5f)*disp.width()/(_width+d)),
+                    zx1 = (int)((_width+Z1+0.5f)*disp.width()/(_width+d)),
+                    zy0 = (int)((_height+Z0+0.5f)*disp.height()/(_height+d)),
+                    zy1 = (int)((_height+Z1+0.5f)*disp.height()/(_height+d));
+                  visu.draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0x55555555).
+                    draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0x55555555).
+                    draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA).
+                    draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0xAAAAAAAA);
+                }
+              } break;
+              case 2 : {
+                const int
+                  x0 = (X0<X1?X0:X1)*disp.width()/(_width+d),
+                  y0 = (Y0<Y1?Y0:Y1)*disp.height()/(_height+d),
+                  x1 = ((X0<X1?X1:X0)+1)*disp.width()/(_width+d)-1,
+                  y1 = ((Y0<Y1?Y1:Y0)+1)*disp.height()/(_height+d)-1;
+                visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,0x55555555);
+                if (d) {
+                  const int
+                    zx0 = (int)((_width+(Z0<Z1?Z0:Z1))*disp.width()/(_width+d)),
+                    zy0 = (int)((_height+(Z0<Z1?Z0:Z1))*disp.height()/(_height+d)),
+                    zx1 = (int)((_width+(Z0<Z1?Z1:Z0)+1)*disp.width()/(_width+d))-1,
+                    zy1 = (int)((_height+(Z0<Z1?Z1:Z0)+1)*disp.height()/(_height+d))-1;
+                  visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,0x55555555).
+                    draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,0x55555555);
+                }
+              } break;
+              case 3 : {
+                const int
+                  x0 = X0*disp.width()/(_width+d),
+                  y0 = Y0*disp.height()/(_height+d),
+                  x1 = X1*disp.width()/(_width+d)-1,
+                  y1 = Y1*disp.height()/(_height+d)-1;
+                visu.draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
+                  draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
+                  draw_point(x0,y0,foreground_color,0.6f);
+                if (d) {
+                  const int
+                    zx0 = (int)((_width+Z0)*disp.width()/(_width+d)),
+                    zy0 = (int)((_height+Z0)*disp.height()/(_height+d)),
+                    zx1 = (int)((_width+Z1+1)*disp.width()/(_width+d))-1,
+                    zy1 = (int)((_height+Z1+1)*disp.height()/(_height+d))-1;
+                  visu.draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
+                    draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
+                    draw_point(zx0,y0,foreground_color,0.6f).
+                    draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,background_color,0.2f).
+                    draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,foreground_color,0.6f,0x55555555).
+                    draw_point(x0,zy0,foreground_color,0.6f);
+                }
+              } break;
+              } else {
+              const int
+                x0 = X*disp.width()/(_width+d),
+                y0 = Y*disp.height()/(_height+d),
+                x1 = (X+1)*disp.width()/(_width+d)-1,
+                y1 = (Y+1)*disp.height()/(_height+d)-1,
+                zx0 = (Z+_width)*disp.width()/(_width+d),
+                zx1 = (Z+_width+1)*disp.width()/(_width+d)-1,
+                zy0 = (Z+_height)*disp.height()/(_height+d),
+                zy1 = (Z+_height+1)*disp.height()/(_height+d)-1;
+              if (x1-x0>=4 && y1-y0>=4) visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).
+                                          draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,~0U);
+              if (_depth>1) {
+                if (y1-y0>=4 && zx1-zx0>=4) visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).
+                                              draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,~0U);
+                if (x1-x0>=4 && zy1-zy0>=4) visu.draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).
+                                              draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,~0U);
+              }
+            }
+
+            if (my>=0 && my<13) text_down = true; else if (my>=visu.height()-13) text_down = false;
+            if (!feature_type || !phase) {
+              if (X>=0 && Y>=0 && Z>=0 && X<width() && Y<height() && Z<depth()) {
+                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Point (%d,%d,%d) = [ ",origX+X,origY+Y,origZ+Z);
+                else cimg_snprintf(text,sizeof(text)," Point (%d,%d) = [ ",origX+X,origY+Y);
+                char *ctext = text + std::strlen(text), *const ltext = text + 512;
+                for (unsigned int c = 0; c<_spectrum && ctext<ltext; ++c) {
+                  cimg_snprintf(ctext,sizeof(text)/2,cimg::type<T>::format(),cimg::type<T>::format((*this)(X,Y,Z,c)));
+                  ctext = text + std::strlen(text);
+                  *(ctext++) = ' '; *ctext = 0;
+                }
+                std::strcpy(text + std::strlen(text),"] ");
+              }
+            } else switch (feature_type) {
+              case 1 : {
+                const double dX = (double)(X0 - X1), dY = (double)(Y0 - Y1), dZ = (double)(Z0 - Z1), norm = std::sqrt(dX*dX+dY*dY+dZ*dZ);
+                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Vect (%d,%d,%d)-(%d,%d,%d), Norm = %g ",
+                                                                     origX+X0,origY+Y0,origZ+Z0,origX+X1,origY+Y1,origZ+Z1,norm);
+                else cimg_snprintf(text,sizeof(text)," Vect (%d,%d)-(%d,%d), Norm = %g ",
+                                   origX+X0,origY+Y0,origX+X1,origY+Y1,norm);
+              } break;
+              case 2 :
+                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Box (%d,%d,%d)-(%d,%d,%d), Size = (%d,%d,%d) ",
+                                                                     origX+(X0<X1?X0:X1),origY+(Y0<Y1?Y0:Y1),origZ+(Z0<Z1?Z0:Z1),
+                                                                     origX+(X0<X1?X1:X0),origY+(Y0<Y1?Y1:Y0),origZ+(Z0<Z1?Z1:Z0),
+                                                                     1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1),1+cimg::abs(Z0-Z1));
+                else cimg_snprintf(text,sizeof(text)," Box (%d,%d)-(%d,%d), Size = (%d,%d) ",
+                                   origX+(X0<X1?X0:X1),origY+(Y0<Y1?Y0:Y1),origX+(X0<X1?X1:X0),origY+(Y0<Y1?Y1:Y0),
+                                   1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1));
+                break;
+              default :
+                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Ellipse (%d,%d,%d)-(%d,%d,%d), Radii = (%d,%d,%d) ",
+                                                                     origX+X0,origY+Y0,origZ+Z0,origX+X1,origY+Y1,origZ+Z1,
+                                                                     1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1),1+cimg::abs(Z0-Z1));
+                else cimg_snprintf(text,sizeof(text)," Ellipse (%d,%d)-(%d,%d), Radii = (%d,%d) ",
+                                   origX+X0,origY+Y0,origX+X1,origY+Y1,1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1));
+              }
+            if (phase || (mx>=0 && my>=0)) visu.draw_text(0,text_down?visu.height()-13:0,text,foreground_color,background_color,0.7f,13);
           }
 
-          if (my>=0 && my<13) text_down = true; else if (my>=visu.height()-13) text_down = false;
-          if (!feature_type || !phase) {
-            if (X>=0 && Y>=0 && Z>=0 && X<width() && Y<height() && Z<depth()) {
-              if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Point (%d,%d,%d) = [ ",origX+X,origY+Y,origZ+Z);
-              else cimg_snprintf(text,sizeof(text)," Point (%d,%d) = [ ",origX+X,origY+Y);
-              char *ctext = text + std::strlen(text), *const ltext = text + 512;
-              for (unsigned int c = 0; c<_spectrum && ctext<ltext; ++c) {
-                cimg_snprintf(ctext,sizeof(text)/2,cimg::type<T>::format(),cimg::type<T>::format((*this)(X,Y,Z,c)));
-                ctext = text + std::strlen(text);
-                *(ctext++) = ' '; *ctext = 0;
-              }
-              std::strcpy(text + std::strlen(text),"] ");
-            }
-          } else switch (feature_type) {
-          case 1 : {
-            const double dX = (double)(X0 - X1), dY = (double)(Y0 - Y1), dZ = (double)(Z0 - Z1), norm = std::sqrt(dX*dX+dY*dY+dZ*dZ);
-            if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Vect (%d,%d,%d)-(%d,%d,%d), Norm = %g ",
-                                                                 origX+X0,origY+Y0,origZ+Z0,origX+X1,origY+Y1,origZ+Z1,norm);
-            else cimg_snprintf(text,sizeof(text)," Vect (%d,%d)-(%d,%d), Norm = %g ",
-                               origX+X0,origY+Y0,origX+X1,origY+Y1,norm);
-          } break;
-          case 2 :
-            if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Box (%d,%d,%d)-(%d,%d,%d), Size = (%d,%d,%d) ",
-                                                                 origX+(X0<X1?X0:X1),origY+(Y0<Y1?Y0:Y1),origZ+(Z0<Z1?Z0:Z1),
-                                                                 origX+(X0<X1?X1:X0),origY+(Y0<Y1?Y1:Y0),origZ+(Z0<Z1?Z1:Z0),
-                                                                 1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1),1+cimg::abs(Z0-Z1));
-            else cimg_snprintf(text,sizeof(text)," Box (%d,%d)-(%d,%d), Size = (%d,%d) ",
-                               origX+(X0<X1?X0:X1),origY+(Y0<Y1?Y0:Y1),origX+(X0<X1?X1:X0),origY+(Y0<Y1?Y1:Y0),
-                               1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1));
-            break;
-          default :
-            if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Ellipse (%d,%d,%d)-(%d,%d,%d), Radii = (%d,%d,%d) ",
-                                                                 origX+X0,origY+Y0,origZ+Z0,origX+X1,origY+Y1,origZ+Z1,
-                                                                 1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1),1+cimg::abs(Z0-Z1));
-            else cimg_snprintf(text,sizeof(text)," Ellipse (%d,%d)-(%d,%d), Radii = (%d,%d) ",
-                               origX+X0,origY+Y0,origX+X1,origY+Y1,1+cimg::abs(X0-X1),1+cimg::abs(Y0-Y1));
-            }
-          if (phase || (mx>=0 && my>=0)) visu.draw_text(0,text_down?visu.height()-13:0,text,foreground_color,background_color,0.7f,13);
           disp.display(visu).wait();
         } else if (!shape_selected) disp.wait();
         if (disp.is_resized()) { disp.resize(false)._is_resized = false; old_is_resized = true; visu0.assign(); }
