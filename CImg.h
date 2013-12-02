@@ -34762,7 +34762,7 @@ namespace cimg_library_suffixed {
       const unsigned int old_normalization = disp.normalization();
       bool old_is_resized = disp.is_resized();
       disp._normalization = 0;
-      disp.show().set_key(0).set_wheel();
+      disp.show().set_key(0).set_wheel().show_mouse();
 
       unsigned char foreground_color[] = { 255,255,255 }, background_color[] = { 0,0,0 };
 
@@ -34775,7 +34775,7 @@ namespace cimg_library_suffixed {
         oX = X, oY = Y, oZ = Z, oX3d = X3d, oY3d = -1;
       unsigned int old_button = 0, key = 0;
 
-      bool shape_selected = false, text_down = false;
+      bool shape_selected = false, text_down = false, visible_cursor = true;
       static CImg<floatT> pose3d;
       static bool is_view3d = false, is_axes = true;
       if (reset_view3d) { pose3d.assign(); is_view3d = false; }
@@ -35070,7 +35070,10 @@ namespace cimg_library_suffixed {
           }
           visu = visu0;
 
-          if (X>=0 && Y>=0 && Z>=0) {
+          if (X<0 || Y<0 || Z<0) { if (!visible_cursor) { disp.show_mouse(); visible_cursor = true; }}
+          else {
+            if (is_axes) { if (visible_cursor) { disp.hide_mouse(); visible_cursor = false; }}
+            else { if (!visible_cursor) { disp.show_mouse(); visible_cursor = true; }}
             const int d = (_depth>1)?_depth:0;
             X = cimg::max(0,cimg::min(width()-1,X));
             Y = cimg::max(0,cimg::min(height()-1,Y));
@@ -35093,11 +35096,11 @@ namespace cimg_library_suffixed {
                 zxc = (zx0 + zx1)/2,
                 zyc = (zy0 + zy1)/2;
               if (_width>1 && _height>1)
-                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.3f).
-                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.3f);
+                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
+                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
               if (_depth>1) {
-                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.3f);
-                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.3f);
+                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.5f);
+                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.5f);
               }
             }
 
@@ -35244,6 +35247,7 @@ namespace cimg_library_suffixed {
 	}
       }
       disp.set_button();
+      if (!visible_cursor) disp.show_mouse();
       disp._normalization = old_normalization;
       disp._is_resized = old_is_resized;
       if (key!=~0U) disp.set_key(key);
