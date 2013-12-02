@@ -35048,7 +35048,7 @@ namespace cimg_library_suffixed {
                 sel_colors3d.assign(sel_primitives3d._width,CImg<ucharT>::vector(255,255,255));
                 sel_opacities3d.assign(sel_primitives3d._width,1,1,1,0.8f);
               }
-              points3d.shift_object3d(-0.5f*_width,-0.5f*_height,-0.5f*_depth).resize_object3d();
+              points3d.shift_object3d(-0.5f*(_width-1),-0.5f*(_height-1),-0.5f*(_depth-1)).resize_object3d();
               points3d*=0.75f*cimg::min(view3d._width,view3d._height);
             }
 
