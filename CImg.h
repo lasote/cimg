@@ -35216,7 +35216,7 @@ namespace cimg_library_suffixed {
         if (disp.is_resized()) { disp.resize(false)._is_resized = false; old_is_resized = true; visu0.assign(); }
       }
 
-      // Return result
+      // Return result.
       CImg<intT> res(1,feature_type==0?3:6,1,1,-1);
       if (XYZ) { XYZ[0] = (unsigned int)X0; XYZ[1] = (unsigned int)Y0; XYZ[2] = (unsigned int)Z0; }
       if (shape_selected) {
