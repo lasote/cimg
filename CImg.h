@@ -35079,23 +35079,27 @@ namespace cimg_library_suffixed {
             Y = cimg::max(0,cimg::min(height()-1,Y));
             Z = cimg::max(0,cimg::min(depth()-1,Z));
 
-            const int
+            int
               w = disp.width(), W = width() + d,
               h = disp.height(), H = height() + d,
-              xp = X*w/W,
-              yp = Y*h/H,
-              xn = (X+1)*w/W-1,
-              yn = (Y+1)*h/H-1,
-              zxp = (Z+_width)*w/W,
-              zxn = (Z+_width+1)*w/W,
-              zyp = (Z+_height)*h/H,
-              zyn = (Z+_height+1)*h/H,
+              _xp = X*w/W, xp = _xp + (_xp*W/w!=X?1:0),
+              _yp = Y*h/H, yp = _yp + (_yp*H/h!=Y?1:0),
+              _xn = (X+1)*w/W-1, xn = _xn + ((_xn+1)*W/w!=X+1?1:0),
+              _yn = (Y+1)*h/H-1, yn = _yn + ((_yn+1)*H/h!=Y+1?1:0),
+              _zxp = (Z+width())*w/W, zxp = _zxp + (_zxp*W/w!=Z+width()?1:0),
+              _zyp = (Z+height())*h/H, zyp = _zyp + (_zyp*H/h!=Z+height()?1:0),
+              _zxn = (Z+width()+1)*w/W-1, zxn = _zxn + ((_zxn+1)*W/w!=Z+width()+1?1:0),
+              _zyn = (Z+height()+1)*h/H-1, zyn = _zyn + ((_zyn+1)*H/h!=Z+height()+1?1:0),
+              _xM = width()*w/W-1, xM = _xM + ((_xM+1)*W/w!=width()?1:0),
+              _yM = height()*h/H-1, yM = _yM + ((_yM+1)*H/h!=height()?1:0),
               xc = (xp + xn)/2,
               yc = (yp + yn)/2,
               zxc = (zxp + zxn)/2,
-              zyc = (zyp + zyn)/2,
-              xM = (_width*w)/W-1,
-              yM = (_height*h)/H-1;
+              zyc = (zyp + zyn)/2;
+
+            static CImgDisplay disp2(500,500,"DEBUG",1);
+            const CImg<ucharT> cvisu = visu.get_crop(xp,yp,xn,yn);
+            cvisu.display(disp2.set_title("%d,%d",cvisu.width(),cvisu.height()));
 
             if (is_axes) { // Draw axes.
               if (_width>1 && _height>1)
@@ -35120,14 +35124,14 @@ namespace cimg_library_suffixed {
             // Draw selection.
             if (phase) {
               const int
-                xp0 = X0*w/W,
-                yp0 = Y0*h/H,
-                xn0 = (X0+1)*w/W-1,
-                yn0 = (Y0+1)*h/H-1,
-                zxp0 = (Z0+_width)*w/W,
-                zxn0 = (Z0+_width+1)*w/W,
-                zyp0 = (Z0+_height)*h/H,
-                zyn0 = (Z0+_height+1)*h/H,
+                _xp0 = X0*w/W, xp0 = _xp0 + (_xp0*W/w!=X0?1:0),
+                _yp0 = Y0*h/H, yp0 = _yp0 + (_yp0*H/h!=Y0?1:0),
+                _xn0 = (X0+1)*w/W-1, xn0 = _xn0 + ((_xn0+1)*W/w!=X0+1?1:0),
+                _yn0 = (Y0+1)*h/H-1, yn0 = _yn0 + ((_yn0+1)*H/h!=Y0+1?1:0),
+                _zxp0 = (Z0+width())*w/W, zxp0 = _zxp0 + (_zxp0*W/w!=Z0+width()?1:0),
+                _zyp0 = (Z0+height())*h/H, zyp0 = _zyp0 + (_zyp0*H/h!=Z0+height()?1:0),
+                _zxn0 = (Z0+width()+1)*w/W-1, zxn0 = _zxn0 + ((_zxn0+1)*W/w!=Z0+width()+1?1:0),
+                _zyn0 = (Z0+height()+1)*h/H-1, zyn0 = _zyn0 + ((_zyn0+1)*H/h!=Z0+height()+1?1:0),
                 xc0 = (xp0 + xn0)/2,
                 yc0 = (yp0 + yn0)/2,
                 zxc0 = (zxp0 + zxn0)/2,
