@@ -35079,112 +35079,98 @@ namespace cimg_library_suffixed {
             Y = cimg::max(0,cimg::min(height()-1,Y));
             Z = cimg::max(0,cimg::min(depth()-1,Z));
 
+            const int
+              w = disp.width(), W = width() + d,
+              h = disp.height(), H = height() + d,
+              xp = X*w/W,
+              yp = Y*h/H,
+              xn = (X+1)*w/W-1,
+              yn = (Y+1)*h/H-1,
+              zxp = (Z+_width)*w/W,
+              zxn = (Z+_width+1)*w/W,
+              zyp = (Z+_height)*h/H,
+              zyn = (Z+_height+1)*h/H,
+              xc = (xp + xn)/2,
+              yc = (yp + yn)/2,
+              zxc = (zxp + zxn)/2,
+              zyc = (zyp + zyn)/2,
+              xM = (_width*w)/W-1,
+              yM = (_height*h)/H-1;
+
             if (is_axes) { // Draw axes.
-              const int
-                x0 = X*disp.width()/(_width+d),
-                y0 = Y*disp.height()/(_height+d),
-                x1 = (X+1)*disp.width()/(_width+d)-1,
-                y1 = (Y+1)*disp.height()/(_height+d)-1,
-                zx0 = (Z+_width)*disp.width()/(_width+d),
-                zx1 = (Z+_width+1)*disp.width()/(_width+d)-1,
-                zy0 = (Z+_height)*disp.height()/(_height+d),
-                zy1 = (Z+_height+1)*disp.height()/(_height+d)-1,
-                xM = _width*disp.width()/(_width+d)-1,
-                yM = _height*disp.height()/(_height+d)-1,
-                xc = (x0 + x1)/2,
-                yc = (y0 + y1)/2,
-                zxc = (zx0 + zx1)/2,
-                zyc = (zy0 + zy1)/2;
               if (_width>1 && _height>1)
                 visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
-                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
+                draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
               if (_depth>1) {
                 if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.5f);
                 if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.5f);
               }
             }
 
-            if (phase) switch (feature_type) {
+            // Draw box cursor.
+            if (xn-xp>=4 && yn-yp>=4) visu.draw_rectangle(xp,yp,xn,yn,background_color,0.2f).
+                                        draw_rectangle(xp,yp,xn,yn,foreground_color,0.6f,~0U);
+            if (_depth>1) {
+              if (yn-yp>=4 && zxn-zxp>=4) visu.draw_rectangle(zxp,yp,zxn,yn,background_color,0.2f).
+                                            draw_rectangle(zxp,yp,zxn,yn,foreground_color,0.6f,~0U);
+              if (xn-xp>=4 && zyn-zyp>=4) visu.draw_rectangle(xp,zyp,xn,zyn,background_color,0.2f).
+                                            draw_rectangle(xp,zyp,xn,zyn,foreground_color,0.6f,~0U);
+            }
+
+            // Draw selection.
+            if (phase) {
+              const int
+                xp0 = X0*w/W,
+                yp0 = Y0*h/H,
+                xn0 = (X0+1)*w/W-1,
+                yn0 = (Y0+1)*h/H-1,
+                zxp0 = (Z0+_width)*w/W,
+                zxn0 = (Z0+_width+1)*w/W,
+                zyp0 = (Z0+_height)*h/H,
+                zyn0 = (Z0+_height+1)*h/H,
+                xc0 = (xp0 + xn0)/2,
+                yc0 = (yp0 + yn0)/2,
+                zxc0 = (zxp0 + zxn0)/2,
+                zyc0 = (zyp0 + zyn0)/2;
+
+              switch (feature_type) {
               case 1 : {
-                const int
-                  x0 = (int)((X0+0.5f)*disp.width()/(_width+d)),
-                  y0 = (int)((Y0+0.5f)*disp.height()/(_height+d)),
-                  x1 = (int)((X1+0.5f)*disp.width()/(_width+d)),
-                  y1 = (int)((Y1+0.5f)*disp.height()/(_height+d));
-                visu.draw_arrow(x0,y0,x1,y1,background_color,0.9f,30,5,0x55555555).
-                  draw_arrow(x0,y0,x1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA);
+                visu.draw_arrow(xc0,yc0,xc,yc,background_color,0.9f,30,5,0x55555555).
+                  draw_arrow(xc0,yc0,xc,yc,foreground_color,0.9f,30,5,0xAAAAAAAA);
                 if (d) {
-                  const int
-                    zx0 = (int)((_width+Z0+0.5f)*disp.width()/(_width+d)),
-                    zx1 = (int)((_width+Z1+0.5f)*disp.width()/(_width+d)),
-                    zy0 = (int)((_height+Z0+0.5f)*disp.height()/(_height+d)),
-                    zy1 = (int)((_height+Z1+0.5f)*disp.height()/(_height+d));
-                  visu.draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0x55555555).
-                    draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0x55555555).
-                    draw_arrow(zx0,y0,zx1,y1,foreground_color,0.9f,30,5,0xAAAAAAAA).
-                    draw_arrow(x0,zy0,x1,zy1,foreground_color,0.9f,30,5,0xAAAAAAAA);
+                  visu.draw_arrow(zxc0,yc0,zxc,yc,background_color,0.9f,30,5,0x55555555).
+                    draw_arrow(zxc0,yc0,zxc,yc,foreground_color,0.9f,30,5,0xAAAAAAAA).
+                    draw_arrow(xc0,zyc0,xc,zyc,background_color,0.9f,30,5,0x55555555).
+                    draw_arrow(xc0,zyc0,xc,zyc,foreground_color,0.9f,30,5,0xAAAAAAAA);
                 }
               } break;
               case 2 : {
-                const int
-                  x0 = (X0<X1?X0:X1)*disp.width()/(_width+d),
-                  y0 = (Y0<Y1?Y0:Y1)*disp.height()/(_height+d),
-                  x1 = ((X0<X1?X1:X0)+1)*disp.width()/(_width+d)-1,
-                  y1 = ((Y0<Y1?Y1:Y0)+1)*disp.height()/(_height+d)-1;
-                visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,0x55555555);
+                visu.draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,background_color,0.2f).
+                  draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,foreground_color,0.6f,0xAAAAAAAA);
                 if (d) {
-                  const int
-                    zx0 = (int)((_width+(Z0<Z1?Z0:Z1))*disp.width()/(_width+d)),
-                    zy0 = (int)((_height+(Z0<Z1?Z0:Z1))*disp.height()/(_height+d)),
-                    zx1 = (int)((_width+(Z0<Z1?Z1:Z0)+1)*disp.width()/(_width+d))-1,
-                    zy1 = (int)((_height+(Z0<Z1?Z1:Z0)+1)*disp.height()/(_height+d))-1;
-                  visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,0x55555555).
-                    draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,0x55555555);
+                  visu.draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,background_color,0.2f).
+                    draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,foreground_color,0.6f,0xAAAAAAAA).
+                    draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,background_color,0.2f).
+                    draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,foreground_color,0.6f,0xAAAAAAAA);
                 }
               } break;
               case 3 : {
-                const int
-                  x0 = X0*disp.width()/(_width+d),
-                  y0 = Y0*disp.height()/(_height+d),
-                  x1 = X1*disp.width()/(_width+d)-1,
-                  y1 = Y1*disp.height()/(_height+d)-1;
-                visu.draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
-                  draw_ellipse(x0,y0,(float)cimg::abs(x1-x0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
-                  draw_point(x0,y0,foreground_color,0.6f);
+                visu.draw_ellipse(xc0,yc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(yc-yc0),0,background_color,0.2f).
+                  draw_ellipse(xc0,yc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.6f,0xAAAAAAAA).
+                  draw_point(xc0,yc0,foreground_color,0.6f);
                 if (d) {
-                  const int
-                    zx0 = (int)((_width+Z0)*disp.width()/(_width+d)),
-                    zy0 = (int)((_height+Z0)*disp.height()/(_height+d)),
-                    zx1 = (int)((_width+Z1+1)*disp.width()/(_width+d))-1,
-                    zy1 = (int)((_height+Z1+1)*disp.height()/(_height+d))-1;
-                  visu.draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,background_color,0.2f).
-                    draw_ellipse(zx0,y0,(float)cimg::abs(zx1-zx0),(float)cimg::abs(y1-y0),0,foreground_color,0.6f,0x55555555).
-                    draw_point(zx0,y0,foreground_color,0.6f).
-                    draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,background_color,0.2f).
-                    draw_ellipse(x0,zy0,(float)cimg::abs(x1-x0),(float)cimg::abs(zy1-zy0),0,foreground_color,0.6f,0x55555555).
-                    draw_point(x0,zy0,foreground_color,0.6f);
+                  visu.draw_ellipse(zxc0,yc0,(float)cimg::abs(zxc-zxc0),(float)cimg::abs(yc-yc0),0,background_color,0.2f).
+                    draw_ellipse(zxc0,yc0,(float)cimg::abs(zxc-zxc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.6f,0xAAAAAAAA).
+                    draw_point(zxc0,yc0,foreground_color,0.6f).
+                    draw_ellipse(xc0,zyc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(zyc-zyc0),0,background_color,0.2f).
+                    draw_ellipse(xc0,zyc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(zyc-zyc0),0,foreground_color,0.6f,0xAAAAAAAA).
+                    draw_point(xc0,zyc0,foreground_color,0.6f);
                 }
               } break;
-              } else {
-              const int
-                x0 = X*disp.width()/(_width+d),
-                y0 = Y*disp.height()/(_height+d),
-                x1 = (X+1)*disp.width()/(_width+d)-1,
-                y1 = (Y+1)*disp.height()/(_height+d)-1,
-                zx0 = (Z+_width)*disp.width()/(_width+d),
-                zx1 = (Z+_width+1)*disp.width()/(_width+d)-1,
-                zy0 = (Z+_height)*disp.height()/(_height+d),
-                zy1 = (Z+_height+1)*disp.height()/(_height+d)-1;
-              if (x1-x0>=4 && y1-y0>=4) visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).
-                                          draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,~0U);
-              if (_depth>1) {
-                if (y1-y0>=4 && zx1-zx0>=4) visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).
-                                              draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,~0U);
-                if (x1-x0>=4 && zy1-zy0>=4) visu.draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).
-                                              draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,~0U);
               }
             }
 
+            // Draw text info.
             if (my>=0 && my<13) text_down = true; else if (my>=visu.height()-13) text_down = false;
             if (!feature_type || !phase) {
               if (X>=0 && Y>=0 && Z>=0 && X<width() && Y<height() && Z<depth()) {
