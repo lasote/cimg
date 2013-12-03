@@ -10617,7 +10617,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator+=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -10749,7 +10751,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator-=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -10865,7 +10869,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator*=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -10961,7 +10967,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator/=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11037,7 +11045,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator%=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11116,7 +11126,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator&=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11195,7 +11207,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator|=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11278,7 +11292,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator^=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11359,7 +11375,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11438,7 +11456,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -11535,7 +11555,9 @@ namespace cimg_library_suffixed {
       bool is_equal = true;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         const T *ptrs = _data;
@@ -13831,13 +13853,13 @@ namespace cimg_library_suffixed {
                                             "CImg<%s>::%s(): Empty specified expression.",
                                             pixel_type(),calling_function);
 
-        int lv = 0; // Count parenthesis level of expression.
+        int lv = 0; // Count parentheses/brackets level of expression.
         level.assign(l);
         unsigned int *pd = level._data;
-        for (const char *ps = expr._data; *ps && lv>=0; ++ps) *(pd++) = (unsigned int)(*ps=='('?lv++:*ps==')'?--lv:lv);
+        for (const char *ps = expr._data; *ps && lv>=0; ++ps) *(pd++) = (unsigned int)(*ps=='('||*ps=='['?lv++:*ps==')'||*ps==']'?--lv:lv);
         if (lv!=0) {
           throw CImgArgumentException("[_cimg_math_parser] "
-                                      "CImg<%s>::%s(): Unbalanced parentheses in specified expression '%s'.",
+                                      "CImg<%s>::%s(): Unbalanced parentheses/brackets in specified expression '%s'.",
                                       pixel_type(),calling_function,
                                       expr._data);
         }
@@ -14079,6 +14101,13 @@ namespace cimg_library_suffixed {
         for (char *s = se2; s>ss; --s) if (*s=='^' && level[s-expr._data]==clevel) _cimg_mp_opcode2(25,compile(ss,s),compile(s+1,se));
 
         // Look for a function call or a parenthesis.
+        if (*se1==']') {
+          const bool is_relative = *ss=='j';
+          if ((*ss=='i' || is_relative) && *ss1=='[') {
+            if (*ss2==']') _cimg_mp_opcode0(2);
+            _cimg_mp_opcode1(is_relative?69:68,compile(ss2,se1));
+          }
+        }
         if (*se1==')') {
           if (*ss=='(') _cimg_mp_return(compile(ss1,se1));
           if (!std::strncmp(ss,"sin(",4)) _cimg_mp_opcode1(29,compile(ss4,se1));
@@ -14585,6 +14614,17 @@ namespace cimg_library_suffixed {
       double mp_int() {
         return (double)(long)mem[opcode(2)];
       }
+      double mp_ioff() {
+        const unsigned long off = (unsigned long)mem[opcode(2)];
+        if (off>=reference.size()) return 0;
+        return (double)reference[off];
+      }
+      double mp_joff() {
+        const double x = mem[9], y = mem[10], z = mem[11], c = mem[12];
+        const unsigned long off = (unsigned long)(reference.offset(x,y,z,c) + mem[opcode(2)]);
+        if (off>=reference.size()) return 0;
+        return (double)reference[off];
+      }
 
       // Evaluation procedure, with image data.
       double eval(const double x, const double y, const double z, const double c) {
@@ -14656,7 +14696,9 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_cm,           // 64
           &_cimg_math_parser::mp_xM,           // 65
           &_cimg_math_parser::mp_yM,           // 66
-          &_cimg_math_parser::mp_zM            // 67
+          &_cimg_math_parser::mp_zM,           // 67
+          &_cimg_math_parser::mp_ioff,         // 68
+          &_cimg_math_parser::mp_joff          // 69
         };
         if (!mem) return 0;
         this->mp_funcs = mp_funcs;
@@ -15138,7 +15180,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"pow");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -15209,7 +15253,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"rol");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -15280,7 +15326,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"ror");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -15377,7 +15425,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"min");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -15451,7 +15501,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try {
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"max");
         T *ptrd = *expression=='<'?end()-1:_data;
@@ -17941,7 +17993,9 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = 0;
       try { // Try to fill values according to a formula.
         const CImg<T>
-          _base = *expression!='>' && *expression!='<' && (std::strstr(expression,"i(") || std::strstr(expression,"j("))?+*this:CImg<T>(),
+          _base = *expression!='>' && *expression!='<' &&
+          (std::strstr(expression,"i(") || std::strstr(expression,"j(") ||
+           std::strstr(expression,"i[") || std::strstr(expression,"j["))?+*this:CImg<T>(),
           &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"fill");
         T *ptrd = *expression=='<'?end()-1:_data;
