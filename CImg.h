@@ -35099,22 +35099,29 @@ namespace cimg_library_suffixed {
 
             if (is_axes) { // Draw axes.
               if (_width>1 && _height>1)
-                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
-                draw_line(xc,0,xc,visu.height()-1,foreground_color,0.5f);
+                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(0,yc,visu.width()-1,yc,background_color,0.7f,0x00FF00FF).
+                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(xc,0,xc,visu.height()-1,background_color,0.7f,0x00FF00FF);
               if (_depth>1) {
-                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.5f);
-                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.5f);
+                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(zxc,0,zxc,yM,background_color,0.7f,0x00FF00FF);
+                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(0,zyc,xM,zyc,background_color,0.7f,0x00FF00FF);
               }
             }
 
             // Draw box cursor.
-            if (xn-xp>=4 && yn-yp>=4) visu.draw_rectangle(xp,yp,xn,yn,background_color,0.2f).
-                                        draw_rectangle(xp,yp,xn,yn,foreground_color,0.6f,~0U);
+            if (xn-xp>=4 && yn-yp>=4) visu.draw_rectangle(xp,yp,xn,yn,foreground_color,0.2f).
+                                        draw_rectangle(xp,yp,xn,yn,foreground_color,0.8f,0xAAAAAAAA).
+                                        draw_rectangle(xp,yp,xn,yn,background_color,0.8f,0x55555555);
             if (_depth>1) {
               if (yn-yp>=4 && zxn-zxp>=4) visu.draw_rectangle(zxp,yp,zxn,yn,background_color,0.2f).
-                                            draw_rectangle(zxp,yp,zxn,yn,foreground_color,0.6f,~0U);
+                                            draw_rectangle(zxp,yp,zxn,yn,foreground_color,0.8f,0xAAAAAAAA).
+                                            draw_rectangle(zxp,yp,zxn,yn,background_color,0.8f,0x55555555);
               if (xn-xp>=4 && zyn-zyp>=4) visu.draw_rectangle(xp,zyp,xn,zyn,background_color,0.2f).
-                                            draw_rectangle(xp,zyp,xn,zyn,foreground_color,0.6f,~0U);
+                                            draw_rectangle(xp,zyp,xn,zyn,foreground_color,0.8f,0xAAAAAAAA).
+                                            draw_rectangle(xp,zyp,xn,zyn,background_color,0.8f,0x55555555);
             }
 
             // Draw selection.
@@ -35146,25 +35153,28 @@ namespace cimg_library_suffixed {
               } break;
               case 2 : {
                 visu.draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,background_color,0.2f).
-                  draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,foreground_color,0.6f,0xAAAAAAAA);
+                  draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,foreground_color,0.9f,0xAAAAAAAA).
+                  draw_rectangle(X0<X1?xp0:xp,Y0<Y1?yp0:yp,X0<X1?xn:xn0,Y0<Y1?yn:yn0,background_color,0.9f,0x55555555);
                 if (d) {
                   visu.draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,background_color,0.2f).
-                    draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,foreground_color,0.6f,0xAAAAAAAA).
+                    draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,foreground_color,0.9f,0xAAAAAAAA).
+                    draw_rectangle(Z0<Z1?zxp0:zxp,Y0<Y1?yp0:yp,Z0<Z1?zxn:zxn0,Y0<Y1?yn:yn0,background_color,0.9f,0x55555555).
                     draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,background_color,0.2f).
-                    draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,foreground_color,0.6f,0xAAAAAAAA);
+                    draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,foreground_color,0.9f,0xAAAAAAAA).
+                    draw_rectangle(X0<X1?xp0:xp,Z0<Z1?zyp0:zyp,X0<X1?xn:xn0,Z0<Z1?zyn:zyn0,background_color,0.9f,0x55555555);
                 }
               } break;
               case 3 : {
                 visu.draw_ellipse(xc0,yc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(yc-yc0),0,background_color,0.2f).
-                  draw_ellipse(xc0,yc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.6f,0xAAAAAAAA).
-                  draw_point(xc0,yc0,foreground_color,0.6f);
+                  draw_ellipse(xc0,yc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.9f,~0U).
+                  draw_point(xc0,yc0,foreground_color,0.9f);
                 if (d) {
                   visu.draw_ellipse(zxc0,yc0,(float)cimg::abs(zxc-zxc0),(float)cimg::abs(yc-yc0),0,background_color,0.2f).
-                    draw_ellipse(zxc0,yc0,(float)cimg::abs(zxc-zxc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.6f,0xAAAAAAAA).
-                    draw_point(zxc0,yc0,foreground_color,0.6f).
+                    draw_ellipse(zxc0,yc0,(float)cimg::abs(zxc-zxc0),(float)cimg::abs(yc-yc0),0,foreground_color,0.9f,~0U).
+                    draw_point(zxc0,yc0,foreground_color,0.9f).
                     draw_ellipse(xc0,zyc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(zyc-zyc0),0,background_color,0.2f).
-                    draw_ellipse(xc0,zyc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(zyc-zyc0),0,foreground_color,0.6f,0xAAAAAAAA).
-                    draw_point(xc0,zyc0,foreground_color,0.6f);
+                    draw_ellipse(xc0,zyc0,(float)cimg::abs(xc-xc0),(float)cimg::abs(zyc-zyc0),0,foreground_color,0.9f,~0U).
+                    draw_point(xc0,zyc0,foreground_color,0.9f);
                 }
               } break;
               }
@@ -44007,7 +44017,7 @@ namespace cimg_library_suffixed {
                 visu.draw_rectangle(positions(ind,0),positions(ind,1),positions(ind,2),positions(ind,3),background_color,0.2f);
                 if ((axis=='x' && positions(ind,2) - positions(ind,0)>=8) ||
                     (axis!='x' && positions(ind,3) - positions(ind,1)>=8))
-                  visu.draw_rectangle(positions(ind,0),positions(ind,1),positions(ind,2),positions(ind,3),foreground_color,0.9f,0x55555555);
+                  visu.draw_rectangle(positions(ind,0),positions(ind,1),positions(ind,2),positions(ind,3),foreground_color,0.9f,0xAAAAAAAA);
               }
             const int yt = (int)text_down?visu.height()-13:0;
             if (is_clicked) visu.draw_text(0,yt," Images #%u - #%u, Size = %u",foreground_color,background_color,0.7f,13,
