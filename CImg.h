@@ -35097,10 +35097,6 @@ namespace cimg_library_suffixed {
               zxc = (zxp + zxn)/2,
               zyc = (zyp + zyn)/2;
 
-            static CImgDisplay disp2(500,500,"DEBUG",1);
-            const CImg<ucharT> cvisu = visu.get_crop(xp,yp,xn,yn);
-            cvisu.display(disp2.set_title("%d,%d",cvisu.width(),cvisu.height()));
-
             if (is_axes) { // Draw axes.
               if (_width>1 && _height>1)
                 visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.5f).
