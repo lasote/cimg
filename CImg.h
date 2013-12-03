@@ -38657,6 +38657,7 @@ namespace cimg_library_suffixed {
         if (_height>1 && visu._height==1) disp.set_title("%s | y=%u",disp._title,y0);
         if (_depth>1 && visu._depth==1) disp.set_title("%s | z=%u",disp._title,z0);
 
+        if (!is_first_select) { _XYZ[0] = (x1-x0)/2; _XYZ[1] = (y1-y0)/2; _XYZ[2] = (z1-z0)/2; }
         const CImg<intT> selection = visu._get_select(disp,0,2,_XYZ,x0,y0,z0,is_first_select,_depth>1);
         is_first_select = false;
 
@@ -38671,7 +38672,8 @@ namespace cimg_library_suffixed {
           sx0 = selection(0), sy0 = selection(1), sz0 = selection(2),
           sx1 = selection(3), sy1 = selection(4), sz1 = selection(5);
         if (sx0>=0 && sy0>=0 && sz0>=0 && sx1>=0 && sy1>=0 && sz1>=0) {
-          x1 = x0 + sx1; y1 = y0 + sy1; z1 = z0 + sz1; x0+=sx0; y0+=sy0; z0+=sz0;
+          x1 = x0 + sx1; y1 = y0 + sy1; z1 = z0 + sz1;
+          x0+=sx0; y0+=sy0; z0+=sz0;
           if (sx0==sx1 && sy0==sy1 && sz0==sz1) {
             if (exit_on_simpleclick && (!zoom || is_empty())) break; else reset_view = true;
           }
