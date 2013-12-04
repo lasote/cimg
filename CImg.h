@@ -35106,15 +35106,15 @@ namespace cimg_library_suffixed {
 
             // Draw box cursor.
             if (xn-xp>=4 && yn-yp>=4) visu.draw_rectangle(xp,yp,xn,yn,foreground_color,0.2f).
-                                        draw_rectangle(xp,yp,xn,yn,foreground_color,0.8f,0xAAAAAAAA).
-                                        draw_rectangle(xp,yp,xn,yn,background_color,0.8f,0x55555555);
+                                        draw_rectangle(xp,yp,xn,yn,foreground_color,1,0xAAAAAAAA).
+                                        draw_rectangle(xp,yp,xn,yn,background_color,1,0x55555555);
             if (_depth>1) {
               if (yn-yp>=4 && zxn-zxp>=4) visu.draw_rectangle(zxp,yp,zxn,yn,background_color,0.2f).
-                                            draw_rectangle(zxp,yp,zxn,yn,foreground_color,0.8f,0xAAAAAAAA).
-                                            draw_rectangle(zxp,yp,zxn,yn,background_color,0.8f,0x55555555);
+                                            draw_rectangle(zxp,yp,zxn,yn,foreground_color,1,0xAAAAAAAA).
+                                            draw_rectangle(zxp,yp,zxn,yn,background_color,1,0x55555555);
               if (xn-xp>=4 && zyn-zyp>=4) visu.draw_rectangle(xp,zyp,xn,zyn,background_color,0.2f).
-                                            draw_rectangle(xp,zyp,xn,zyn,foreground_color,0.8f,0xAAAAAAAA).
-                                            draw_rectangle(xp,zyp,xn,zyn,background_color,0.8f,0x55555555);
+                                            draw_rectangle(xp,zyp,xn,zyn,foreground_color,1,0xAAAAAAAA).
+                                            draw_rectangle(xp,zyp,xn,zyn,background_color,1,0x55555555);
             }
 
             // Draw selection.
