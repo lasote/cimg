@@ -35278,6 +35278,7 @@ namespace cimg_library_suffixed {
         } break;
       }
 
+      if (img2d.spectrum()==2) img2d.channels(0,2);
       return img2d;
     }
 
@@ -37279,15 +37280,15 @@ namespace cimg_library_suffixed {
     /**
       \param filename Filename, as a C-string.
       \param n0 Starting frame.
-      \param n1 Ending frame.
+      \param n1 Ending frame (~0U for max).
       \param x0 X-coordinate of the starting sub-image vertex.
       \param y0 Y-coordinate of the starting sub-image vertex.
       \param z0 Z-coordinate of the starting sub-image vertex.
       \param c0 C-coordinate of the starting sub-image vertex.
-      \param x1 X-coordinate of the ending sub-image vertex.
-      \param y1 Y-coordinate of the ending sub-image vertex.
-      \param z1 Z-coordinate of the ending sub-image vertex.
-      \param c1 C-coordinate of the ending sub-image vertex.
+      \param x1 X-coordinate of the ending sub-image vertex (~0U for max).
+      \param y1 Y-coordinate of the ending sub-image vertex (~0U for max).
+      \param z1 Z-coordinate of the ending sub-image vertex (~0U for max).
+      \param c1 C-coordinate of the ending sub-image vertex (~0U for max).
       \param axis Appending axis, if file contains multiple images. Can be <tt>{ 'x' | 'y' | 'z' | 'c' }</tt>.
       \param align Appending alignment.
     **/
@@ -44364,16 +44365,16 @@ namespace cimg_library_suffixed {
     //! Load a sublist list from a (non compressed) .cimg file.
     /**
       \param filename Filename to read data from.
-      \param n0 Starting index of images to read.
-      \param n1 Ending index of images to read.
+      \param n0 Starting index of images to read (~0U for max).
+      \param n1 Ending index of images to read (~0U for max).
       \param x0 Starting X-coordinates of image regions to read.
       \param y0 Starting Y-coordinates of image regions to read.
       \param z0 Starting Z-coordinates of image regions to read.
       \param c0 Starting C-coordinates of image regions to read.
-      \param x1 Ending X-coordinates of image regions to read.
-      \param y1 Ending Y-coordinates of image regions to read.
-      \param z1 Ending Z-coordinates of image regions to read.
-      \param c1 Ending C-coordinates of image regions to read.
+      \param x1 Ending X-coordinates of image regions to read (~0U for max).
+      \param y1 Ending Y-coordinates of image regions to read (~0U for max).
+      \param z1 Ending Z-coordinates of image regions to read (~0U for max).
+      \param c1 Ending C-coordinates of image regions to read (~0U for max).
     **/
     CImgList<T>& load_cimg(const char *const filename,
                            const unsigned int n0, const unsigned int n1,
@@ -44390,20 +44391,7 @@ namespace cimg_library_suffixed {
       return CImgList<T>().load_cimg(filename,n0,n1,x0,y0,z0,c0,x1,y1,z1,c1);
     }
 
-    //! Load a sub-image list from a (non compressed) .cimg file.
-    /**
-      \param file File to read data from.
-      \param n0 Starting index of images to read.
-      \param n1 Ending index of images to read.
-      \param x0 Starting X-coordinates of image regions to read.
-      \param y0 Starting Y-coordinates of image regions to read.
-      \param z0 Starting Z-coordinates of image regions to read.
-      \param c0 Starting C-coordinates of image regions to read.
-      \param x1 Ending X-coordinates of image regions to read.
-      \param y1 Ending Y-coordinates of image regions to read.
-      \param z1 Ending Z-coordinates of image regions to read.
-      \param c1 Ending C-coordinates of image regions to read.
-    **/
+    //! Load a sub-image list from a (non compressed) .cimg file \overloading.
     CImgList<T>& load_cimg(std::FILE *const file,
                            const unsigned int n0, const unsigned int n1,
                            const unsigned int x0, const unsigned int y0, const unsigned int z0, const unsigned int c0,
@@ -44437,10 +44425,16 @@ namespace cimg_library_suffixed {
             if (l<nn0 || nx0>=W || ny0>=H || nz0>=D || nc0>=C) std::fseek(nfile,W*H*D*C*sizeof(Tss),SEEK_CUR); \
             else { \
               const unsigned int \
-                _nx1 = nx1>=W?W-1:nx1, \
-                _ny1 = ny1>=H?H-1:ny1, \
-                _nz1 = nz1>=D?D-1:nz1, \
-                _nc1 = nc1>=C?C-1:nc1; \
+                _nx1 = nx1==~0U?W-1:nx1, \
+                _ny1 = ny1==~0U?H-1:ny1, \
+                _nz1 = nz1==~0U?D-1:nz1, \
+                _nc1 = nc1==~0U?C-1:nc1; \
+              if (_nx1>=W || _ny1>=H || _nz1>=D || _nc1>=C) \
+                throw CImgArgumentException(_cimglist_instance \
+                                            "load_cimg(): Invalid specified coordinates [%u](%u,%u,%u,%u) -> [%u](%u,%u,%u,%u) " \
+                                            "because image [%u] in file '%s' has size (%u,%u,%u,%u).", \
+                                            cimglist_instance, \
+                                            n0,x0,y0,z0,c0,n1,x1,y1,z1,c1,l,filename?filename:"(FILE*)",W,H,D,C); \
               CImg<Tss> raw(1 + _nx1 - nx0); \
               CImg<T> &img = _data[l - nn0]; \
               img.assign(1 + _nx1 - nx0,1 + _ny1 - ny0,1 + _nz1 - nz0,1 + _nc1 - nc0); \
@@ -44504,7 +44498,13 @@ namespace cimg_library_suffixed {
       }
       if (!cimg::strncasecmp("little",str_endian,6)) endian = false;
       else if (!cimg::strncasecmp("big",str_endian,3)) endian = true;
-      nn1 = n1>=N?N-1:n1;
+      nn1 = n1==~0U?N-1:n1;
+      if (nn1>=N)
+        throw CImgArgumentException(_cimglist_instance
+                                    "load_cimg(): Invalid specified coordinates [%u](%u,%u,%u,%u) -> [%u](%u,%u,%u,%u) "
+                                    "because file '%s' contains only %u images.",
+                                    cimglist_instance,
+                                    n0,x0,y0,z0,c0,n1,x1,y1,z1,c1,filename?filename:"(FILE*)",N);
       assign(1+nn1-n0);
       _cimg_load_cimg_case2("bool",bool);
       _cimg_load_cimg_case2("unsigned_char",unsigned char);
