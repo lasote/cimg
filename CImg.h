@@ -37740,42 +37740,48 @@ namespace cimg_library_suffixed {
       \param size_c Spectrum of the image buffer.
       \param is_multiplexed Tells if the image values are multiplexed along the C-axis.
       \param invert_endianness Tells if the endianness of the image buffer must be inverted.
+      \param offset Starting offset of the read in the specified file.
     **/
     CImg<T>& load_raw(const char *const filename,
                       const unsigned int size_x=0, const unsigned int size_y=1,
                       const unsigned int size_z=1, const unsigned int size_c=1,
-                      const bool is_multiplexed=false, const bool invert_endianness=false) {
-      return _load_raw(0,filename,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness);
+                      const bool is_multiplexed=false, const bool invert_endianness=false,
+                      const unsigned long offset=0) {
+      return _load_raw(0,filename,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness,offset);
     }
 
     //! Load image from a raw binary file \newinstance.
     static CImg<T> get_load_raw(const char *const filename,
                                 const unsigned int size_x=0, const unsigned int size_y=1,
                                 const unsigned int size_z=1, const unsigned int size_c=1,
-                                const bool is_multiplexed=false, const bool invert_endianness=false) {
-      return CImg<T>().load_raw(filename,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness);
+                                const bool is_multiplexed=false, const bool invert_endianness=false,
+                                const unsigned long offset=0) {
+      return CImg<T>().load_raw(filename,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness,offset);
     }
 
     //! Load image from a raw binary file \overloading.
     CImg<T>& load_raw(std::FILE *const file,
                       const unsigned int size_x=0, const unsigned int size_y=1,
                       const unsigned int size_z=1, const unsigned int size_c=1,
-                      const bool is_multiplexed=false, const bool invert_endianness=false) {
-      return _load_raw(file,0,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness);
+                      const bool is_multiplexed=false, const bool invert_endianness=false,
+                      const unsigned long offset=0) {
+      return _load_raw(file,0,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness,offset);
     }
 
     //! Load image from a raw binary file \newinstance.
     static CImg<T> get_load_raw(std::FILE *const file,
                                 const unsigned int size_x=0, const unsigned int size_y=1,
                                 const unsigned int size_z=1, const unsigned int size_c=1,
-                                const bool is_multiplexed=false, const bool invert_endianness=false) {
-      return CImg<T>().load_raw(file,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness);
+                                const bool is_multiplexed=false, const bool invert_endianness=false,
+                                const unsigned long offset=0) {
+      return CImg<T>().load_raw(file,size_x,size_y,size_z,size_c,is_multiplexed,invert_endianness,offset);
     }
 
     CImg<T>& _load_raw(std::FILE *const file, const char *const filename,
 		       const unsigned int size_x, const unsigned int size_y,
 		       const unsigned int size_z, const unsigned int size_c,
-		       const bool is_multiplexed, const bool invert_endianness) {
+		       const bool is_multiplexed, const bool invert_endianness,
+                       const unsigned long offset) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
                                     "load_raw(): Specified filename is (null).",
@@ -37792,6 +37798,7 @@ namespace cimg_library_suffixed {
         _size_x = _size_z = _size_c = 1;
         std::fseek(nfile,fpos,SEEK_SET);
       }
+      std::fseek(nfile,(long)offset,SEEK_SET);
       assign(_size_x,_size_y,_size_z,_size_c,0);
       if (!is_multiplexed || size_c==1) {
         cimg::fread(_data,siz,nfile);
