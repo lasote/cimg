@@ -44434,42 +44434,42 @@ namespace cimg_library_suffixed {
                                   cimglist_instance, \
                                   W,H,D,C,l,filename?filename:"(FILE*)"); \
           if (W*H*D*C>0) { \
-            if (l<n0 || x0>=W || y0>=H || z0>=D || c0>=D) std::fseek(nfile,W*H*D*C*sizeof(Tss),SEEK_CUR); \
+            if (l<nn0 || nx0>=W || ny0>=H || nz0>=D || nc0>=C) std::fseek(nfile,W*H*D*C*sizeof(Tss),SEEK_CUR); \
             else { \
               const unsigned int \
-                nx1 = x1>=W?W-1:x1, \
-                ny1 = y1>=H?H-1:y1, \
-                nz1 = z1>=D?D-1:z1, \
-                nc1 = c1>=C?C-1:c1; \
-              CImg<Tss> raw(1 + nx1 - x0); \
-              CImg<T> &img = _data[l - n0]; \
-              img.assign(1 + nx1 - x0,1 + ny1 - y0,1 + nz1 - z0,1 + nc1 - c0); \
+                _nx1 = nx1>=W?W-1:nx1, \
+                _ny1 = ny1>=H?H-1:ny1, \
+                _nz1 = nz1>=D?D-1:nz1, \
+                _nc1 = nc1>=C?C-1:nc1; \
+              CImg<Tss> raw(1 + _nx1 - nx0); \
+              CImg<T> &img = _data[l - nn0]; \
+              img.assign(1 + _nx1 - nx0,1 + _ny1 - ny0,1 + _nz1 - nz0,1 + _nc1 - nc0); \
               T *ptrd = img._data; \
-              const unsigned int skipvb = c0*W*H*D*sizeof(Tss); \
+              const unsigned int skipvb = nc0*W*H*D*sizeof(Tss); \
               if (skipvb) std::fseek(nfile,skipvb,SEEK_CUR); \
-              for (unsigned int v = 1 + nc1 - c0; v; --v) { \
-                const unsigned int skipzb = z0*W*H*sizeof(Tss); \
+              for (unsigned int c = 1 + _nc1 - nc0; c; --c) { \
+                const unsigned int skipzb = nz0*W*H*sizeof(Tss); \
                 if (skipzb) std::fseek(nfile,skipzb,SEEK_CUR); \
-                for (unsigned int z = 1 + nz1 - z0; z; --z) { \
-                  const unsigned int skipyb = y0*W*sizeof(Tss); \
+                for (unsigned int z = 1 + _nz1 - nz0; z; --z) { \
+                  const unsigned int skipyb = ny0*W*sizeof(Tss); \
                   if (skipyb) std::fseek(nfile,skipyb,SEEK_CUR); \
-                  for (unsigned int y = 1 + ny1 - y0; y; --y) { \
-                    const unsigned int skipxb = x0*sizeof(Tss); \
+                  for (unsigned int y = 1 + _ny1 - ny0; y; --y) { \
+                    const unsigned int skipxb = nx0*sizeof(Tss); \
                     if (skipxb) std::fseek(nfile,skipxb,SEEK_CUR); \
                     cimg::fread(raw._data,raw._width,nfile); \
                     if (endian!=cimg::endianness()) cimg::invert_endianness(raw._data,raw._width); \
                     const Tss *ptrs = raw._data; \
                     for (unsigned int off = raw._width; off; --off) *(ptrd++) = (T)*(ptrs++); \
-                    const unsigned int skipxe = (W-1-nx1)*sizeof(Tss); \
+                    const unsigned int skipxe = (W-1-_nx1)*sizeof(Tss); \
                     if (skipxe) std::fseek(nfile,skipxe,SEEK_CUR); \
                   } \
-                  const unsigned int skipye = (H-1-ny1)*W*sizeof(Tss); \
+                  const unsigned int skipye = (H-1-_ny1)*W*sizeof(Tss); \
                   if (skipye) std::fseek(nfile,skipye,SEEK_CUR); \
                 } \
-                const unsigned int skipze = (D-1-nz1)*W*H*sizeof(Tss); \
+                const unsigned int skipze = (D-1-_nz1)*W*H*sizeof(Tss); \
                 if (skipze) std::fseek(nfile,skipze,SEEK_CUR); \
               } \
-              const unsigned int skipve = (C-1-nc1)*W*H*D*sizeof(Tss); \
+              const unsigned int skipve = (C-1-_nc1)*W*H*D*sizeof(Tss); \
               if (skipve) std::fseek(nfile,skipve,SEEK_CUR); \
             } \
           } \
@@ -44481,12 +44481,12 @@ namespace cimg_library_suffixed {
         throw CImgArgumentException(_cimglist_instance
                                     "load_cimg(): Specified filename is (null).",
                                     cimglist_instance);
-
-      if (n1<n0 || x1<x0 || y1<y0 || z1<z0 || c1<c0)
-        throw CImgArgumentException(_cimglist_instance
-                                    "load_cimg(): Invalid specified sub-region coordinates [%u->%u] (%u,%u,%u,%u)->(%u,%u,%u,%u) for file '%s'.",
-                                    cimglist_instance,
-                                    n0,n1,x0,y0,z0,c0,x1,y1,z1,filename?filename:"(FILE*)");
+      unsigned int
+        nn0 = cimg::min(n0,n1), nn1 = cimg::max(n0,n1),
+        nx0 = cimg::min(x0,x1), nx1 = cimg::max(x0,x1),
+        ny0 = cimg::min(y0,y1), ny1 = cimg::max(y0,y1),
+        nz0 = cimg::min(z0,z1), nz1 = cimg::max(z0,z1),
+        nc0 = cimg::min(c0,c1), nc1 = cimg::max(c0,c1);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
       bool loaded = false, endian = cimg::endianness();
@@ -44504,7 +44504,7 @@ namespace cimg_library_suffixed {
       }
       if (!cimg::strncasecmp("little",str_endian,6)) endian = false;
       else if (!cimg::strncasecmp("big",str_endian,3)) endian = true;
-      const unsigned int nn1 = n1>=N?N-1:n1;
+      nn1 = n1>=N?N-1:n1;
       assign(1+nn1-n0);
       _cimg_load_cimg_case2("bool",bool);
       _cimg_load_cimg_case2("unsigned_char",unsigned char);
