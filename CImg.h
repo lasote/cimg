@@ -34767,6 +34767,7 @@ namespace cimg_library_suffixed {
         X1 =-1, Y1 = -1, Z1 = -1,
         X = -1, Y = -1, Z = -1, X3d = -1, Y3d = -1,
         oX = X, oY = Y, oZ = Z, oX3d = X3d, oY3d = -1;
+      float fX = -1, fY = -1, fZ = -1;
       unsigned int old_button = 0, key = 0;
 
       bool shape_selected = false, text_down = false, visible_cursor = true;
@@ -34786,13 +34787,15 @@ namespace cimg_library_suffixed {
         int
           mx = disp.mouse_x(),
           my = disp.mouse_y();
-        const int
-          mX = mx<0?-1:mx*(width()+(depth()>1?depth():0))/disp.width(),
-          mY = my<0?-1:my*(height()+(depth()>1?depth():0))/disp.height();
+
+        const float
+          mX = mx<0?-1.0f:(float)mx*(width()+(depth()>1?depth():0))/disp.width(),
+          mY = my<0?-1.0f:(float)my*(height()+(depth()>1?depth():0))/disp.height();
+
         area = 0;
-        if (mX>=0 && mY>=0 && mX<width() && mY<height())  { area = 1; X = mX; Y = mY; Z = phase?Z1:Z0; }
-        if (mX>=0 && mX<width() && mY>=height()) { area = 2; X = mX; Z = mY - _height; Y = phase?Y1:Y0; }
-        if (mY>=0 && mX>=width() && mY<height()) { area = 3; Y = mY; Z = mX - _width; X = phase?X1:X0; }
+        if (mX>=0 && mY>=0 && mX<width() && mY<height())  { area = 1; fX = mX; fY = mY; X = (int)mX; Y = (int)mY; Z = phase?Z1:Z0; }
+        if (mX>=0 && mX<width() && mY>=height()) { area = 2; fX = mX; fZ = mY - _height; X = (int)mX; Z = (int)mY - _height; Y = phase?Y1:Y0; }
+        if (mY>=0 && mX>=width() && mY<height()) { area = 3; fY = mY; fZ = mX - _width; Y = (int)mY; Z = (int)mX - _width; X = phase?X1:X0; }
         if (mX>=width() && mY>=height()) area = 4;
         if (disp.button()) { if (!clicked_area) clicked_area = area; } else clicked_area = 0;
 
@@ -35089,19 +35092,23 @@ namespace cimg_library_suffixed {
               xc = (xp + xn)/2,
               yc = (yp + yn)/2,
               zxc = (zxp + zxn)/2,
-              zyc = (zyp + zyn)/2;
+              zyc = (zyp + zyn)/2,
+              fx = (int)(fX*w/W),
+              fy = (int)(fY*h/H),
+              fzx = (int)((fZ+width())*w/W),
+              fzy = (int)((fZ+height())*h/H);
 
             if (is_axes) { // Draw axes.
               if (_width>1 && _height>1)
-                visu.draw_line(0,yc,visu.width()-1,yc,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(0,yc,visu.width()-1,yc,background_color,0.7f,0x00FF00FF).
-                  draw_line(xc,0,xc,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(xc,0,xc,visu.height()-1,background_color,0.7f,0x00FF00FF);
+                visu.draw_line(0,fy,visu.width()-1,fy,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(0,fy,visu.width()-1,fy,background_color,0.7f,0x00FF00FF).
+                  draw_line(fx,0,fx,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(fx,0,fx,visu.height()-1,background_color,0.7f,0x00FF00FF);
               if (_depth>1) {
-                if (_height>1) visu.draw_line(zxc,0,zxc,yM,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(zxc,0,zxc,yM,background_color,0.7f,0x00FF00FF);
-                if (_width>1) visu.draw_line(0,zyc,xM,zyc,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(0,zyc,xM,zyc,background_color,0.7f,0x00FF00FF);
+                if (_height>1) visu.draw_line(fzx,0,fzx,yM,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(fzx,0,fzx,yM,background_color,0.7f,0x00FF00FF);
+                if (_width>1) visu.draw_line(0,fzy,xM,fzy,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(0,fzy,xM,fzy,background_color,0.7f,0x00FF00FF);
               }
             }
 
