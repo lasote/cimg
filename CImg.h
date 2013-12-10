@@ -34766,7 +34766,8 @@ namespace cimg_library_suffixed {
         Z0 = (int)((XYZ?XYZ[2]:(_depth-1)/2)%_depth),
         X1 =-1, Y1 = -1, Z1 = -1,
         X = -1, Y = -1, Z = -1, X3d = -1, Y3d = -1,
-        oX = X, oY = Y, oZ = Z, oX3d = X3d, oY3d = -1;
+        oX3d = X3d, oY3d = -1,
+        omx = -1, omy = -1;
       float fX = -1, fY = -1, fZ = -1;
       unsigned int old_button = 0, key = 0;
 
@@ -34783,7 +34784,6 @@ namespace cimg_library_suffixed {
       while (!key && !disp.is_closed() && !shape_selected) {
 
         // Handle mouse motion and selection
-        oX = X; oY = Y; oZ = Z;
         int
           mx = disp.mouse_x(),
           my = disp.mouse_y();
@@ -34892,7 +34892,7 @@ namespace cimg_library_suffixed {
             }
           }
           if (disp.button()&4) { // Reset positions.
-            oX = X = X0; oY = Y = Y0; oZ = Z = Z0; phase = area = clicked_area = starting_area = 0; visu0.assign();
+            X = X0; Y = Y0; Z = Z0; phase = area = clicked_area = starting_area = 0; visu0.assign();
           }
           if (disp.wheel()) { // When moving through the slices of the volume (with mouse wheel).
             if (_depth>1 && !disp.is_keyCTRLLEFT() && !disp.is_keyCTRLRIGHT() && !disp.is_keySHIFTLEFT() && !disp.is_keySHIFTRIGHT() &&
@@ -34920,7 +34920,7 @@ namespace cimg_library_suffixed {
             case 1 :
               if (area==starting_area) {
                 X1 = X; Y1 = Y; Z1 = Z; ++phase;
-              } else if (!(disp.button()&1)) { oX = X = X0; oY = Y = Y0; oZ = Z = Z0; phase = 0; visu0.assign(); }
+              } else if (!(disp.button()&1)) { X = X0; Y = Y0; Z = Z0; phase = 0; visu0.assign(); }
               break;
             case 2 : ++phase; break;
             }
@@ -34988,7 +34988,7 @@ namespace cimg_library_suffixed {
         if (Z1<0) Z1 = 0; if (Z1>=depth()) Z1 = depth() - 1;
 
         // Draw visualization image on the display
-        if (oX!=X || oY!=Y || oZ!=Z || !visu0 || (_depth>1 && !view3d)) {
+        if (mx!=omx || my!=omy || !visu0 || (_depth>1 && !view3d)) {
 
           if (!visu0) { // Create image of projected planes.
             __get_select(disp,old_normalization,phase?X1:X0,phase?Y1:Y0,phase?Z1:Z0).move_to(visu0).resize(disp);
@@ -35225,6 +35225,7 @@ namespace cimg_library_suffixed {
           disp.display(visu).wait();
         } else if (!shape_selected) disp.wait();
         if (disp.is_resized()) { disp.resize(false)._is_resized = false; old_is_resized = true; visu0.assign(); }
+        omx = mx; omy = my;
       }
 
       // Return result.
