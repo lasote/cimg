@@ -24662,6 +24662,7 @@ namespace cimg_library_suffixed {
                                     guide._width,guide._height,guide._depth,guide._spectrum,guide._data);
       if (is_empty()) return *this;
       T m, M = guide.max_min(m);
+      if (m==M) return *this;
       const float range = (float)(M - m);
       const unsigned int
         bx0 = bgrid_x>=0?bgrid_x:_width*-bgrid_x/100,
