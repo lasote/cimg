@@ -34765,10 +34765,10 @@ namespace cimg_library_suffixed {
         Y0 = (int)((XYZ?XYZ[1]:(_height-1)/2)%_height),
         Z0 = (int)((XYZ?XYZ[2]:(_depth-1)/2)%_depth),
         X1 =-1, Y1 = -1, Z1 = -1,
-        X = -1, Y = -1, Z = -1, X3d = -1, Y3d = -1,
+        X3d = -1, Y3d = -1,
         oX3d = X3d, oY3d = -1,
         omx = -1, omy = -1;
-      float fX = -1, fY = -1, fZ = -1;
+      float X = -1, Y = -1, Z = -1;
       unsigned int old_button = 0, key = 0;
 
       bool shape_selected = false, text_down = false, visible_cursor = true;
@@ -34793,9 +34793,9 @@ namespace cimg_library_suffixed {
           mY = my<0?-1.0f:(float)my*(height()+(depth()>1?depth():0))/disp.height();
 
         area = 0;
-        if (mX>=0 && mY>=0 && mX<width() && mY<height())  { area = 1; fX = mX; fY = mY; X = (int)mX; Y = (int)mY; Z = phase?Z1:Z0; }
-        if (mX>=0 && mX<width() && mY>=height()) { area = 2; fX = mX; fZ = mY - _height; X = (int)mX; Z = (int)mY - _height; Y = phase?Y1:Y0; }
-        if (mY>=0 && mX>=width() && mY<height()) { area = 3; fY = mY; fZ = mX - _width; Y = (int)mY; Z = (int)mX - _width; X = phase?X1:X0; }
+        if (mX>=0 && mY>=0 && mX<width() && mY<height())  { area = 1; X = mX; Y = mY; Z = (float)(phase?Z1:Z0); }
+        if (mX>=0 && mX<width() && mY>=height()) { area = 2; X = mX; Z = mY - _height; Y = (float)(phase?Y1:Y0); }
+        if (mY>=0 && mX>=width() && mY<height()) { area = 3; Y = mY; Z = mX - _width; X = (float)(phase?X1:X0); }
         if (mX>=width() && mY>=height()) area = 4;
         if (disp.button()) { if (!clicked_area) clicked_area = area; } else clicked_area = 0;
 
@@ -34867,45 +34867,45 @@ namespace cimg_library_suffixed {
         switch (area) {
 
         case 0 : // When mouse is out of image range.
-          mx = my = X = Y = Z = -1;
+          mx = my = -1; X = Y = Z = -1;
           break;
 
         case 1 : case 2 : case 3 : // When mouse is over the XY,XZ or YZ projections.
           if (disp.button()&1 && phase<2 && clicked_area==area) { // When selection has been started (1st step).
-            if (_depth>1 && (X1!=X || Y1!=Y || Z1!=Z)) visu0.assign();
-            X1 = X; Y1 = Y; Z1 = Z;
+            if (_depth>1 && (X1!=(int)X || Y1!=(int)Y || Z1!=(int)Z)) visu0.assign();
+            X1 = (int)X; Y1 = (int)Y; Z1 = (int)Z;
           }
           if (!(disp.button()&1) && phase>=2 && clicked_area!=area) { // When selection is at 2nd step (for volumes).
             switch (starting_area) {
-            case 1 : if (Z1!=Z) visu0.assign(); Z1 = Z; break;
-            case 2 : if (Y1!=Y) visu0.assign(); Y1 = Y; break;
-            case 3 : if (X1!=X) visu0.assign(); X1 = X; break;
+            case 1 : if (Z1!=(int)Z) visu0.assign(); Z1 = (int)Z; break;
+            case 2 : if (Y1!=(int)Y) visu0.assign(); Y1 = (int)Y; break;
+            case 3 : if (X1!=(int)X) visu0.assign(); X1 = (int)X; break;
             }
           }
           if (disp.button()&2 && clicked_area==area) { // When moving through the image/volume.
             if (phase) {
-              if (_depth>1 && (X1!=X || Y1!=Y || Z1!=Z)) visu0.assign();
-              X1 = X; Y1 = Y; Z1 = Z;
+              if (_depth>1 && (X1!=(int)X || Y1!=(int)Y || Z1!=(int)Z)) visu0.assign();
+              X1 = (int)X; Y1 = (int)Y; Z1 = (int)Z;
             } else {
-              if (_depth>1 && (X0!=X || Y0!=Y || Z0!=Z)) visu0.assign();
-              X0 = X; Y0 = Y; Z0 = Z;
+              if (_depth>1 && (X0!=(int)X || Y0!=(int)Y || Z0!=(int)Z)) visu0.assign();
+              X0 = (int)X; Y0 = (int)Y; Z0 = (int)Z;
             }
           }
           if (disp.button()&4) { // Reset positions.
-            X = X0; Y = Y0; Z = Z0; phase = area = clicked_area = starting_area = 0; visu0.assign();
+            X = (float)X0; Y = (float)Y0; Z = (float)Z0; phase = area = clicked_area = starting_area = 0; visu0.assign();
           }
           if (disp.wheel()) { // When moving through the slices of the volume (with mouse wheel).
             if (_depth>1 && !disp.is_keyCTRLLEFT() && !disp.is_keyCTRLRIGHT() && !disp.is_keySHIFTLEFT() && !disp.is_keySHIFTRIGHT() &&
                 !disp.is_keyALT() && !disp.is_keyALTGR()) {
               switch (area) {
               case 1 :
-                if (phase) Z = (Z1+=disp.wheel()); else Z = (Z0+=disp.wheel());
+                if (phase) Z = (float)(Z1+=disp.wheel()); else Z = (float)(Z0+=disp.wheel());
                 visu0.assign(); break;
               case 2 :
-                if (phase) Y = (Y1+=disp.wheel()); else Y = (Y0+=disp.wheel());
+                if (phase) Y = (float)(Y1+=disp.wheel()); else Y = (float)(Y0+=disp.wheel());
                 visu0.assign(); break;
               case 3 :
-                if (phase) X = (X1+=disp.wheel()); else X = (X0+=disp.wheel());
+                if (phase) X = (float)(X1+=disp.wheel()); else X = (float)(X0+=disp.wheel());
                 visu0.assign(); break;
               }
               disp.set_wheel();
@@ -34915,12 +34915,12 @@ namespace cimg_library_suffixed {
             switch (phase) {
             case 0 :
               if (area==clicked_area) {
-                X0 = X1 = X; Y0 = Y1 = Y; Z0 = Z1 = Z; starting_area = area; ++phase;
+                X0 = X1 = (int)X; Y0 = Y1 = (int)Y; Z0 = Z1 = (int)Z; starting_area = area; ++phase;
               } break;
             case 1 :
               if (area==starting_area) {
-                X1 = X; Y1 = Y; Z1 = Z; ++phase;
-              } else if (!(disp.button()&1)) { X = X0; Y = Y0; Z = Z0; phase = 0; visu0.assign(); }
+                X1 = (int)X; Y1 = (int)Y; Z1 = (int)Z; ++phase;
+              } else if (!(disp.button()&1)) { X = (float)X0; Y = (float)Y0; Z = (float)Z0; phase = 0; visu0.assign(); }
               break;
             case 2 : ++phase; break;
             }
@@ -34968,7 +34968,7 @@ namespace cimg_library_suffixed {
             }
             oX3d = X3d; oY3d = Y3d;
           }
-          mx = my = X = Y = Z = -1;
+          mx = my = -1; X = Y = Z = -1;
           break;
         }
 
@@ -35072,43 +35072,43 @@ namespace cimg_library_suffixed {
             if (is_axes) { if (visible_cursor) { disp.hide_mouse(); visible_cursor = false; }}
             else { if (!visible_cursor) { disp.show_mouse(); visible_cursor = true; }}
             const int d = (_depth>1)?_depth:0;
-            X = cimg::max(0,cimg::min(width()-1,X));
-            Y = cimg::max(0,cimg::min(height()-1,Y));
-            Z = cimg::max(0,cimg::min(depth()-1,Z));
+            X = cimg::max(0,cimg::min(width()-1.0f,X));
+            Y = cimg::max(0,cimg::min(height()-1.0f,Y));
+            Z = cimg::max(0,cimg::min(depth()-1.0f,Z));
 
             int
               w = disp.width(), W = width() + d,
               h = disp.height(), H = height() + d,
-              _xp = X*w/W, xp = _xp + (_xp*W/w!=X?1:0),
-              _yp = Y*h/H, yp = _yp + (_yp*H/h!=Y?1:0),
-              _xn = (X+1)*w/W-1, xn = _xn + ((_xn+1)*W/w!=X+1?1:0),
-              _yn = (Y+1)*h/H-1, yn = _yn + ((_yn+1)*H/h!=Y+1?1:0),
-              _zxp = (Z+width())*w/W, zxp = _zxp + (_zxp*W/w!=Z+width()?1:0),
-              _zyp = (Z+height())*h/H, zyp = _zyp + (_zyp*H/h!=Z+height()?1:0),
-              _zxn = (Z+width()+1)*w/W-1, zxn = _zxn + ((_zxn+1)*W/w!=Z+width()+1?1:0),
-              _zyn = (Z+height()+1)*h/H-1, zyn = _zyn + ((_zyn+1)*H/h!=Z+height()+1?1:0),
+              _xp = (int)X*w/W, xp = _xp + (_xp*W/w!=(int)X?1:0),
+              _yp = (int)Y*h/H, yp = _yp + (_yp*H/h!=(int)Y?1:0),
+              _xn = (int)(X+1)*w/W-1, xn = _xn + ((_xn+1)*W/w!=(int)X+1?1:0),
+              _yn = (int)(Y+1)*h/H-1, yn = _yn + ((_yn+1)*H/h!=(int)Y+1?1:0),
+              _zxp = ((int)Z+width())*w/W, zxp = _zxp + (_zxp*W/w!=(int)Z+width()?1:0),
+              _zyp = ((int)Z+height())*h/H, zyp = _zyp + (_zyp*H/h!=(int)Z+height()?1:0),
+              _zxn = ((int)Z+width()+1)*w/W-1, zxn = _zxn + ((_zxn+1)*W/w!=(int)Z+width()+1?1:0),
+              _zyn = ((int)Z+height()+1)*h/H-1, zyn = _zyn + ((_zyn+1)*H/h!=(int)Z+height()+1?1:0),
               _xM = width()*w/W-1, xM = _xM + ((_xM+1)*W/w!=width()?1:0),
               _yM = height()*h/H-1, yM = _yM + ((_yM+1)*H/h!=height()?1:0),
               xc = (xp + xn)/2,
               yc = (yp + yn)/2,
               zxc = (zxp + zxn)/2,
               zyc = (zyp + zyn)/2,
-              fx = (int)(fX*w/W),
-              fy = (int)(fY*h/H),
-              fzx = (int)((fZ+width())*w/W),
-              fzy = (int)((fZ+height())*h/H);
+              xf = (int)(X*w/W),
+              yf = (int)(Y*h/H),
+              zxf = (int)((Z+width())*w/W),
+              zyf = (int)((Z+height())*h/H);
 
             if (is_axes) { // Draw axes.
               if (_width>1 && _height>1)
-                visu.draw_line(0,fy,visu.width()-1,fy,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(0,fy,visu.width()-1,fy,background_color,0.7f,0x00FF00FF).
-                  draw_line(fx,0,fx,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(fx,0,fx,visu.height()-1,background_color,0.7f,0x00FF00FF);
+                visu.draw_line(0,yf,visu.width()-1,yf,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(0,yf,visu.width()-1,yf,background_color,0.7f,0x00FF00FF).
+                  draw_line(xf,0,xf,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(xf,0,xf,visu.height()-1,background_color,0.7f,0x00FF00FF);
               if (_depth>1) {
-                if (_height>1) visu.draw_line(fzx,0,fzx,yM,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(fzx,0,fzx,yM,background_color,0.7f,0x00FF00FF);
-                if (_width>1) visu.draw_line(0,fzy,xM,fzy,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(0,fzy,xM,fzy,background_color,0.7f,0x00FF00FF);
+                if (_height>1) visu.draw_line(zxf,0,zxf,yM,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(zxf,0,zxf,yM,background_color,0.7f,0x00FF00FF);
+                if (_width>1) visu.draw_line(0,zyf,xM,zyf,foreground_color,0.7f,0xFF00FF00).
+                                 draw_line(0,zyf,xM,zyf,background_color,0.7f,0x00FF00FF);
               }
             }
 
@@ -35185,11 +35185,11 @@ namespace cimg_library_suffixed {
             if (my>=0 && my<13) text_down = true; else if (my>=visu.height()-13) text_down = false;
             if (!feature_type || !phase) {
               if (X>=0 && Y>=0 && Z>=0 && X<width() && Y<height() && Z<depth()) {
-                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Point (%d,%d,%d) = [ ",origX+X,origY+Y,origZ+Z);
-                else cimg_snprintf(text,sizeof(text)," Point (%d,%d) = [ ",origX+X,origY+Y);
+                if (_depth>1 || force_display_z_coord) cimg_snprintf(text,sizeof(text)," Point (%d,%d,%d) = [ ",origX+(int)X,origY+(int)Y,origZ+(int)Z);
+                else cimg_snprintf(text,sizeof(text)," Point (%d,%d) = [ ",origX+(int)X,origY+(int)Y);
                 char *ctext = text + std::strlen(text), *const ltext = text + 512;
                 for (unsigned int c = 0; c<_spectrum && ctext<ltext; ++c) {
-                  cimg_snprintf(ctext,sizeof(text)/2,cimg::type<T>::format(),cimg::type<T>::format((*this)(X,Y,Z,c)));
+                  cimg_snprintf(ctext,sizeof(text)/2,cimg::type<T>::format(),cimg::type<T>::format((*this)((int)X,(int)Y,(int)Z,c)));
                   ctext = text + std::strlen(text);
                   *(ctext++) = ' '; *ctext = 0;
                 }
