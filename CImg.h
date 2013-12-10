@@ -35072,10 +35072,6 @@ namespace cimg_library_suffixed {
             if (is_axes) { if (visible_cursor) { disp.hide_mouse(); visible_cursor = false; }}
             else { if (!visible_cursor) { disp.show_mouse(); visible_cursor = true; }}
             const int d = (_depth>1)?_depth:0;
-            X = cimg::max(0,cimg::min(width()-1.0f,X));
-            Y = cimg::max(0,cimg::min(height()-1.0f,Y));
-            Z = cimg::max(0,cimg::min(depth()-1.0f,Z));
-
             int
               w = disp.width(), W = width() + d,
               h = disp.height(), H = height() + d,
@@ -35099,17 +35095,15 @@ namespace cimg_library_suffixed {
               zyf = (int)((Z+height())*h/H);
 
             if (is_axes) { // Draw axes.
-              if (_width>1 && _height>1)
-                visu.draw_line(0,yf,visu.width()-1,yf,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(0,yf,visu.width()-1,yf,background_color,0.7f,0x00FF00FF).
-                  draw_line(xf,0,xf,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
-                  draw_line(xf,0,xf,visu.height()-1,background_color,0.7f,0x00FF00FF);
-              if (_depth>1) {
-                if (_height>1) visu.draw_line(zxf,0,zxf,yM,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(zxf,0,zxf,yM,background_color,0.7f,0x00FF00FF);
-                if (_width>1) visu.draw_line(0,zyf,xM,zyf,foreground_color,0.7f,0xFF00FF00).
-                                 draw_line(0,zyf,xM,zyf,background_color,0.7f,0x00FF00FF);
-              }
+              visu.draw_line(0,yf,visu.width()-1,yf,foreground_color,0.7f,0xFF00FF00).
+                draw_line(0,yf,visu.width()-1,yf,background_color,0.7f,0x00FF00FF).
+                draw_line(xf,0,xf,visu.height()-1,foreground_color,0.7f,0xFF00FF00).
+                draw_line(xf,0,xf,visu.height()-1,background_color,0.7f,0x00FF00FF);
+              if (_depth>1)
+                visu.draw_line(zxf,0,zxf,yM,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(zxf,0,zxf,yM,background_color,0.7f,0x00FF00FF).
+                  draw_line(0,zyf,xM,zyf,foreground_color,0.7f,0xFF00FF00).
+                  draw_line(0,zyf,xM,zyf,background_color,0.7f,0x00FF00FF);
             }
 
             // Draw box cursor.
