@@ -39118,7 +39118,7 @@ namespace cimg_library_suffixed {
               rotated_bbox_vertices(l,2) = r02*x + r12*y + r22*z + r32;
             }
 
-          // Draw object
+          // Draw objects
           visu = visu0;
           if ((clicked && nrender_motion<0) || (!clicked && nrender_static<0))
             visu.draw_object3d(Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
@@ -39129,7 +39129,7 @@ namespace cimg_library_suffixed {
                                    Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,_is_double_sided==1,focale,
-                                   width()/2.0f+light_x,height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
+                                   width()/2.0f+light_x,height()/2.0f+light_y,light_z+Zoff,specular_lightness,specular_shininess,
                                    sprite_scale);
           // Draw axes
           if (ndisplay_axes) {
@@ -39344,7 +39344,7 @@ namespace cimg_library_suffixed {
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,
                                    _is_double_sided==1,focale,
-                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
+                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z+Zoff,specular_lightness,specular_shininess,
                                    sprite_scale);
             board.saveEPS(filename);
             visu.draw_text(0,0," Object '%s' saved. ",foreground_color._data,background_color._data,1,13,filename).display(disp);
@@ -39365,7 +39365,7 @@ namespace cimg_library_suffixed {
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,
                                    _is_double_sided==1,focale,
-                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
+                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z+Zoff,specular_lightness,specular_shininess,
                                    sprite_scale);
             board.saveSVG(filename);
             visu.draw_text(0,0," Object '%s' saved. ",foreground_color._data,background_color._data,1,13,filename).display(disp);
