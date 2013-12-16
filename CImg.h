@@ -317,9 +317,9 @@ extern "C" {
 #define __STDC_CONSTANT_MACROS // ...or stdint.h wont' define UINT64_C, needed by libavutil
 #endif
 extern "C" {
-#include "avformat.h"
-#include "avcodec.h"
-#include "swscale.h"
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
 }
 #endif
 
@@ -45666,7 +45666,7 @@ namespace cimg_library_suffixed {
                               filename);
       }
       tmp_pict->linesize[0] = (src_pxl_fmt==PIX_FMT_RGB24)?3*frame_dimx:frame_dimx;
-      tmp_pict->type = FF_BUFFER_TYPE_USER;
+      //      tmp_pict->type = FF_BUFFER_TYPE_USER;
       int tmp_size = avpicture_get_size(src_pxl_fmt,frame_dimx,frame_dimy);
       uint8_t *tmp_buffer = (uint8_t*)av_malloc(tmp_size);
       if (!tmp_buffer) { // Failed to allocate memory for tmp buffer.
