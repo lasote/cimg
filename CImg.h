@@ -24677,10 +24677,11 @@ namespace cimg_library_suffixed {
         _sigma_x = sigma_x>=0?sigma_x:-sigma_x*_width/100,
         _sigma_y = sigma_y>=0?sigma_y:-sigma_y*_height/100,
         _sigma_z = sigma_z>=0?sigma_z:-sigma_z*_depth/100,
+        _sigma_r = sigma_r>=0?sigma_r:-sigma_r*range/100,
         nsigma_x = _sigma_x*bx/_width,
         nsigma_y = _sigma_y*by/_height,
         nsigma_z = _sigma_z*bz/_depth,
-        nsigma_r = sigma_r*br/range;
+        nsigma_r = _sigma_r*br/range;
       if (nsigma_x>0 || nsigma_y>0 || nsigma_z>0 || nsigma_r>0) {
         const bool is_3d = (_depth>1);
         if (is_3d) { // 3d version of the algorithm
