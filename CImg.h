@@ -35255,9 +35255,12 @@ namespace cimg_library_suffixed {
       if (_depth>1) crop.get_projections2d(x,y,z).move_to(img2d);
       else CImg<Tuchar>(crop,false).move_to(img2d);
 
-      if (cimg::type<T>::is_float()) { // Check for inf values.
-        bool is_inf = false;
-        cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
+      if (cimg::type<T>::is_float()) { // Check for inf and nan values.
+        bool is_inf = false, is_nan = false;
+        cimg_for(img2d,ptr,Tuchar)
+          if (cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
+          else if (cimg::type<T>::is_nan(*ptr)) { is_nan = true; break; }
+        if (is_nan) cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_nan(*ptr)) *ptr = (T)0; // Replace nan values.
         if (is_inf) { // Replace +-inf values.
           T m0 = cimg::type<T>::max(), M0 = cimg::type<T>::min();
           cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
