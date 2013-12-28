@@ -35260,14 +35260,16 @@ namespace cimg_library_suffixed {
         cimg_for(img2d,ptr,Tuchar)
           if (cimg::type<T>::is_inf(*ptr)) { is_inf = true; break; }
           else if (cimg::type<T>::is_nan(*ptr)) { is_nan = true; break; }
-        if (is_nan) cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_nan(*ptr)) *ptr = (T)0; // Replace nan values.
-        if (is_inf) { // Replace +-inf values.
+        if (is_inf || is_nan) {
           T m0 = cimg::type<T>::max(), M0 = cimg::type<T>::min();
-          cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
+          if (!normalization) { m0 = 0; M0 = 255; }
+          else if (normalization==2) { m0 = disp._min; M0 = disp._max; }
+          else cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr) && !cimg::type<T>::is_nan(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
           const T
-            val_minf = m0 - (M0-m0)*20 - 1,
-            val_pinf = M0 + (M0-m0)*20 + 1;
-          cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_inf(*ptr)) *ptr = (float)*ptr<0?val_minf:val_pinf;
+            val_minf = (normalization==1 || normalization==3)?m0-(M0-m0)*20-1:m0,
+            val_pinf = (normalization==1 || normalization==3)?M0+(M0-m0)*20+1:M0;
+          if (is_nan) cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_nan(*ptr)) *ptr = val_minf; // Replace nan values.
+          if (is_inf) cimg_for(img2d,ptr,Tuchar) if (cimg::type<T>::is_inf(*ptr)) *ptr = (float)*ptr<0?val_minf:val_pinf; // Replace +-inf values.
         }
       }
 
