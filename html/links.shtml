@@ -11,6 +11,7 @@
   please post a message in the forum, or contact us by e-mail.
 </p>
 <ul>
+  <li><b><a href="http://www.sofa-framework.org/">Sofa</a></b> is an open source framework primarily targeted at real-time simulation, with an emphasis on medical simulation.</li>
   <li><b><a href="http://photivo.org/">Photivo</a></b> is an open source photo processor. It handles your RAW files as well as bitmap files in a non-destructive 16 bit processing pipe with gimp workflow integration and batch mode.</li>
   <li><b><a href="http://www.morphographx.org/">MorphoGraphX</a></b> is a cross-platform, open-source application for the visualization and processing of 3D biological datasets.</li>
   <li><b><a href="http://zoomfx.sourceforge.net/">ZoomFX</a></b> is a free tool to help in image batch process thanks to an helpful visual interface and powerful filters.</li>
