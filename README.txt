@@ -74,6 +74,7 @@
   - Baptiste Mougel
   - Jovana Milutinovich
   - Guillaume Nee
+  - Adam Newgas
   - Francisco Oliveira
   - Andrea Onofri
   - Renaud Peteri
