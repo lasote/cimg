@@ -35862,6 +35862,7 @@ namespace cimg_library_suffixed {
       int
         file_size = header[0x02] + (header[0x03]<<8) + (header[0x04]<<16) + (header[0x05]<<24),
         offset = header[0x0A] + (header[0x0B]<<8) + (header[0x0C]<<16) + (header[0x0D]<<24),
+        header_size = header[0x0E] + (header[0x0F]<<8) + (header[0x10]<<16) + (header[0x11]<<24),
         dx = header[0x12] + (header[0x13]<<8) + (header[0x14]<<16) + (header[0x15]<<24),
         dy = header[0x16] + (header[0x17]<<8) + (header[0x18]<<16) + (header[0x19]<<24),
         compression = header[0x1E] + (header[0x1F]<<8) + (header[0x20]<<16) + (header[0x21]<<24),
@@ -35873,6 +35874,7 @@ namespace cimg_library_suffixed {
         file_size = (int)std::ftell(nfile);
         std::fseek(nfile,54,SEEK_SET);
       }
+      if (header_size>40) std::fseek(nfile, header_size - 40, SEEK_CUR);
 
       const int
         cimg_iobuffer = 12*1024*1024,
@@ -35883,7 +35885,7 @@ namespace cimg_library_suffixed {
       CImg<intT> colormap;
       if (bpp<16) { if (!nb_colors) nb_colors = 1<<bpp; } else nb_colors = 0;
       if (nb_colors) { colormap.assign(nb_colors); cimg::fread(colormap._data,nb_colors,nfile); }
-      const int xoffset = offset - 54 - 4*nb_colors;
+      const int xoffset = offset - 14 - header_size - 4*nb_colors;
       if (xoffset>0) std::fseek(nfile,xoffset,SEEK_CUR);
 
       CImg<ucharT> buffer;
