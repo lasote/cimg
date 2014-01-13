@@ -89,7 +89,7 @@
  || defined(linux)       || defined(__linux)     || defined(__linux__) \
  || defined(sun)         || defined(__sun) \
  || defined(BSD)         || defined(__OpenBSD__) || defined(__NetBSD__) \
- || defined(__FreeBSD__) || defined __DragonFly__ \
+ || defined(__FreeBSD__) || defined (__DragonFly__) \
  || defined(sgi)         || defined(__sgi) \
  || defined(__MACOSX__)  || defined(__APPLE__) \
  || defined(__CYGWIN__)
@@ -4774,6 +4774,31 @@ namespace cimg_library_suffixed {
       else { const float nsize = size/(1024*1024*1024.0f); cimg_snprintf(res,sizeof(res),"%.1f Gio",nsize); }
       cimg::mutex(5,0);
       return res;
+    }
+
+    // Return string that identifies the running OS.
+    inline const char *stros() {
+#if defined(linux) || defined(__linux) || defined(__linux__)
+      const char *const str = "Linux";
+#elif defined(sun) || defined(__sun)
+      const char *const str = "Sun OS";
+#elif defined(BSD) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined (__DragonFly__)
+      const char *const str = "BSD";
+#elif defined(sgi) || defined(__sgi)
+      const char *const str = "Irix";
+#elif defined(__MACOSX__) || defined(__APPLE__)
+      const char *const str = "Mac OS";
+#elif defined(unix) || defined(__unix) || defined(__unix__)
+      const char *const str = "Generic Unix";
+#elif defined(_MSC_VER) || defined(WIN32)  || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
+      const char *const str = "Windows";
+#else
+      const char
+        *const _str1 = std::getenv("OSTYPE"),
+        *const _str2 = _str1?_str1:std::getenv("OS"),
+        *const str = _str2?_str2:"Unknown OS";
+#endif
+      return str;
     }
 
     //! Return the basename of a filename.
