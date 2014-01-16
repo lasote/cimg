@@ -14609,7 +14609,7 @@ namespace cimg_library_suffixed {
       }
       double mp_joff() {
         const double x = mem[9], y = mem[10], z = mem[11], c = mem[12];
-        const unsigned long off = (unsigned long)(reference.offset(x,y,z,c) + mem[opcode(2)]);
+        const unsigned long off = reference.offset(x,y,z,c) + (unsigned long)(mem[opcode(2)]);
         if (off>=reference.size()) return 0;
         return (double)reference[off];
       }
