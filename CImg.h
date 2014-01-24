@@ -44011,7 +44011,7 @@ namespace cimg_library_suffixed {
           if (axis=='x') for (unsigned int x = 0; x<visu0._width; ) {
               const unsigned int x0 = x;
               ind = indices[x];
-              while (x<indices._width && indices[++x]==ind) {}
+              while (x<indices._width && indices[x++]==ind) {}
               const CImg<T>
                 onexone(1,1,1,1,0),
                 &src = _data[ind]?_data[ind]:onexone;
