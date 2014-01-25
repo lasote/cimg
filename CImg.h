@@ -22720,10 +22720,10 @@ namespace cimg_library_suffixed {
           if (xi>=ref.width()) xi = ref.width()-1; if (nxi>=ref.width()) nxi = ref.width()-1;
           if (yi<0) yi = 0; if (nyi<0) nyi = 0;
           if (yi>=ref.height()) yi = ref.height()-1; if (nyi>=ref.height()) nyi = ref.height()-1;
-          I(0,0,0) = (float)ref(xi,yi,zi,0); I(0,0,1) = (float)ref(xi,yi,zi,1);
-          I(1,0,0) = (float)ref(nxi,yi,zi,0); I(1,0,1) = (float)ref(nxi,yi,zi,1);
+          I(0,0,0) = (float)ref(xi,yi,zi,0);   I(0,0,1) = (float)ref(xi,yi,zi,1);
+          I(1,0,0) = (float)ref(nxi,yi,zi,0);  I(1,0,1) = (float)ref(nxi,yi,zi,1);
           I(1,1,0) = (float)ref(nxi,nyi,zi,0); I(1,1,1) = (float)ref(nxi,nyi,zi,1);
-          I(0,1,0) = (float)ref(xi,nyi,zi,0); I(0,1,1) = (float)ref(xi,nyi,zi,1);
+          I(0,1,0) = (float)ref(xi,nyi,zi,0);  I(0,1,1) = (float)ref(xi,nyi,zi,1);
           _cimg_vecalign2d(1,0); _cimg_vecalign2d(1,1); _cimg_vecalign2d(0,1);
         }
         return c<2?(float)pI->_linear_atXY(dx,dy,0,c):0;
@@ -22754,14 +22754,14 @@ namespace cimg_library_suffixed {
           if (yi>=ref.height()) yi = ref.height()-1; if (nyi>=ref.height()) nyi = ref.height()-1;
           if (zi<0) zi = 0; if (nzi<0) nzi = 0;
           if (zi>=ref.depth()) zi = ref.depth()-1; if (nzi>=ref.depth()) nzi = ref.depth()-1;
-          I(0,0,0,0) = (float)ref(xi,yi,zi,0); I(0,0,0,1) = (float)ref(xi,yi,zi,1); I(0,0,0,2) = (float)ref(xi,yi,zi,2);
-          I(1,0,0,0) = (float)ref(nxi,yi,zi,0); I(1,0,0,1) = (float)ref(nxi,yi,zi,1); I(1,0,0,2) = (float)ref(nxi,yi,zi,2);
+          I(0,0,0,0) = (float)ref(xi,yi,zi,0);   I(0,0,0,1) = (float)ref(xi,yi,zi,1);   I(0,0,0,2) = (float)ref(xi,yi,zi,2);
+          I(1,0,0,0) = (float)ref(nxi,yi,zi,0);  I(1,0,0,1) = (float)ref(nxi,yi,zi,1);  I(1,0,0,2) = (float)ref(nxi,yi,zi,2);
           I(1,1,0,0) = (float)ref(nxi,nyi,zi,0); I(1,1,0,1) = (float)ref(nxi,nyi,zi,1); I(1,1,0,2) = (float)ref(nxi,nyi,zi,2);
-          I(0,1,0,0) = (float)ref(xi,nyi,zi,0); I(0,1,0,1) = (float)ref(xi,nyi,zi,1); I(0,1,0,2) = (float)ref(xi,yi,zi,2);
-          I(0,0,0,1) = (float)ref(xi,yi,nzi,0); I(0,0,0,1) = (float)ref(xi,yi,nzi,1); I(0,0,0,2) = (float)ref(xi,yi,nzi,2);
-          I(1,0,0,1) = (float)ref(nxi,yi,nzi,0); I(1,0,0,1) = (float)ref(nxi,yi,nzi,1); I(1,0,0,2) = (float)ref(nxi,yi,nzi,2);
-          I(1,1,0,1) = (float)ref(nxi,nyi,nzi,0); I(1,1,0,1) = (float)ref(nxi,nyi,nzi,1); I(1,1,0,2) = (float)ref(nxi,nyi,nzi,2);
-          I(0,1,0,1) = (float)ref(xi,nyi,nzi,0); I(0,1,0,1) = (float)ref(xi,nyi,nzi,1); I(0,1,0,2) = (float)ref(xi,yi,nzi,2);
+          I(0,1,0,0) = (float)ref(xi,nyi,zi,0);  I(0,1,0,1) = (float)ref(xi,nyi,zi,1);  I(0,1,0,2) = (float)ref(xi,nyi,zi,2);
+          I(0,0,1,0) = (float)ref(xi,yi,nzi,0);   I(0,0,1,1) = (float)ref(xi,yi,nzi,1);   I(0,0,1,2) = (float)ref(xi,yi,nzi,2);
+          I(1,0,1,0) = (float)ref(nxi,yi,nzi,0);  I(1,0,1,1) = (float)ref(nxi,yi,nzi,1);  I(1,0,1,2) = (float)ref(nxi,yi,nzi,2);
+          I(1,1,1,0) = (float)ref(nxi,nyi,nzi,0); I(1,1,1,1) = (float)ref(nxi,nyi,nzi,1); I(1,1,1,2) = (float)ref(nxi,nyi,nzi,2);
+          I(0,1,1,0) = (float)ref(xi,nyi,nzi,0);  I(0,1,1,1) = (float)ref(xi,nyi,nzi,1);  I(0,1,1,2) = (float)ref(xi,nyi,nzi,2);
           _cimg_vecalign3d(1,0,0); _cimg_vecalign3d(1,1,0); _cimg_vecalign3d(0,1,0);
           _cimg_vecalign3d(0,0,1); _cimg_vecalign3d(1,0,1); _cimg_vecalign3d(1,1,1); _cimg_vecalign3d(0,1,1);
         }
