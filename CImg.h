@@ -14524,7 +14524,10 @@ namespace cimg_library_suffixed {
         CImg<doubleT> values(opcode._height-3);
         double *p = values.data();
         for (unsigned int i = 3; i<opcode._height; ++i) *(p++) = mem[opcode(i)];
-        return values.kth_smallest(((unsigned int)cimg::round(mem[opcode(2)]))%values.width());
+        int ind = (int)cimg::round(mem[opcode(2)]);
+        if (ind<0) ind+=1+values.width();
+        ind = cimg::max(1,cimg::min(values.width(),ind));
+        return values.kth_smallest(ind-1);
       }
       double mp_isnan() {
         const double val = mem[opcode(2)];
