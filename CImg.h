@@ -14175,11 +14175,11 @@ namespace cimg_library_suffixed {
             }
             _cimg_mp_opcode6(is_relative?7:47,indx,indy,indz,indc,interpolation,borders);
           }
-          if (!std::strncmp(ss,"min(",4) || !std::strncmp(ss,"max(",4)) {
+          if (!std::strncmp(ss,"min(",4) || !std::strncmp(ss,"max(",4) || !std::strncmp(ss,"med(",4)) {
             CImgList<uintT> opcode;
             if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
             const unsigned int pos = mempos++;
-            CImg<uintT>::vector(ss[1]=='i'?48:49,pos).move_to(opcode);
+            CImg<uintT>::vector(ss[1]=='i'?48:ss[1]=='a'?49:70,pos).move_to(opcode);
             for (char *s = ss4; s<se; ++s) {
               char *ns = s; while (ns<se && (*ns!=',' || level[ns-expr._data]!=clevel1) && (*ns!=')' || level[ns-expr._data]!=clevel)) ++ns;
               CImg<uintT>::vector(compile(s,ns)).move_to(opcode);
@@ -14514,6 +14514,12 @@ namespace cimg_library_suffixed {
         for (unsigned int i = 3; i<opcode._height; ++i) val = cimg::max(val,mem[opcode(i)]);
         return val;
       }
+      double mp_med() {
+        CImg<doubleT> values(opcode._height-2);
+        double *p = values.data();
+        for (unsigned int i = 2; i<opcode._height; ++i) *(p++) = mem[opcode(i)];
+        return values.median();
+      }
       double mp_isnan() {
         const double val = mem[opcode(2)];
         return cimg::type<double>::is_nan(val);
@@ -14686,7 +14692,8 @@ namespace cimg_library_suffixed {
           &_cimg_math_parser::mp_yM,           // 66
           &_cimg_math_parser::mp_zM,           // 67
           &_cimg_math_parser::mp_ioff,         // 68
-          &_cimg_math_parser::mp_joff          // 69
+          &_cimg_math_parser::mp_joff,         // 69
+          &_cimg_math_parser::mp_med           // 70
         };
         if (!mem) return 0;
         this->mp_funcs = mp_funcs;
