@@ -5481,7 +5481,8 @@ namespace cimg_library_suffixed {
       if (!filename) { if (str) *str = 0; return 0; }
       char format[1024] = { 0 }, body[1024] = { 0 };
       const char *const ext = cimg::split_filename(filename,body);
-      cimg_snprintf(format,sizeof(format),"%%s_%%.%ud.%%s",digits);
+      if (*ext) cimg_snprintf(format,sizeof(format),"%%s_%%.%ud.%%s",digits);
+      else cimg_snprintf(format,sizeof(format),"%%s_%%.%ud",digits);
       std::sprintf(str,format,body,number,ext);
       return str;
     }
