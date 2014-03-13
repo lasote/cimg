@@ -4654,7 +4654,7 @@ namespace cimg_library_suffixed {
     }
 
     inline bool _is_self_expr(const char *expression) {
-      if (!expression) return false;
+      if (!expression || *expression=='>' || *expression=='<') return false;
       for (const char *s = expression; *s; ++s)
         if ((*s=='i' || *s=='j') && (s[1]=='(' || s[1]=='[')) return true;
       return false;
@@ -46413,7 +46413,7 @@ namespace cimg_library_suffixed {
           img(xm,y) = (T)((val&m)?1:0);
         }
       if (is_variable_width) res.crop_font();
-      return  res.insert(res);
+      return res.insert(res);
     }
 
     //! Compute a 1d Fast Fourier Transform, along specified axis.
