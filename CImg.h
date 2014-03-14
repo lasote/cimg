@@ -31858,7 +31858,7 @@ namespace cimg_library_suffixed {
        \param foreground_color Array of spectrum() values of type \c T, defining the foreground color (0 means 'transparent').
        \param background_color Array of spectrum() values of type \c T, defining the background color (0 means 'transparent').
        \param opacity Drawing opacity.
-       \param font_height Height of the text font (exact match for 13,23,33,53, interpolated otherwise).
+       \param font_height Height of the text font (exact match for 13,23,33,43,53, interpolated otherwise).
     **/
     template<typename tc1, typename tc2>
     CImg<T>& draw_text(const int x0, const int y0,
@@ -32063,7 +32063,7 @@ namespace cimg_library_suffixed {
        \param color Pointer to \c spectrum() consecutive values, defining the drawing color.
        \param opacity Drawing opacity.
        \param pattern Drawing pattern.
-       \param font_height Height of the labels (exact match for 13,23,33,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename t, typename tc>
@@ -32113,7 +32113,7 @@ namespace cimg_library_suffixed {
        \param color Pointer to \c spectrum() consecutive values, defining the drawing color.
        \param opacity Drawing opacity.
        \param pattern Drawing pattern.
-       \param font_height Height of the labels (exact match for 13,23,33,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename t, typename tc>
@@ -32167,7 +32167,7 @@ namespace cimg_library_suffixed {
        \param opacity Drawing opacity.
        \param pattern_x Drawing pattern for the X-axis.
        \param pattern_y Drawing pattern for the Y-axis.
-       \param font_height Height of the labels (exact match for 13,23,33,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename tx, typename ty, typename tc>
@@ -45800,7 +45800,7 @@ namespace cimg_library_suffixed {
 
     //! Return a CImg pre-defined font with desired size.
     /**
-       \param font_height Height of the desired font (exact match for 13,23,33,53)
+       \param font_height Height of the desired font (exact match for 13,23,33,43,53)
        \param is_variable_width Decide if the font has a variable (\c true) or fixed (\c false) width.
     **/
     static const CImgList<T>& font(const unsigned int font_height, const bool is_variable_width=true) {
