@@ -2995,268 +2995,7 @@ namespace cimg_library_suffixed {
 "r GqWq &rFscq]s ^q iqbqKqFqIq`q         ,q4r   0r        lr     Gr^q                               *q                                                 "
 "                                  kr               i";
 
-    // Define a 28x33 font (large size).
-    const char *const data_font28x33 =
-"AmQmQmQmQm.hfh                                                                        /jKjPjPkeiTjdjQj _jKjPkQjdjXjKjOjQjdj1keiRjKjOjPkeiTjdj cjKjOkQj"
-"ejQj              ^qUqUqUqUq0hfh                                                                        .jLiPifhQpTjdjRl _jLiOkQjdjWjLiOifiRjdj2pQjLiO"
-"ifhQpTjdj bjLiNkQjejQi   `k          #kbkXkbkXkbkXkbkXkbkXoHheh                                                                        .iMiOifiRiekSjd"
-"jSjfj _iMiOieiRjdjViMiOidiSjdj2iekOiMiNifiRiekSjdj aiMiNieiRjejRi   `m          $i^jYicidjYi^jYi^jYi^j[i_lMheh8q   bj    4i                           "
-"                                     \\iOiOidi aidi ^iOiOici8iOiOjdj <iOiNidi 'iOiNici7i   `jej          &i\\j[ibicj[i\\j[iehahfj[i^hfj]hXiOheh8nfi   bh "
-"   3j                          Zj             Im                   7j      ;idi          CjGjQjPjdi7ici cjGjRk;jGjQj [jdiTjGjQiOjei GjGjQj0j Hj[i\\jbib"
-"i\\j[i\\jfjcjfi\\j_jfi\\n]mYhdheh8nfi /k Xi  8l4k Wi  UiciUh AiQi                   6m4m `j2j(j:m7jNjNjNjNj     \"lViMl &p8o Hk   Al   $i @i   Jjdj  :o %j "
-"     :jfj          \\mSjIjQlRleiTjdjSici bjIjQkQjdjYjIjQlRjdjOjOleiSjIjQkQkeiTjcj cjIjQlRjdjPjTjMjdj9iZj]iaibj]iZj]iekejej]i_jejVi^lZhfifhehPoWnfiThNlU"
-"lblShQlWz4i  ;rYm^iYqXtYxTsWsYm9jOidiLjciUhPl]jZmUiKiOiJi #iNmQlRnQmMkUqPmWtTmQl  SlJnUjSqPnWqUtXsRoXj]j[jNjNj`kYjNl^l^k_jUnWpOnWpQnXxYj]j^jZj]j_k_jdk"
-"_k]k^k[x[mSiJmJk9j3j(j;n7jNjNjNjNj     #mViMm (jcj9q Il   CoPjStXtSnPjUw\\jbjbjXn4k2i2k9j.n<k`k<mRjdjLmXm =mYoQl7lPlKj3p ejNl4j\\j\\j\\j^l\\jYjMjNjNjNjNjOl"
-"Ox\\nWtXtXtXtXjNjNjNjNqUk_jUnRnRnRnRn6nci]j]j[j]j[j]j[j]j^k^kYjLoSjKjPifiRielTjdjSjej ajKjQieiRjdjXjKjPifiRjdjNjfkUielRjKjPhehQiekTjcj bjKjPifiRjdjQjSj"
-"Mjdj9ibjai]iaiai]iYi]idnci]i`jciWh\\l\\jdhdhUl_iYpTjPnWndnUjRieiWx3h  ;j_iZidi_iZjajYhdhblQidiWvZv[p:jOidiLicjUhQn^i[pViKiOiJi $jOoUoTrUqPlUqRpXtVqUp  W"
-"pNsYlTsTrYtXtXsTsZj]j[jNjNjakXjNm`m^l`jWrYrSrYrUrZxYj]j]j\\j\\j_k`kckak[k`kZx[jPjHjKm9j4j(j<k3jNjNjNjNj   _j  /kSiJk *kbjShPkah Gk   EjcjRlTtXtUrRjUw\\jb"
-"jbjZr7m3i3m:jIhNp<j`jWiNoSjdjNiai[p Aiai>n9oSoNj4r lPp8l\\i]l\\i^o^iXjNlPlPlPlPlOjNx^rYtXtXtXtXjNjNjNjNtXl`jWrVrVrVrVr:rfi\\j]j[j]j[j]j[j]j]k`kXjMjcjSjMj"
-"PidiSidjSjdjRm _jMjQjdiSjdjWjMjPidiSjdjMlSidjPjMjPieiRiejSjcj ajMjPidiSjdjRjRjMjdj9ibjai]ifsfi]ifsfi]iclbi]iajbiWh\\l]iehehdhWiXhZhahSjQpYpfpWlSiehVj\\j"
-"4i  <kPich_i[kakZhdhbiehQhdiWlciVlQkcj;jOidiLiciWnTidi_i[kbhViLjOjPhcidiMi EiOjcjVjejTjbkVibjPlUjLjahOkWkckWkcj  YjcjPlal[lTjajUkajZj`kYjNjLkak[j]j[jN"
-"jNjbkWjNm`m^l`jXkbkZjbkUkbkZjbkWkbjSjRj]j]j\\j[j`k`jajajYj`jLk[jOiHjLo9j5j(j<j2j ]jNj   _j  /jRiIj *jajVnSj >j   FjajSlTkOjLkbkUnWj]j\\jbjbj[kbk9o4i4o;j"
-"IhOkbh<kbkWiOkch3i]i]haj Di]iAjdj:hcjShbiOj4ndi ifiPjdj8ifi]i\\ifi]i]hbi_iWjNlPlPlPlPlPlPkfjUkajZjNjNjNjNjNjNjNjNj`kYl`jXkbkXkbkXkbkXkbkXkbk<kbl[j]j[j]"
-"j[j]j[j]j\\j`jWjNjajSjOjPibi `k ]jOjQjcj:jOjPibi3m2jOjPici 'jOjPibi7jQj ]ibjai]ifsfi]ifsfi]ibkbi]ibjaiXhei_l]hfhehbh]m]nZh`hTlRpYpfpWmTiSj\\i3h  <ifiPjd"
-"i`i\\ifiaifi[hdhbieiSidiXjajWjOj_h;jOidiLiciXqWibiaj[jOiLiMiPjeiejMi EiPjajRjTh_kOjRmUjMjGjWj_jXjaj  Zh`jRj[j\\lTj`jWj^iZj^jZjNjMj]i[j]j[jNjNjckVjNnbn^m"
-"ajYj^j[jakWj^j[jakYk_hSjRj]j]k^k[j`k`jakckYkbkMkZjOiHjMkek Lj(j<j2j ]jNj   _j  /jRiIj *jajVoTj >k   GjajSlSkPjMj^jYtZj]j\\jbjbj\\j^j;jfifj5i5jfifj bhPkR"
-"h[hWjbjViOj.i[iVi Ei[iBibiLiQiMi aodi diQjbj6i^jYi^jWi`j;lPlPlPlPlPlPjejVj^iZjNjNjNjNjNjNjNjNj^jZmajYj^jZj^jZj^jZj^jZj^jYh[hZj^j[j]j[j]j[j]j[j]j\\kbkWj"
-"Njaj      @idi     Jj ]ibjai]iaiai]iYi]icmci]icj`iXhfh]l]hfh`h\\l^iSh_hVnSpZqfqYnTiRi]jKhPhRnUi^iTkSj`jIi]iMheiPhfidh`i\\heiaieh[hdhbieiTidiXj`iWjNj2jOi"
-"diLiciYjehdiWibibjZjOiMjMjOoKi EiPjajRjJjOjSjfjUjNjFjWj_jYj_i UhAhEjSjYj^jfjUj`jXjNj]j[jNjNj[h[j]j[jNjNjdkUjNjfjbjfj^majZk^k\\j`jXk^k\\j`jYjIjRj]j\\j^jZj"
-"amaj`jdkWkdkMkYjOiHjNkck Mj(j<j2j ]jNj   _j  /jRiIj *jajQjSl @j   GjajTjfjSkQjNj\\j[kejek[j]j\\jbjbj]k^k=jeiej6i6ididi chPjRj]jXkdkViOj.hcmch]p EhdnchBi"
-"biLiQiQl `odi diQi`i6i^iXi^iZl_i;jfjRjfjRjfjRjfjRjfjQlQkejWjNjNjNjNjNjNjNjNjNj]j[majZk^k\\k^k\\k^k\\k^k\\k^k[j]j\\k_l\\j]j[j]j[j]j[j]j[kdkVpTjcl      :i   Y"
-"h  Zj ]iZj]iaibj]iZj]idjfkej]idj`jWhdh`l]h^h\\l]hTh^hWpTpY{ZpVjRj^jLjRiSpVi^iTkSj`iLm]mRieiPhehdiai]ieiaiei\\hdhbieiThchWi_iWiNj1jOidiQx^jdhRibibiYjOiMj"
-"MjMkIi FiPj_iRjJjOjSiejUjNjGjVj_jYj_i XkAkHjTjWi^jfjUj`jXjNj]j[jNjNjNj]j[jNjNjekTjNjfjbjfj^nbjZj\\j\\j`jXj\\j\\j`jYjIjRj]j\\j^jZkbieibk`kejUjdjMkXjNiIjOkak"
-"!nTjelRnRlejUmVpOlejXjdkUjNjNjakXjNjekbk]jdkRmTjelRlejXjekRnVqSj`jZj^jZjajaj_kakZj^jZsPjRiIj CldkZjajPjSnSnSjdkXj^jSjRj`jWj^jYiekWvYjdjdjUmRr[vYj_jUjf"
-"jRkRjNj\\j\\kdjdk\\j]j\\jbjbj]j\\jYhKhdidhKhRiRh^hQi `mSjQjfmfjVjdjUiNj0hcibhch_q FhcicichCibiLiRiPl4j`jYodi diQi`i6i_jXi_jZl`jVjOjfjRjfjRjfjRjfjRjfjRjfjRj"
-"djWjNjNjNjNjNjNjNjNjNj]j[nbjZj\\j\\j\\j\\j\\j\\j\\j\\j\\jZj_j[j_m\\j]j[j]j[j]j[j]jZjdjUrVjdkSnRnRnRnRnRnRmal[nRmQmQmQmTjNjNjNjKnUjdkRmQmQmQmQmMjRldiXj`jXj`jXj`j"
-"Xj`jZj^jXjelWj^j<iZi\\iaibi\\iZi\\iejdkfi\\iej_iUhfh`m]h^h\\l\\hUh^hXqSnXzZrWjQi_jLjYh`hSjckWi^iTlTjajOnYnUieiPheidhai]ieiaiei\\hdhbieiUidiXj`jXjPt9jOidiQx^j"
-"dhRibicjYkPiMiKiMkIi FiPj_jSjJjOjTidjUoTjFjVj_jYj_jXjNjCm?mLkTibmeidi`kfkVj`jYjMj\\j\\jNjOjMj]j[jNjNjfkSjNjejdjej^jfjbj[k\\k]j`jYk\\k]j`jYjIjRj]j[j`jXjbie"
-"ibj^oUkfkNkWjNiIjPj]j$qUjfoUpUofjVpXpQofjXjfoWjNjNjbkWjNjfmdn_jfoVqVjfoVofjXjflTqWqSj`jYj`jYkbjbk^kckXj`jYsPjRiIj ^h`hWpfjYjbkPjTjelVpTjfoZk`jRkSj`jXj"
-"\\j[jfnYvYjdjdjVpVt[vYj_jVkfkRkSjOjZj]jcjcj\\j]j\\jbjbj^k\\k[jHiGiSiSi^iRi8jMpTjPsTjfjTiMj1hdi\\h`jaiQhbh chcibidhCjdjLiTjLj5j`jYodi diQi`iThbhPi_iWi_iVjai"
-"UjPkfkTkfkTkfkTkfkTkfkSjfjRjdjXjMjNjNjNjNjNjNjNjNj\\j\\jfjbj[k\\k^k\\k^k\\k^k\\k^k\\kZjaj[k`jfk]j]j[j]j[j]j[j]jZkfkUjbkWjejSqUqUqUqUqUqUqep^pTpTpTpTpVjNjNjNj"
-"MqVjfoVqUqUqUqUqOjTrWj`jXj`jXj`jXj`jYj`jWjfoXj`j:i\\j[ibicj[i\\j[ifibifj[ifi_jTh`jdh]h^h\\l_ifhUh^hXrTnXz[tXjQj`jMj[k`hTj`iWi^iUmSiajSoSoYhdiPhdhchbi]hdi"
-"aidh\\hdhbieiVidiWi_iWiPt8jOidiMiciYjdhRibidjWkQiNjKjPoKi FiPj_jSjJjPjTjdjUqVjelMjUjbkXj_jXjNjFm9mPkTibofidi`jdjVjajXjMj\\j\\jNjOjMj]j[jNjNnRjNjejdjej^je"
-"jcj[jZj]j`jYjZj]j`jYlKjRj]j[j`jXjbieibj]mSnMkWjNiIjQj[j%hakVlckWkbhVkclWjckWjNkclXlcjWjNjNjdlVjNldjfidj_lcjWkckWlckXkclXldhUkahUjNj`jYj`jXjclcj\\kekWj`"
-"jQkPjRiIj `ldm[kdjfjYjckNiUjbkXkbhTlcjXjajSlSj`jXj\\j\\jejejXjbjWjdjdjWjckXkckSjSj_jVjdjQkTjOjZj^jbjbj]j]j\\jbjbj^jZj\\jGiFiTiTi\\iSi8jNkfhdhTjOjcjWnfnXiNl"
-"3hdiZhai`iRici dhbibichCnKiUjJi5j`jYodi diQiajTiciQi`iVi`iTibiTjPjdjTjdjTjdjTjdjTjdjTkfkTkdjXjMjNjNjNjNjNjNjNjNj\\j\\jejcj[jZj^jZj^jZj^jZj^jZjYjcjZj`jdj"
-"]j]j[j]j[j]j[j]jYnTjakXjejShakVhakVhakVhakVhakVhakVhanck`kbhUjckVjckVjckVjckWjNjNjNjNkbjWlcjWkckWkckWkckWkckWkckPjUkcjVj`jXj`jXj`jXj`jYj`jWlckYj`j:j^j"
-"ZjcidjZj^jZj^jZj^jRnel]h^h\\l^ifhWh]hYtWiflfiZz[tXjQj`iWy_hfjbiTi_iWi^iUjfiSjbiVoKo]hdiPhdidici]hdiaidh\\hdhbifiUidhVi_iWiMj1j.iciYkehQidiciWm7jKjRjeiej"
-"Mi GiOj_jSjKjSmSicjUhblWjfoPjRoVj_jXjNjImVyVmTkSicjbkciajdjVrWjMj\\j\\sWrWjMw[jNjNmQjNjekfkej^jejcj[jZj]jakYjZj]jakXoOjRj]j[kbkXjcjejcj]lQlMkVjMiJj ;jWk"
-"ajXjNjakXjajWjNjakXkbkXjNjNjelUjNkbkbj`kbkXjajWkajXjakXkPjMjNj`jYkbkXjcificj[jejVkbkRkOjRiIj aiejfjej\\jcnYjfmMiUi`jXjMkbkYjbkSmTj`jXj\\j\\jejejXjbjWjdjd"
-"jXjajXjajSjSuVjdjPkUjOjZj^jbjbj]j]j\\jbjbj^jepej]jFiFjUiUj\\jTi8jOjdhPjPjajXvXiOjfk5hdiZhajckSjdjVy@hbibichBlRy^jOhcj5j`jXndi diPjdjSjdjRiajViajZhcjcjTj"
-"PjdjTjdjTjdjTjdjTjdjTjdjTjcsajMsWsWsWsWjNjNjNjQraj\\jejcj[jZj^jZj^jZj^jZj^jZjXjejYj`icj]j]j[j]j[j]j[j]jXlSj`jXjejJjNjNjNjNjNjNkajajNjajWjajWjajWjajWjNj"
-"NjNjNjajWkbkXjajWjajWjajWjajWjaj;jbkWj`jXj`jXj`jXj`jYkbkWkajYkbk9j`jXj`jXj`jXj`jXj`j9h_h[l`hdhVh`hehZvZv[x[vYjPiajWy\\ibhSi_jXi^iUjfjTjcjWlCl^hdiPhchch"
-"ci]hdiaidh\\hdhblVidiW{_{^j1j/jdjXmQndjdl_ifkajAjKjRididhLi GiOj_jSjLkSmTibjMjWlckQjRoUjak emSySmXkSibi`jcibjbjWrWjMj\\j\\sWrWj`o\\w[jNjNmQjNjdjfjdj^jdjdj"
-"[jZj]jbkXjZj]jbkVpQjRj]jZjbjWkdicidk\\kQlNkUjMiJj ;jWkakZkOkakYk`jXjOj`kXj`jXjNjNjflTjNjajaj`j`jYkakXkakZkakXjOjMjNj`jXjbjWjcificj[oUjbjRkNjRiIjPl^hAic"
-"lci]jalXjfnUleiVj_jYjMj`jXjcjSnTj`jYjZj^jdjdjYjbjWjdjdjXjakZj`kTjSuWjbjQkUjOjZj^jbjbj]j]j[jcjcj]jepej^jEiEjViVjZjUi8jPkdhPjPi_iSlSiPjdk6hdiZh`nfiTjdjU"
-"y@hbicibh(y_oSn4j`jXndiWj3oSpRjdjVodi`jbodidlanbi`j^jPjbjVjbjVjbjVjbjVjbjVkdkVkcsajMsWsWsWsWjNjNjNjQraj\\jdjdj[jZj^jZj^jZj^jZj^jZjWmXjaibj]j]j[j]j[j]j["
-"j]jXlSj`jXjejJjNjNjNjNjNjNk`jckOk`jYk`jYk`jYk`jXjNjNjNjOk`jXj`jYkakYkakYkakYkakYkak=kcifiWj`jXj`jXj`jXj`jXjbjVkakYjbj7rVrVrVrVr7h`h[m`hfhUhbheheh[v[x["
-"vZvYjPjbjOjUiciSi_jXi^iVjejSicjWlCl^hdiPhcididi]hdiaidh\\hdpUidiV{_{^j1j/iciWpSldjdnaidkbjAjKjMiPy OiOj_jSjMkNkWjbjMkXkajRkTkckWkcl m)mZjRici^icibjbjWj"
-"akYjMj\\j\\jNjOj`o\\j]j[jNjNnRjNjdjfjdj^jdkej[jZj]rWjZj]rSpSjRj]jZjbjVjdicidj\\lPjNkTjMiJj BqWj_jZjNj_jYj_jXjOj_jXj`jXjNjNnRjNjajaj`j`jYj_jXj_jZj_jXjOkNjN"
-"j`jXjbjWkdifidkZmTjckRkOjQiHjSqcjAibjah]jalXjbkWnfiVj_jXjNj`jXjcjSjfjTj`jYjZj^jdjdjYjbjWjdjdjYj_jZj_jTjSj_jWjbjQjTjOjZj^jbjbj]j]j[jcjcj]jZj_|ViV|WiW|V"
-"i8jPjchSrUi_iRjRiPjck7hdiZh_leiUjdjDi@hbnah iWoRl3j`jWmdiWj3oQlOjdjWoei`kboeidoblbi`k_kPjbjVjbjVjbjVjbjVjbjVjbjVjbjXjMjNjNjNjNjNjNjNjNj\\j\\jdkej[jZj^jZ"
-"j^jZj^jZj^jZjVkWjbiaj]j]j[j]j[j]j[j]jWjRj`jXjdkSqUqUqUqUqUqUq_jcjNj_jYj_jYj_jYj_jXjNjNjNjOj_jXj`jYj_jYj_jYj_jYj_jYj_jXx]jbifjXj`jXj`jXj`jXj`jXjckVj_jY"
-"jck5oSoSoSoSo6hahZhdj`hThehdhei[x]z[uYtXiOjbiNiTjdhRi^iXi^iVjdiSjdjVoKo]hdiPhbidhdi]hdiaidh\\hdheiejVidiVj`iWjOr7j/iciUpMicidibjckci@jKjMiPyCn4jOj_jSjN"
-"kLjWiajLjXj_jSjSjajVofj j#j[jQici^icickbkXj`jYjMj\\j\\jNjOj[j\\j]j[jNjNoSjNjdndj^jcjej[jZj]pUjZj]qNlSjRj]jYjdjUjdicidj\\mQjOkSjMjKj DsWj_jZjNj_jYuXjOj_jXj"
-"`jXjNjNmQjNjajaj`j`jYj_jXj_jZj_jXjNmQjNj`jWjdkVjeidiejXkRjdjRkQlPiGlWjcq@h`iah]jakWjakYjckVj_jWmRj`jXjdjRjfkUj`jYjbjbj^jdjdjYjbjWjdjdjYj_jZj_jTjSj_jXk"
-"bkSkTjOjZj^jbjbj]j]j[jcjcj]jZj_|ViV|WiW|Vi8jPjchSrUi_iRj9jbj7hdiZhEjdjCi@hbidiah i Hj`jTjdiWj >jdjOj`hfiYjdhcjYj`hfi`kPkbkXkbkXkbkXkbkXkbkWjbjVjbjXjMj"
-"NjNjNjNjNjNjNjNj\\j\\jcjej[jZj^jZj^jZj^jZj^jZjVkWjci`j]j]j[j]j[j]j[j]jWjRj`jXjckVsWsWsWsWsWsW~cjNuYuYuYuXjNjNjNjOj_jXj`jYj_jYj_jYj_jYj_jYj_jXx]jciejXj`j"
-"Xj`jXj`jXj`jWjdjUj_jXjdj   apZlenShdhdhfhZx]z[tWrWiNjdjOjSidhRi^iXi_jVjdjTjdiQoSoYhdiPhahdiei]hdiaidh\\hdhchdiXidiTiajViPr6j4xVmNjdibicjbkej@jKj,i;n4iN"
-"j_jSjOkJjYi`jLjXj_jSjTj_jUlej m)m[jQici^icictXj_jZjMj\\j\\jNjOj[j\\j]j[jNjNjflTjNjclcj^jckfj[jZj]jOjZj]jbjMkTjRj]jYjdjUjejcjej]nQjPkRjLiKj DjajWj_jZjNj_j"
-"YuXjOj_jXj`jXjNjNmQjNjajaj`j`jYj_jXj_jZj_jXjMoTjNj`jWjdjUjeidiejXkRjdjSkPlPiGlWh^l>hajah]jakWj`jYiajVj_jWmRj`jWjejSjdjUj`jYjbjbj^jdjdjYjbjWjdjdjYj_jZj"
-"_jTjSj_jXj`jTkSjOj[k^jbjbj]j]jZjdjdj\\jZj^jEiEjViVjZjUi8jPjchPjPi_iXv?kcj7hdiZharViciBi@hbicibh i Hj`jSidi KpOiciOi`heiYi]iYi`heiakOtXtXtXtXtXtXsXjMjNj"
-"NjNjNjNjNjNjNj\\j\\jckfj[jZj^jZj^jZj^jZj^jZjWmXjdj`j]j]j[j]j[j]j[j]jWjRjakXjakXjajWjajWjajWjajWjajWjajWjaucjNuYuYuYuXjNjNjNjOj_jXj`jYj_jYj_jYj_jYj_jYj_j"
-"=jdidjXj`jXj`jXj`jXj`jWjdjUj_jXjdj   ahfn8hehfifiYx]zZrVrWiNjdiUy[ieiRi^iXi_jVicjSiejMnYnUieiPhaidifi]ieiaiei\\hdhcidhXhdiSiaiUiMj1j4xVhekPjcibicjajei?"
-"jKj,i HiNj_jSjPkIjYvOjXj_jTkTj_jNj emSySmYjQici^icictXj_jZjMj\\j\\jNjOj[j\\j]j[jNjNjelUjNjclcj^jbjfj[j[k]jOj[k]jajMjTjRj]jYkfkUkfiaifk^kfkRjPkRjLiKj Ej`j"
-"Wj_jZjNj_jYjMjOj_jXj`jXjNjNnRjNjajaj`j`jYj_jXj_jZj_jXjJmUjNj`jWjekUjeidiejYlRkfjSkLjQiHj cibkbh]jakWj`jZjajVj_jXjNj`jWjfkSjdjUj`jYjbjbj^jdjdjYjbjWjdjd"
-"jYj_jZj_jTjSj_jXj`jUkRjNj\\j\\jcjcj\\j]jYkfjfk[j[k]jFiFjUiUi[jTi8jPjchPjPjajXv>kdj6hdi\\h`rVjdjCi?hcicjdh fi Hj`jSidi KpPjdjPi`ieiZi\\iZi`ieibkNtXtXtXtXtXt"
-"XsXjMjNjNjNjNjNjNjNjNj\\j\\jbjfj[j[k^j[k^j[k^j[k^j[kXjejYjej`k]j]j[j]j[j]j[j]jWjRjbkWj`kZj`jXj`jXj`jXj`jXj`jXj`jXj`jXjNjNjNjNjMjNjNjNjOj_jXj`jYj_jYj_jYj"
-"_jYj_jYj_j=jeicjXj`jXj`jXj`jXj`jWkfjTj_jXkfj   `hfn8hehdhVmfhfm\\zYpTpViMiejUy[jfhQi^iXi_jWjbiSjfjJm]mRieiPh`hchfi]ieiaiei\\hdhbieiZidiSjcjUjMj ?iciQhdj"
-"Pibibicjan?jKj,i HiMi_jSjQlIjYvOjWi_jTjSj_jOj amVyVmVjQici^idicj^jYj_jYjNj]j[jNjNj\\j\\j]j[jNjNjdlVjNjbjbj^jbnZj\\j\\jNj\\j\\jakNjTjRj]jXjfjSjfiaifj]jdkSjQk"
-"QjLiKj Ej`jWj_jZjNj_jYjMjOj_jXj`jXjNjNjfkSjNjajaj`j`jYj_jXj_jZj_jXjGkVjNj`jVjfjSjfidifjYnRjfjSjJjRiIj aidifjdi]jakWj`jZjaiUj_jYjMj`jWjfjSkcjVj`jYjbjbj"
-"^jdjdjYjbjWjdjdjYj_jZj_jTjRjajXj^jVjQjNj\\j\\kdjdk\\j]jXrYj\\j[jGiFiTiTi\\iXididi=jPjchPjOjcjQj6jfj5hcibhchCjdjDi?hcibidh fi Hj`jSidi ,jdjPjaidi[j]iZjaidib"
-"jNj^jZj^jZj^jZj^jZj^jZk`kZkajWjNjNjNjNjNjNjNjNjNj]j[jbnZj\\j\\j\\j\\j\\j\\j\\j\\j\\jXjcjYm_j\\j]j[j]j[j]j[j]jWjRrVj_jZj`jXj`jXj`jXj`jXj`jXj`jXj`jXjNjNjNjNjMjNjN"
-"jNjOj_jXj`jYj_jYj_jYj_jYj_jYj_jQjVjfibjXj`jXj`jXj`jXj`jVjfjTj_jWjfj   `hfn8hehRmfhfm[nfhfnWnRnUiMjfjQjOifhQi^iXj`iVjbjTjfiEi]iMifiPh`idk\\ifiaifi[hdhbi"
-"dh[idiQjdiSjNj ?iciQhdjQjbibicj`l>jKj,i IiLjajRjRlHjPjMkWi_jTjSj_jOj ^m9m:ibi`jdicj^jYj_jYjNj]j[jNjNj\\j\\j]j[jNjNjclWjNjbjbj^jamZj\\j\\jNj\\j\\j`jNjTjRk_kX"
-"jfjSjfiaifj^kcjSjRkPjKiLj EjakWj`kZkOj`kYjMjOj`kXj`jXjNjNjekTjNjajaj`j`jYj`kXj`kZj`kXjFjVjNj`jVjfjSlblYoSnTkJjRiIj amdm\\jakWj`jZjbjTjakYjMj`jVmSjbjVj`"
-"jYjbjbj^jdjdjYjbjWjdjdjYj`kZkakTjRjajXj^jWkQjMj^jZkejek[j]jVnWj]kZjHiGiXididiXi^iVjfifj<jPkdhPjPsRjRiLk2hcmchAjdjEi>hdibjfh  Dj`jSidi -jdjOi`hci[i^jYi"
-"`hcibjNj^jZj^jZj^jZj^jZj^jZj^jZj`jWjNjNjNjNjNjNjNjNjNj]j[jamZj\\j\\j\\j\\j\\j\\j\\j\\j\\jYjajZl^j\\k_k[k_k[k_k[k_kWjRpTj_jZjakXjakXjakXjakXjakXjakXj`jXkOjNjNjNj"
-"MjNjNjNjOkakXj`jYj`kYj`kYj`kYj`kYj`kQjVjfickXj`jXj`jXj`jXj`jVnTj`kWn   `p8hehQkehekYlehelUlPlTiMjfiQjNkQi^iXjajViajTm difiPh_hcj\\ifiaifi[hdhaiei\\hchOj"
-"eiRjOk`h HiciQhdjRjaibibj`k=iLj+i IiLjajRjSlHjOjMjVjajTjRkakPj Zm?m6icjbkfjck^kZj`kXj^iZj^jZjNjMj]j\\j]j[jNjNjblXjNjZj^jamYj^j[jMj^j[j`kZh^kTjQj_jVlRma"
-"m_kbkTjSkOjKiLj EjakWkajXjNjakXjNjNjakXj`jXjNjNjdkUjNjajaj`j`jXjajWkajXjakXjFjVjNkbkVnSlblZkejRlTkIjRiIj _jbkZjclWkbkZjbiSjajXjMj`jVlSkbkWjakXjdifidj\\"
-"jejejXjbjWkejekYkajXjajSjRjajYk^kYkPjLj`jXtZj]jTjTj^jXhGiGhVjfifjVh^hTo;jOjdhPjQjfmfjSjRiJj3i[i@jdj bi[i  DjakSidi .jdjOjaq^j_jYjaqdj`hWk^k\\k^k\\k^k\\k^"
-"k\\k^k\\k^k\\k`jVj^iZjNjNjNjNjNjNjNjNj^jZjamYj^jZj^jZj^jZj^jZj^jYj_jZj^jZj_jYj_jYj_jYj_jVjRjNj_jZjakXjakXjakXjakXjakXjakXjalXjNjNjNjNjNjNjNjNjNjajWj`jXja"
-"jWjajWjajWjajWjajPjUkbjWkbkXkbkXkbkXkbkUlSkajUl   'hehKhLhNlOjSiLlRjMjPi^iWkdkWjajSl ck^hZh_idj[kakZhdhaidh]idiOnRkOkcj;j1jciWichejQi_idiakbm>jMj+iUj2"
-"jOiKjcjQjTlPh`kOjVhalUjckTjQkckWhajUjNj@kAkMjPiboflbj\\jZjakVkajZj`kYjNjLk`k\\j]j[jNjNjalYjNjZj^j`lXkbkZjLkbkZj_k[jakSjQkakVlQk_l_j`jTjTkNjKiLj EkclWlck"
-"WkbhVkclWj`hWjNkclXj`jXjNjNjckVjNjajaj`j`jXkckWlckXkclXjOiakVkNjclUlRlbl[kcjSlUkHjRiIj FkenXldkXicjRjcjWkahUj`jVlSj`jWkclXjdifidj\\kfjfkXjbjVkfjfkXlckX"
-"kcjQjRjcjXj\\jZkOjKjbjTnWj]jTjSkbk6i4o6m:jNjehdhTjRj]jTjRiIj3i]i>ici ai]i  CkclSidi .iciNi`q^i_jXi`qcjcjWj\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j_jUkajZjNjNjNjNjNjNjN"
-"jNj`kYj`lXkbkXkbkXkbkXkbkXkbkYj]j[lbkYkakYkakYkakYkakVjRjNjehckZkclXkclXkclXkclXkclXkclXkcjfjai`kbhUj`hVj`hVj`hVj`hWjNjNjNjMjcjVj`jXkckWkckWkckWkckWkc"
-"k:jckVjclWjclWjclWjclUlSlckUl   &hfhKhLhMjNjSiLkPhKiPi^iVpVj`iSkTy]y[j`jZh^idiZjajYhdh`iei_idiLvZv[p:j1icjWrQj_n`qfk?jMj+iUj2jPiIoUtYtXrNjVrSpSjPqVpTj"
-"Nj=hAhJjPjbmej`j\\jZsTrYtXtXjKt[j]j[jNjNj`lZtXjZj^j`lWrYjKrYj^j[sRjPrTlQk_k_k_jUjTx[jJiMj DofjWjfoUpUofjVqWjMofjXj`jXjNjNjbkWjNjajaj`j`jWqVjfoVofjXjOrT"
-"nRofjUlQkbk[kbkTkTsPjRiIj EoflZrWjejPpVqUj`jUkSj`jWvYnfnZrWjblWrWjfoVqQmToWxZtXjOodoVjUj]jTjRr5i3m4k9jMpWuYh[hSjRiIj1iai;hbh _iai#y PvUidi .hbhNiYi]i_"
-"o]iYiapVj\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j\\j_t^rYtXtXtXtXjNjNjNjNtXj`lWrVrVrVrVrWh[h[ifrWrVrVrVrTjRjNjeoXofjWofjWofjWofjWofjWofjWpdq_pTqUqUqUqWjNjNjNjMpUj`jWqUqU"
-"qUqUq:rUofjWofjWofjWofjUkRjfoTk   %hfhLjNjMhLhRiKj3iPi^iUmTi_jTkTy]yYpXh]mXoWl`m_zVtXtYm9j1iciToQj]l]mck?iMi*iUj2jPiHmTtYtVnLjTnOlRjMmSmRjNj ?jOjRjZj["
-"qPnWqUtXjHnXj]j[jNjNj_l[tXjZj^j_kUnWjIoXj^kZoPjNoRjPk_k`k^kVjTx[jJiMj BkdjWjelRnRlejUnUjKlejXj`jXjNjNjakXjNjajaj`j`jUmTjelRlejXjMnQmPkdjTjPj`j\\k`kTjTs"
-"PjRiIj DmdkZjfmUmNmRnTj`jUjSj^jXjflekXldlWnUjakUnUjelRmMkSlVz[tXjOodoVjUj]jTjPn3i2k2i8jKmVu7jRiIj/m (m!y PjflekUidi  VjYi^j_o^jYi_lUjZj^jZj^jZj^jZj^jZ"
-"j^jZj^j^t\\nWtXtXtXtXjNjNjNjNrVj_kUnRnRnRnRn<icnSoSoSoSoSjRjNjdlTkdjUkdjUkdjUkdjUkdjUkdjUlan\\nRnRnRnRnUjNjNjNjKmTj`jUmQmQmQmQm9iemQkdjUkdjUkdjUkdjTjRje"
-"lQj   $h 'i    /k bj  4h CjOj ]j _i    3j #j   )j  +k   2jJiMj    j j  PjDj   fk1jRiIj *j 7jUj5j-j2jSj     !i &h DiOhck     JjIidi7i     $i           "
-" ?i      >h  fkRjKk     *i    .k ci  3h BiOi \\i _j    3i !j[h   7j  *k   3jJjNj    j j  PjDj   fj0jRiIj *j 7jUj5j-j2jSj       %h DiOo     IjIidi6i    "
-" $i            ?i        =jQjKj     -iei    -k di  3h BiOi ]j _i    3j  k_k   8j  )k   4mLiQm   !j fj  PjDj   k0kSiJk *j 7jUj5j-j2jSj       %h DiNm   "
-"  HjIidi6i     $i            ?i        >kQjLk     -ifj    ,j di  3h AiQi \\i     (i  dt   8j  'k   5m4m   )hak k  PjDj   j.mViMm )j 7jUj5j-j2jSj       "
-"%h Di     )j \\m     (m            Cm        >jPjLj     ,l                   0o   8l           Hq!l  OjDj  #m-lViMl (j 7jUj5j-j2jSj         Hi     )j \\"
-"l     'l            Bl        @mPjOm     +j                       ?k        Vu   en fk  NjDj  #k \\i  Pj 7jUj5j-j2jSj               Oj                 "
-"           OkNjOk  &h                                  +u           Ri                                                   #";
-
-    // Define a 37x43 font (extra large size).
-    const char *const data_font37x43 =
-"/iDiDiDiDi Ub_b                                                                  *d                                                                   "
-"        WmHmHmHmHm Wb_b                                                                                                         _e;dBeBd\\cGe_e  Xe;dBf"
-"De^eMe;dBeCe_e Yd\\cEe;dBeBd\\cGe_e =e;dAeCe_eCd                    HoJoJoJoJo Xb_b                                                                     "
-"                                    ^d<eCgDg^cGe_eCe 8d<eBfDe^eLd<eCgDe_e Zg^cDd<eCgDg^cGe_e <d<eBgDe_eDe                    IeYfMeYfMeYfMeYfMeYfMj6b^"
-"b                                                                                                         ^d=dBc_cEc^gFe_eEi 9d=dBd`dEe^eKd=dCd_dEe_e "
-"[c^gBd=dBc_cEc^gFe_e ;d=dAc_cDe_eDd    Be               +dUdNd\\d]dNdUdNdUdNdUdPdXg<b^b                                                                "
-"                                         ]d?dBd^cFc\\dEe_eFd]c 8d?dBd^dFe^eJd?dCd]dFe_e [c\\d@d?dBd^cFc\\dEe_e :d?dAd^cEe_eEd    Ci               .dSdPd["
-"d\\dPdSdPd_bYb_dPdVb_dScOd>b_b$m           Lb                                                                                            9c@dBd]d =c[c "
-"8c@dBd\\d$c@dCd[d  Lc@dBd]d  0c@dAd]d!d    Bc]c               /eRdRe[d[dReRdRe`d[d_dReWd_dTbZcUc_cCb_b$j`c    De      -d                               "
-"      ,e                                               (e         =c[c               Ve8eCd 9c[c >e8eDe%e8eDe  Qe8eCc  1e8eCc We  \\dQdRdZd[dRdQdRd_e]e"
-"_dRdWe_dSh_dViOe]b_b$j`c    De      -d                                     +d                   Jh                            Fd         <c[c         "
-"      Ud8dCfBd]c!c[c =d8dCe$d8dCe 2d\\cHd8dCeBd\\c  Zd8dCe Xd  [cOcRcYdZcRcOcRc]e_e]cRcWe]cIcUhPb]c`b^b%k`c  9e /c   *f ]f 0e   /c  SdDd                "
-"            Fi `i 9d ]e Oe$h\"e@e@e@e@e        8gJd?g  0l `j  \\f     Zg            $e^e   ,l  /d         ;d]d          %b   2gDd:dBc`cCf^cGe^eFc[c <d:d"
-"CgDe^eLd:dCgDe_e@e?g^cGd:dCgDg^cHe]e =d:dCgDe_e@dHe>e^e$dZeZdTdYdZdTdOdTd\\i\\dTdXe\\dKcThQb`c^d^bBjMnFb@gHfYfEbDhLy ^c   ,mNiTbLlLqNxEmHmNg\"eBd]d<d\\dJcC"
-"fScMhId:cBc:c  +d@gChDjEi>fIoEhIrHgCh   Nh [eGnAhKnIrMpCiLeUePe@e@eWfOe@hWhTgWeIiKmAiKmDjLwNeUeTeRfSeWfWe\\fWfRfUfPuOiGd<i:f#d ^e Oe%i\"e@e@e@e@e    Ae "
-"   ^iJd?i  3n\"m  ]g     ]kBeGrMrFiBeIuQe[e[eLi \\d [d [d#e Vh'fWf'hEe^e=iNh  LiNlEf `g@f=d ]m Af@g _fTdQfTdQfTdMe?e@e@e@e@eBiAwRhKrMrMrMrMe@e@e@e?nJgWe"
-"IiDiDiDiDi `h[dReUePeUePeUePeUeTfUfOe=kEd<dBd`dEc_d_cGe^eFc[c ;d<dCd_dEe^eKd<dCd_dEe_e?e^dGd`e`dFd<dBc_cEd`e`dHe]e <d<dBc_cDe_eAdGe>e^e$dZeZdTd`q`dTd`"
-"q`dTd[g[dTdYe[dKbShRc^b^c^bHgXdOmGcAiKj\\iHcDhLy ^c   .f[fPjUbNe[eMsPxJrMrPk$eBd]d<d\\dJcDiVdOlKd;dBd;c  ,eBkHkGoIm@fIoGlKrJkGl   Rl=jJgHpFnNqLrMpFoOeUe"
-"Pe@e@eXfNe@iYiTgWeKmMoEmMoHnNwNeUeSeSeRfXfXf[fYfPfWfOuOiGe=i;h$d ^e Oe&j\"e@e@e@e@e    Ae    ^iJd?i  3f]e#n  ]h     _mDgHrMrHmDeIuQe[e[eNm _f \\d \\f$e9c"
-"Al(eWeLd?kGe^e?mQk  PmPlFh!jDj?d ^n ChBk\"hTcRhTcRjVcLe@gBgBgBgBgBg@wUnNrMrMrMrMe@e@e@e?qMgWeKmHmHmHmHm#m_eReUePeUePeUePeUeSfWfNe>mFd<dCd^cEc^fFe^eEc]c"
-" :d<dCd^cEe^eKd<dCc]cEe_e>jGc^gEd<dCd_dFc^gGe]e <d<dCd_dEe_eAdGe>e^e$dZeZdTd`q`dTd`q`dTdZeZdTdZeZdLb^cWhSb`b]bZbKdOcQbZcFeCkLj]kJeEd_dLw ]c   /eVcPd\\c"
-"VbOeYfOb]c[c`dDd]cKtOtQm%eBd]d<d\\dJcEe_eWcOmKd<d@d<c  ,dBmIkGpJnBgIoHmKrLoJn   TnApMgHrJqOsNrMpHrPeUePe@e@eYfMe@iYiThXeMqOpHqOpJoNwNeUeSeSeQeXfXeYeYeN"
-"eWeNuOeBd9e<j$d _e Oe'f ^e@e@e@e@e    Ae    _fFd;f  5f[eHgDfYb  Ze     `f]fEgHrMrJqFeIuQe[e[ePq!h ]d ]h%e9cBm(fYfLd@lGe^eAf[fSb[d  Rf[f-d^d\"b\\eEb\\eAd "
-"^i^d Cc_dCe]e#c_dUcQc_dUcQb\\eXcKe@gBgBgBgBgBgAxWqOrMrMrMrMe@e@e@e?sOhXeMqLqLqLqLq'p`dQeUePeUePeUePeUeReWeMe?f]fFd>dBc\\cFc]dEe^eEi 9d>dCd]dFe^eJd>dCd]d"
-"Fe_e=fDc\\dCd>dBc]cFc\\dFe]e ;d>dBc]cEe_eBdFe>e^e$dZeZdTd`q`dTd`q`dTd[g[dTd[eYdLb_bUhSb_b^b[bOc_cUcZbRbXbFfDlNl_lKgFc^cKeSe ^c   /fCe]cVbPfYc`cOb]c[c_dE"
-"c]dLg\\dJgDf\\e&eBd]d=d\\dLjId]dXcOg\\cKd<d@dBb\\c\\b>d  XdCf]fJd^eGe[gKcZfDhIe?f[c?eKf]fKg]f   Ud\\fBrNgHeYfKh[fPeYhOe@e>hZfQeUePe@e@e[gLe@iYiThXeNg[gPeZfJg"
-"[gPeZfLfYcEeEeUeSfUfQeYhYeYf[fNfYf@fNeBd9e=f`f$d `e Oe'e ]e 7e@e    Ae    _eEd:e  5eZeIjFe  Pf     e[eEgHgBe>g[gJkLeUeQe[e[eQg[g#j ^d ^j&e9cCf[c'eYeKd"
-"Ae[c ^dUdLd  TdUd/d\\d<dDd>dBd ^j^d ?dCd[d `dVdMdVdJdYdKe@gBgBgBgBgCiBe_eKh[fPe@e@e@e@e@e@e@e?eYhPhXeNg[gNg[gNg[gNg[gNg[g)g[hPeUePeUePeUePeUeRfYfMe@f[e"
-"Ed@dBd\\d :e 6d@dCd[d$d@dCd[d ]h [d@dBd\\c  0d@dBd\\c _dEe 7dZeZdTdYdZdTdOdTd\\i\\dTd\\eXdLb`bThSb_bWbSiVd_hRcXcHgEmOn`mMiHdEdSd<bBc   0d`cCc`b\\cWbQd`cYc_cP"
-"b]c[c^cFd]cLeYdKeBfYc&eBd]d=d\\dNnLd[dZdOeBd=e@eDe^c^e?d  XdCe[eDeGbVeAfEhIe@f6eLf[fLeYd   UbYfEhZhQiIeXfMgWdPeWgPe@e?gVdQeUePe@e@e\\gKe@j[jTiYeOfWfQeYe"
-"KfWfQeYfNf:eEeUeReUePeYd`dYeXf]fLf[f?fNeBd9e>f^f !e Oe'e ]e 7e@e    Ae    _eEd:e  5eZeIkGe  Oe    !eYeGiHgCe?fWfMoNeUeQe[e[eRfWf%l _d _l <cDf _f[fKdAd"
-" VdSdMd  UdSd0cZc<dDd>d =k^d ?dDdYd dVcLdVcIdYc&iDiDiDiDiDiCf_eLgWdPe@e@e@e@e@e@e@e?eVfQiYeOfWfPfWfPfWfPfWfPfWf+fWeOeUePeUePeUePeUeQf[fLe@eYe         "
-"Df`e       -e 6cOdScYdZdScOdSc]e_e]dSc]eWdLcShSbTbShUcHbVbIiFmO{MjIdEeUe=dDdDfGdVdGeFdWe9cSc>c_cCc`c]cWbQc_cYc_dQb]c[c^cFc]cLeYdKeBfWb&eBd]d=d\\dOoLd[d"
-"ZcNeBd=d>dBd_c_d=d  YdCeYeEe;fAeFd`eIe@e6fLeYeMfYe ,b.b4eFfTfRiIeWeMeTcPeUePe@e?eScQeUePe@e@e]gJe@e`e[e`eTiYeOeUeQeYfLeUeQeXeNe9eEeUeReUePfZd`dZfXf]fK"
-"e[e?fMeAd:e?f\\f \"e Oe'e ]e 7e@e    Ae    _eEd:e  5eZeIb\\eGf  Pe    !eYeGiGgDe?eUeOsPeUeQe[e[eReUe&n `d `n =cDeCbRbKe[eJdAd Wd[g]dTj  Vd^i\\d1cZc<dDd?d "
-"<k^d ?dDdYd dWdLdWdJdYd&iDiDiDiDiEkDe^eLeTcPe@e@e@e@e@e@e@e?eUeQiYeOeUePeUePeUePeUePeUeMbSbOeVfPeUePeUePeUePeUePe[eKmHeYe         Cb\\e    :c   We 6dQd"
-"RdZd[dRdQdRd_e]e_dRd_eWdJb^bWhSbTbShTcIbVbJkFlO{NkIdEeUe=dDcFkIdVdGfGdWd;fSfBc^cCc_c]cXbRc^cYc^cQb]c[c^cGc]dMeXdLeAe [eBd]d=c[dOe_c]cLd[d[cMeBd=d>dAk<"
-"d  YdCeYeEe:eAeGd_eIeAe5eKeYeMeWd /e.e7eGePeTkJeWeNfAeUfQe@e@fRbQeUePe@e@e^gIe@e`e[e`eTjZePfUfReXeMfUfReXeNe9eEeUeQeWfOeZd`dZeVf_fJf]f@fLeAd:e@fZf DhG"
-"e^gCgDg^eHhJmBg^eMe^fHe@e@eZfLe@e^fZfTe^fCgGe^gEg^eMe]eEiInGeYeNeVeNeZeZeVfYfOfXfNqDeEd:e  Vh^eNeZeBeGiBhGe^fJeVeHfFeYe#c^fLtNe]e]eIhEpPsMeYeHkGgEe@eS"
-"eQg_e_gQeUeQe[e[eSfUf(f`d`f d f`d`f AhFeDdTdKe]eIdAe Xc\\j]cVl  Vc]k]c1cZc<dEdBg `eYeLk^d ?dDdYd dXdKdXdMgYd&kFkFkFkFkFe_eEf^eMfAe@e@e@e@e@e@e@e?eUfRjZ"
-"ePfUfRfUfRfUfRfUfRfUfOdUdQfWgPeUePeUePeUePeUePf]fKoJe\\hHhChChChChChDhZhNgChChChChHe@e@e@e7eIe^fCgBgBgBgBg=eEg^dMeYeLeYeLeYeLeYeNfXfMe^gKfXf'dQdRdZd[dR"
-"dQdRd_d[d_dRd_dVdIdWd^cSbTbShSbJbUbJlGlO{OmJdDdUd=dCcGmJdVdHgGeXd?jSjFc^cCc_c]cXbRc^cYc^dRb]c[c^cHd]cMeWdMe@e [eBd]dDxUe^cFd[d\\dMeBd>e>e@g:d  YdCeYeEe"
-":eAeGd_eIeAe5eKeYeMeWdKe@e0h.h:eHeNeUe_eJeWeNe@eTeQe@e@e@eUePe@e@e_gHe@e_e]e_eTe`eZePeSeReXeMeSeReXeNe9eEeUeQeWeNe[e_d[eUe_eHf_f@fKeAd:eAeVe HmIe`kHlH"
-"k`eJlLmDk`eMe_iJe@e@e[fKe@e_i]iVe_iGkIe`kIk`eMe_gGmKnGeYeMeXeMf\\g\\fUf[fMeXeMqDeEd:e  XqNe[fAdFjFlIe_iLfXeFeFeYeJeWeNe_iNtNe]e]eKkHrPsNeWeIe_eFgFe@eSeQ"
-"e]e]eQeUeQe[e[eSeSeMb<d_d_d=bDdEbTbJd_d_d BlHeCe_f_eJf_fId@e Zd]e\\b\\cXe\\d@b[b ?d]d]e]c2d\\d<dFeBg `eYeLk^d ?dDdYdIb[b@dXcJdXcLgYcHeBe_eFe_eFe_eFe_eFe_e"
-"Fe_eEe]eMe@e@e@e@e@e@e@e@e?eTeRe`eZePeSeReSeReSeReSeReSePfWfReWd`eQeUePeUePeUePeUeOf_fJpKe]fHmHmHmHmHmHmHl^lSlGlGlGlGlJe@e@e@e;jJe_iGkFkFkFkFk?eHk`eMe"
-"YeLeYeLeYeLeYeMeXeLe`kLeXe%dSdPd[d\\dPdSdPd_bYb_dPd_bVdGbYd`c^cSbTbShWc^bKbUbKmGkN{PoKdDeWe>eDcGf\\eKdVdHgFdYeBlQlJd^cCc^c]cYbRc^cYc]cRb]c[c^cHc]cLdWdLd"
-"@e ZeBd]dDxUe^cFd[d\\cLfCd>e>e@g:d  ZeDeWeFe:eAeHd^eIeBf6fKeYeMeWeLe@e3j,j>eHeLdUe_eJeWeNe@eTfRe@e@e@eUePe@e@e`gGe@e_e]e_eTe`f[ePeSeReXeMeSeReXeNf:eEeU"
-"eQfYfNe[d^d[eUkGe_e?fKe@d;eBeTe JoJqJnJqKnMmEqMe`kKe@e@e\\fJe@e`j^kWe`kImJqKqMe`hHnKnGeYeMeXeLe\\g\\eSf]fLeXeMqDeEd:e 8bBqMe[e@eGlImIe`kMgYeFeFeYeKeUePf`"
-"kOtNe]e]eLmJsPsNeWeIe_eEfFeAfSfSe\\e\\eReUeQe[e[eSeSeNd<b^d^b=dEdFdVdJb^d^b'e?nIeBpHe_eHd?f \\c]dTcXd[dAc\\c ?c\\d\\d]c1d^d;dGe=d eYeLk^d ?dDdYdIc\\cAdYdJdYd"
-"Hd[dHeBe_eFe_eFe_eFe_eFe_eGf_fFe]eMe@e@e@e@e@e@e@e@e?eTfSe`f[ePeSeReSeReSeReSeReSeOfYfQeXd_eQeUePeUePeUePeUeNe_eIeZfLe]eHoJoJoJoJoJoJn`nUnInInInInKe@e"
-"@e@e=lJe`kImHmHmHmHm@eIpLeYeLeYeLeYeLeYeMeXeLqMeXe%eUePe\\d]ePeUePeUePeUeFi]hSbUbRhUb_bKbUbLoGjMzPpLdCdWe?eMbXcGdYeLdVdHhGdYdElIlNc]cCc^c\\cZbSc]cYc]cRb"
-"]c[c^cIc]dLdWdLdBq#eBd]dDxUe^cFd[d]cJfDd>d<dBj;d  ZdCeWeFe:eBeGd^eIkHe^g>eIe[eLeWeLe@e6j&jBeGdZg^d^eWf_fKeXeNe?eSeRe@eAe?eUePe@e@kFe@e_e^f_eTe_e[eQeQe"
-"SeXeNeQeSeXeNh<eEeUePeYeMf\\d^d\\fTiFk@fJe@d;eCeRe Kd[gKh]fKg\\dJf]hLf\\eJe@f]hMh^fKe@e@e^gIe@h^f`d^fWh^fJf]fKh]fKf]hMhDg[cIe@eYeMfZfLe\\g\\eRf_fKfZfBfDeEd:"
-"e ;g\\hQf^jMe\\f?dHd]gKg\\cIh^fKfZeGgGeYeKeUeQf_e_eLe[eLe]e]eMf]fLg]fEeGeWeJf_fEfGeAeQeSe\\e\\eReUeQe[e[eTeQePf9d:fFdGfXfGd#e@g`c_dIeAnGkHd@i _d]dTdYd[dBd]"
-"d @d\\d\\d]d1h:dGd;d!eYeLk^d ?dDdYdId]dBdYcIdYcFd\\cGeCf_fHf_fHf_fHf_fHf_fHe]eGe\\eNe?e@e@e@e@e@e@e@e?eSeSe_e[eQeQeTeQeTeQeTeQeTeQeOf[fQeWd^eReUePeUePeUeP"
-"eUeNkIeYeLe^eGd[gKd[gKd[gKd[gKd[gKd[gKd\\k\\eVg\\dJf\\eJf\\eJf\\eJf\\eKe@e@e@e?oKh^fJf]fJf]fJf]fJf]fJf]fAeIf]fKeYeLeYeLeYeLeYeMfZfLh]fMfZf$eWeNeWeNeWeNeWeNeW"
-"e$bUbRhTb`bKbUbMqHiLyPqLdCdWdLxUeXcHeXdLdVdIe`dGeZdImCmRc]cCc]c]cZbSc]cYc]cRb]c[c^cJd]cLdWeMdBq\"e Vd\\dOf_cEd]d]dJg e<eDd_c_d=d  ZdCeWeFe;eBfHd]eInKe_j"
-"@eIf]eKeWeLe@e9jLxLjFeGe[j`d]dWe]eKeYfNe?eSeRe@oKe?eUePe@e@jEe@e^e_e^eTe_f\\eQeQeSeXeNeQeSeYeLk@eEeUePeYeLe\\d^d\\eRgDi@fIe@d;e  WbWeKg[fMfXbKf[gMfZeKeAf"
-"[gMf[eKe@e@e_gHe@f[g[eWf[eKf[fLg[fMf[gMgCe?e@eYeLeZeKe\\g\\eRf_fJeZeBfCeEd:e <j_jRe\\iMe_h>dIdZfLe@f[fKe[eFgGeYeLeSeRe^e^eMe[eLe]e]eNf[fMf[fFeGeWeJe]eDfH"
-"eAeQeTe[e[eSeUeQe[e[eTeQeQf8d9fGdHfVfHd#eAf^c]bIeAe\\eKsLdAd_g c]dRcYd\\eCe^e @c[d]e\\c0fCxRe;d!eYeKj^d ?dCd[dHe^eCdZcHdZcEd]cFeCe]eHe]eHe]eHe]eHe]eHe]eG"
-"e\\eNe?e@e@e@e@e@e@e@e?eSeSe_f\\eQeQeTeQeTeQeTeQeTeQeNf]fPeXd]eReUePeUePeUePeUeMiHeXeMe^eGbWeKbWeKbWeKbWeKbWeKbWeKbXhZeXfXbKfZeLfZeLfZeLfZeLe@e@e@e?f\\fL"
-"f[eKf[fLf[fLf[fLf[fLf[f'f[eKeYeLeYeLeYeLeYeLeZeKg[fMeZe\"f[fLf[fLf[fLf[fLf[f\"bWcRhTb`bLbWb_bNsMqPyQsMdCeYeLxVgZcGdWdLdVdIe`dFd[eLl;lUc]cCc\\c]c[bSc]cYc]"
-"cRb]c[c_cIc]cKdWdLd?e Ze Wd\\dNjEe_e]cJi!e<eFe^c^e?d  [eCeWeFe<fGiGd\\eIoLe`lBeFkJfYf ?kJxJkJeFd[o]eXe]eKqMe?eSeRqLoKe?uPe@e@iDe@e^e_e^eTe^f]eQeQeSeYeMe"
-"QeSeZfKmCeEeUePf[fLe]e^e]eRgCg?fIe@e<e  KdKfYeMe@eYfMeYeKeAeYfMfZeLe@e@e`gGe@fZfZeXfZeLeYeLfYeMeYfMfBe?e@eYeLeZeKf^i^fQkIf\\fCfBeEd:e <c]d_d]cRe[gLe_hE"
-"c\\dJeYeLe@fZeKe[eGiHeYeLeSeRe^e^eMe[eLe]e]eNeYeMeYeFeGsJe]eCfIeAeQeTe[e[eSeUeQe[e[eTe_m_eRf7d8fHdIfTfId#eAe]cDeAdZdKsLdBd\\f!c]dRcYe^fDf_fJx-c[k[c NxSe"
-":d!eYeKj^dKe YdCe]eHf_fDd[dHd[dEd^dFeCe]eHe]eHe]eHe]eHe]eIf]fIf\\qZe?qLqLqLqLe@e@e@eCoYeSe^f]eQeQeTeQeTeQeTeQeTeQeMf_fOeYd\\eReUePeUePeUePeUeLgGeXeMe^e;"
-"d?d?d?d?d?d@fYeXe@eYeLeYeLeYeLeYeLe@e@e@e@fZeLfZeLeYeLeYeLeYeLeYeLeYe'e[gLeYeLeYeLeYeLeYeLf\\fKfYeMf\\f!oJoJoJoJo!bWbQhXc^bKbZb_b^bOsOuQwQuNdBdYdKxSdZcG"
-"dWdLdVdId_eGd[dKh3hUc]cCc\\c]c[bSc]cYc]cRb]c[gJc]dKzUzUe Ze Wd\\dMlGi]d]fTkYe.e<eEb\\c\\b>d  [dBeWeFe<eFgEd\\eIcZgMh]gCeDgGeYf AjGxGjMeEd\\f]g\\dYe[eLoKe?eSe"
-"RqLoKeXkRuPe@e@iDe@e^k^eTe^f]eQeQeSeZfMeQeSpInEeEeUeOe[eKe]d\\d]eRgCg@fHe?d<e  KeLfYfOfAfYfNeWeLeBfYfMeYeLe@e@kFe@eYeYeXeYeMfYfMfYfOfYfMfBe?e@eYeLf\\fJe"
-"^d_d^eOiGe\\eCfBfEd:eBgUb.c[g[cTeZgLe_jIh_dJdXfMe@eYeJe]fGiHeYeLeSeSe]e]eNe[eLe]e]eOfYfOfYfGeGsKe[eDfIeAeQeTe[e[eSeUePe\\e\\eSe_m_eSf6d7fIdJfRfJd#eBf]cHp"
-"IdXdFgFdBd[f\"c]dRcXh`dEe^eHx-c[hXc NxTd@b[e!eYeJi^dKe YdBkEe^eEd[cWdTd[c\\gWb[e^cWdSeCe[eJe[eJe[eJe[eJe[eJe[eIe[qZe?qLqLqLqLe@e@e@eCoYeSe^f]eQeQeTeQeTe"
-"QeTeQeTeQeLkNeZd[eReUePeUePeUePeUeLgGeXeMe^e;e@e@e@e@e@eAeWeZfAeWeNeWeNeWeNeWeMe@e@e@e@eYeLeYeMfYfNfYfNfYfNfYfNfYf)f[c`dLeYeLeYeLeYeLeYeKe\\eJfYfMe\\e _"
-"kFkFkFkFk _bYbPc^dWdJbZb^b_bPuQwQvQuNdBe[e@eKe\\dGdVdMdVdJe_eGe\\dKi4hUc]cCc[c]c\\bSc]cYc]cRb]mId]cJzUzUe Ze Wd\\dLmHg]d]iWe_gZe.e<e?cBx $dBeWeFe=fFjId[e?"
-"fMfYeDfGmJg]h Ci QiOeFd[dYe\\dYe[eLqMe?eSeRqLeAeXkRuPe@e@jEe@e]i]eTe]f^eQeQeSpLeQeSnDlFeEeUeOe[eKf^d\\d^fRgBe@fGe?d<e  KeLeWeOe@eWeNeWeLeBeWeMeYeLe@e@jE"
-"e@eYeYeXeYeMeWeMeWeOeWeMeAgAe@eYeKe\\eIe^d_d^eOiGe\\eDgBeDd9eFm[e.cZeZcTeZgLe[gKj`dKeWeLeAeYeJe]eGjHeYeMeQeTe]e]eNe[eLe]e]eOeWeOeWeGeGsKe[eEfHeAeQeTe[e["
-"eSeUePe\\e\\eSe_m_eT{JdK{JdK|Kd#eBe\\cHpIdXdFgFdBdYe#c]dRcWf_dFe^eGx-c[d_dYc DdKkFk eYeIh^dKe ]lDgBe^eJl`cWeXl`c\\jYk^cWeSeCe[eJe[eJe[eJe[eJe[eJe[eJf[qZe?"
-"qLqLqLqLe@e@e@eCoYeSe]f^eQeQeTeQeTeQeTeQeTeQeKiMe[dZeReUePeUePeUePeUeKeFeXeMe]e<e@e@e@e@e@eAeWeZe@eWeNeWeNeWeNeWeMe@e@e@eAeWeMeYeMeWeNeWeNeWeNeWeNeWeL"
-"wTe[c_eMeYeLeYeLeYeLeYeKe\\eJeWeMe\\e    CmPc^c`dYbIb^c^b^cOuRyQtOsMdAd[eAeId\\cFdVdMdVdJe^dGe]eKl;lUc]cCc[c]c\\bSc]cYc]cRb]mIc]dJzUzUe Ze Wd\\dJl?c]e_eXe^"
-"g[d-e<e?cBx $dBeWeFe>f@fKe[e>fNfYfEeGe\\fJl`e Cf KfPeEd\\eYe\\dZf[fMeXeNe?eSeRe@eAeXkReUePe@e@kFe@e]i]eTe\\e^eQeQeSoKeQeSoAhFeEeUeNe]eIe^d\\d^eRiCeAfFe?d<e"
-"  SmLeWeOe@eWeNsLeBeWeMeYeLe@e@iDe@eYeYeXeYeMeWeMeWeOeWeMe@jEe@eYeKe\\eIe^d_d^eNgEe^fDfEhCd8hKx.cZdYcTeZgLeYeLe]c`dKeWeKiFeYeJe]eGe`fIeYeMeQeTe]e]eNe[e"
-"Le]e]eOeWeOeWeGeGeWeLf[fFfHeAeQeTe[e[eSeUePf]e]fSeQeT{JdK{JdK|Kd#eBe\\cHpIdXdEe#dXd#c]dRc3e^e2d-c[d^dZc DdKkEh _eYeEd^dKe ]l _e^eKoXfXo\\b\\eYh]dXfTeCf[f"
-"Lf[fLf[fLf[fLf[fLeYeKeZeNe?e@e@e@e@e@e@e@e?eSeSe\\e^eQeQeTeQeTeQeTeQeTeQeJgLe\\dYeReUePeUePeUePeUeKeFeXeMe\\fFmHmHmHmHmHmI{Ze@sNsNsNsMe@e@e@eAeWeMeYeMeWe"
-"NeWeNeWeNeWeNeWeLwTe\\c^eMeYeLeYeLeYeLeYeJe^fJeWeLe^f    CnQh]iHb^c]b`cNvSyQsMqLdAd[dAeHd\\cFdVdMdVdJd]eGd]eGlClQc]cCcZc]c]bSc]cYc]cRb]c^c^dKc\\cIdXdKdAo"
-"!e Xd[cFjAd]d]dYe\\g]e-e<e?cBx0j _dAeWeFe?f=eLdZe=eNeWeEeHeYeJj_e Ci QiPeEd\\dWd\\dZeYeMeWeOe?eSeRe@eAeReReUePe@e@e`gGe@e]i]eTe\\f_eQeQeSmIeQeSe\\g?fGeEeUe"
-"Ne]eIe_e\\e_eRiCeAfFe>d=e  VpLeWeOe@eWeNsLeBeWeMeYeLe@e@hCe@eYeYeXeYeMeWeMeWeOeWeMe>jGe@eYeKf^fIf`e^d`fMeDe^eDfDfAd6fKe\\n-cYcYcTeYeKeXeMd[fKeWeJhFeYeIe"
-"_fGe_eIeYeMe[e[eTe]e]eNe[eLe]e]eOeWeOeWeGeGeWeLeYeGfGeAeQeTe[e[eSeUeOe]e]eReQeT{JdK{JdK|Kd#eBe\\cDeBdXdEe#eYd#c]dRc3e^e2d-c[d]d[c Dd  ]eYeEd^d  6e^e@cX"
-"c`dMcTdNcXc`dUeBeYeLeYeLeYeLeYeLeYeLeYeKeZeNe?e@e@e@e@e@e@e@e?eSeSe\\f_eQeQeTeQeTeQeTeQeTeQeJgLe]dXeReUePeUePeUePeUeKeFeXeMeZeJpKpKpKpKpKpK}Ze@sNsNsNsM"
-"e@e@e@eAeWeMeYeMeWeNeWeNeWeNeWeNeWeLwTe]d^eMeYeLeYeLeYeLeYeJe^eIeWeLe^e    Bb_k%b^b`c^cMvSyPqKoKdAe]eBeGe^cEdVdMdVdJd]eGe^dClIlNc]cCcZc\\c^bSc]cYc]cRb]"
-"c]c]cLc]cHdYdJdBo e ^xLc_gBc]d[dZe[g^e-e<e Ud&j _dAeWeFe@f;eNdYe=eNeWeFfIeWeIg^e Aj WjNeEd\\dWd\\dZqMeVePe?eSeRe@eAeReReUePe@e@e_gHe@e\\g\\eTe[e_eQeQeSeAe"
-"QeSeZe?fGeEeUeNf_fIe_dZd_eSkDeBfEe>d=e  WqLeWeOe@eWeNsLeBeWeMeYeLe@e@iDe@eYeYeXeYeMeWeMeWeOeWeMe;iIe@eYeJe^eGe`d]d`eMfDf`fEfChCd8hKcVg*cZeZcTeYeKeXeNd"
-"ZeJeWeLjFeYeIe_eGf_eIeYeMe[e[eTe]e]eNe[eLe]e]eOeWeOeWeGeGeWeLeYeHfFe@eSeRe\\e\\eReUeNe^e^eQeQeSf6d7fIdJfRfJd#eBe\\cDeBdXdLs)f[d#d]dTdYmFe^e3d-d\\d]d\\d Dd "
-" ]eYeEd^d  _mEe^e@cWb_dNcSdOcWb_dVeAqLqLqLqLqMsMqNe?e@e@e@e@e@e@e@e?eSeSe[e_eQeQeTeQeTeQeTeQeTeQeKiMe^dWeReUePeUePeUePeUeKeFeYeLeYfMqLqLqLqLqLqL~Ze@sN"
-"sNsNsMe@e@e@eAeWeMeYeMeWeNeWeNeWeNeWeNeWe)e^d]eMeYeLeYeLeYeLeYeJf`fIeWeLf`f    Bb_j$b_b]dKvSyOoJoKd@d]dIxQd^cEdVdMdVdKe\\dGe_e?lQlIc^cCcYc]c^bRc^cYc]cR"
-"b]c\\c^dNc]dGdZdId@e Ze ^xLc^fCc\\d[dZeZg`e,e<e Ud&j _dAeWeFeAf:eNtAeNeWeFeHeWeAf ?kJxJkLeEd\\dWd\\d[sNeVeOe@eTfRe@e@eSeReUePe@e@e^gIe@e\\g\\eTe[f`ePeSeRe@e"
-"SeReZf?eGeEeUeMe_eHf`dZd`fTf_fEeCfDe>d=e  WfZeLeWeOe@eWeNe>eBeWeMeYeLe@e@jEe@eYeYeXeYeMeWeMeWeOeWeMe8fIe@eYeJe^eGe`d]d`eNhDe`eEg@fDd9f ?cZeZcTeZfKeXeN"
-"dYdJeWeMfAeYeIe_eGe]eJeYeMe[e[eTe]e]eNe[eLe]e]eOeWeOeWeGeGeWeMfYfJfEe@eSeRe\\e\\eReUeNf_e_fPeSeQf7d8fLb^d^bMfTfId#eBe\\cDeAdZdKs(g^d!c]dTcXmEe^e4d,c\\d]d\\"
-"c Cd  ]eYeEd^d  _mFe^e@dXc_dOdSdPdXc_dWeAsNsNsNsNsNsMqMe@e@e@e@e@e@e@e@e?eTfSe[f`ePeSeReSeReSeReSeReSeKkMe_dXeQeUePeUePeUePeUeKeFeZfLeXeMfZeLfZeLfZeLf"
-"ZeLfZeLfZeLf[eLe@e@e@e@e?e@e@e@eAeWeMeYeMeWeNeWeNeWeNeWeNeWe)e^c\\eMeYeLeYeLeYeLeYeIe`eHeWeKe`e    Ab_j$b_bDj`kRl`mNmHmJd@e_eIxQd^cEdVdMdWdJd[dFd_e<jSj"
-"Fc^cCcXc]c_bRc^cYc^cQb]c\\c]cOd]cFdZdId?e  TxLc]eDd\\d[dZeYj+e<e Ud  ]e@eYeEeBf9eNtAeMdWeFeHeWeAe ;jLxLjIeEd\\dWd]dZsNeVeOe@eTeQe@e@eSeReUePe@e@e]gJe@e\\g"
-"\\eTeZe`ePeSeRe@eSeReYf@eGeEeUeMe_eGe`dZd`eSe^fEeDfCe>e>e  XeXeLeWeOe@eWeNe>eBeWeMeYeLe@e@e`fFe@eYeYeXeYeMeWeMeWeOeWeMe6eJe@eYeIe`eFe`d]d`eNiEe`eEf>fEd"
-":f >d\\g\\dTeZfKeXeNdYdJeWeNe?eYeHjHf]eJeYeMe[e[eTe]e]eNe[eLe]e]eOeWeOeWeGeFeYeLeWeKgEe@fUfRf]e]eQeUeMqOeSePf8d9fLd_d_dMfVfLb^d^b'eBe\\cDeAe\\eDe `k!c\\e\\b"
-"\\c/f_f6d,c\\d\\d]c Cd  ]eYeEd^d  :f_f?cXc^dOcSdOcXc^dXe@sNsNsNsNsNsNrMe@e@e@e@e@e@e@e@e?eTeReZe`ePeSeReSeReSeReSeReSeLf_fNe`dWeQeUePeUePeUePeUeKeFpKeWeO"
-"eXeMeXeMeXeMeXeMeXeMeXeMeYeLe@e@e@e@e?e@e@e@eAeWeMeYeMeWeNeWeNeWeNeWeNeWe)e_c[eMeYeLeYeLeYeLeYeIe`eHeWeKe`e    Am$b_bDi_b`iQk`mMlGkId?d_eIxPd`cDdVdMdW"
-"dJd[eGe`d7fSfBc^cCcXc]c_bRd_cYc^cQb]c[c]cPc]cDd\\dGd@e  Od[cEc]eDc[d[dZeXi+e<e Ud  ]d?eYeEeCf8eNtAeMdWeGfHeWeAe 8jOxOj&d\\dXe]d[fWeNeVeOfAeUfQe@e@fTeReU"
-"ePe@e@e\\gKe@e[e[eTeZjPfUfRe@fUfReXe@eGeEfWfLjGiZiTf]fFeDfCe=d>e  XeXeLeXfOfAeXfNf?eBeXfMeYeLe@e@e_fGe@eYeYeXeYeMeXfMeXfOeXfMe6eJe@eYeIe`eFh[hOkEiFf<eE"
-"d:e <e`e_e`eSeZfKeXeNdZeJfYfNe?eYeHiGe\\fKeYeMe[e[eTe]e]eNe[eLe]e]eOeXfOfYfGeFeYeMfWeKfDe?fWfPg_e_gQeUeKmMfUfOf9d:fLf`d`fMfXfLd_d_d(eBf]cDeBoDeEd<g _c\\"
-"j]c-e^e6d+c]d\\d^c Bd  ]eYeEd^d  :e^e?dXb]dPdTePdXb]dXeAfWeOfWeOfWeOfWeOfWeOfWfOeXeMfAe@e@e@e@e@e@e@e?eUfReZjPfUfRfUfRfUfRfUfRfUfMf]fOhWfQfWfPfWfPfWfPf"
-"WfKeFoJeWeOeXeMeXeMeXeMeXeMeXeMeXeMeYfMfAfAfAfAf@e@e@e@eAeWeMeYeMeXfNeXfNeXfNeXfNeXfCeJd`c[fMeYeLeYeLeYeLeYeHiHeXfJi     9b_bCh_b_gPj_b`jKjEiHd?d_dCeB"
-"d`cDdVdMeXdKeZdGe`d4cSc>c_cCcWc]c`bQc_cYc_dQb]c[d^cQc]dDe]dGeAfWb  [d\\dEc]eEcZd[dZfXg)d<d Td  ]d?eYeEeDf7eCe>fMeYfGeGeWeBe 4j,j#d[dYe^e[eUeOeVeNeTcPeU"
-"ePe@e?eTeReUePe@e@e[gLe@e[e[eTeYiOeUeQe?eUeQeXfAeGeDeWeKiFhXhUf[fGeEfBe=d>e  XeYfLfYeMe@eYfMe?eAeYfMeYeLe@e@e_gHe@eYeYeXeYeLeYeLfYeMeYfMe6eJe@eZfIjEg["
-"gOf`fEhFf;eEd:e ;h]hQe[gLeXeNdZdHeYeMe?eYeHiHf[eKeYeMe[e[eSe^e^eMe[eLf^e^fOfYeMeYeFeFeYeMeUeMfCe>eXfNsPeUeJkKeUeMd8d9dJnKdVdLf`d`f)eAe]cDeBpEeEd:e _d["
-"g]d,d]d6d+d^d[d`d   ;eYeEd^d  :d]d?dXc]dQdTePdXc]dXeAeUePeUePeUePeUePeUePeUePfXeLeTcPe@e@e@e@e@e@e@e?eUeQeYiOeUePeUePeUePeUePeUeMf[fOfVeOeWeNeWeNeWeNe"
-"WeJeFmHeWeOeYfMeYfMeYfMeYfMeYfMeYfMeZgLe@e@e@e@e@e@e@e@e@eYeLeYeLeYeLeYeLeYeLeYeLeYeBeJg[eLeZfLeZfLeZfLeZfHhGfYeIh     8b_bBe]b^eNh^b_hJiChHd?iDeAgDdV"
-"dLdYeKdYdFh @d`cCcWc]c`bQd`cYc`dPb]cZc]cSd]cBe_dEeAfYc  [d\\dLb[c^fFdZd[dYfZi*e>e Td  ^e>e[eDeEf7eBe?fKdYeFeGfYfCf 1h.h `d\\f]g_eZeUeOeWfNgWdPeWgPe@e>eU"
-"eReUePe@e@eZgMe@eQeTeYiOfWfQe?fWePeWeObUeFeDfYfKiFhXhUf[fGeFfAe=d>e  XeYfLg[fMfXbKf[gMfWbKeAf[gMeYeLe@e@e^gIe@eYeYeXeYeLf[fLg[fMf[gMeAbWeJe@f[fHhDg[gP"
-"f^fFhGg;eEd:e :f[fPe\\hLfZeMd[eHf[fMf@eYeGhHeZeKf[fMf]g]eRe^e^eMe[eKe^e^eNg[fMf[fFeEe[eLeUeNfBe=f[fKoNeUeGeHfWfLb7d8bHlIbTbJn(eAf^c]bIeCe_f^dFeEd9e _dS"
-"d*c\\c =dSd   :f[fEd^d  :c\\c>cXc\\dQcSdOcXc\\dXeXbKeUePeUePeUePeUePeUePeUePeWeLgWdPe@e@e@e@e@e@e@e?eVfQeYiOfWfPfWfPfWfPfWfPfWfNfYfOeWfOfYfNfYfNfYfNfYfJeF"
-"e@eWeOeYfMeYfMeYfMeYfMeYfMeYfMeZhWbXfXbKfWbLfWbLfWbLfWbLe@e@e@e@f[fLeYeLf[fLf[fLf[fLf[fLf[fBeIe[fLf[fLf[fLf[fLf[fHhGg[fIh     7b_b<cDb\\c\\bFgBgGd>gDe?e"
-"CdVdLe[eJdYeGg >fUbPcVc]dPfYfOb]cZd^cSc]c@iDfBf\\e&e Yd\\dLd]c_fEcXd]dWg]k+e>e TdIe \\eBd=f]fDeGgBcYgBeJcYgKf]gGfFf[fKc[fIe@e-e.e=eDd[tZfUfPeXfLh[fPeYhOe"
-"@e>hZgReUePe@e@eYgNe@eQeTeXhNg[gPe>g[gPeWfPeZgFeCf[fIgDgXgUfYfHeFfAe<d?e  Xf\\hLh]fKg\\dJf]hLg[dKe@f]hMeYeLe@e@e]gJe@eYeYeXeYeKf]fKh]fKf]hMeAd[gJf@f^hHh"
-"Dg[gPf]fFfGg:eEd:e  Zf^jMg\\fMd\\eFf]fKfZcJeYeGgGeZfLg]gLe]g]eQe_e`fLe[eKf_e_fNh]fKf]fDeFf]fMfUfPfAe<f]fHkLeUeGeGg[g d ^j!l'e@f_c_dIeDdTdGeEd7d _dUd(b[b"
-" <dUd   9g]gEd^d  :b[b>dXmTdTePdXmYf\\dLfUfRfUfRfUfRfUfRfUfRfUfRfWeKh[fPe@e@e@e@e@e@e@e?eYhPeXhNg[gNg[gNg[gNg[gNg[gNfWfQh[gMf[fLf[fLf[fLf[fIeFe@e_b[fOf"
-"\\hMf\\hMf\\hMf\\hMf\\hMf\\hMf]e`g[dWg\\dJg[dKg[dKg[dKg[dLe@e@e@e?f]fKeYeKf]fJf]fJf]fJf]fJf]fAeIf]fJf^hKf^hKf^hKf^hGfFh]fGf     6b_b<c>c?e@eFd>gDd>eCdVdKmJeX"
-"dGgHxSxQeWdPcVc\\cOeYeNb]cYc]cUc]d?hCiEm%e Zd\\dKpEcWe_eWo`g+d>d SdIe \\eBd<mIqMrMpAeJpInFeDoJmHe@e*b.b:eDe[j`gXeSePrJqOsNrMe<rQeUePe@e@eXgOqLeQeTeXhMqOe"
-"=pNeVfQqEeBoHgDgXgUeWeHeGvPe<d?e  Wl`eLqJnJqKoKe@qMeYeLe@e@e\\gKe@eYeYeXeYeJmJqKqMeAoHkFk`eHhDfYfQf\\fFfGqDeEd:e  YsOpLe]dDmJoJeYeGgHeXeLsNf_i_fQqLe[hMq"
-"Me`lJmCiImLwPrMeAl_lJeIeUeGeFq `d ]h `j&e?nMsMbRbFeEd7d ^f[f  :f[f Ix &sGd^d   PcWmTcTeOcWmYnLeSeReSeReSeReSeReSeReSeReVrWqOrMrMrMrMe@e@e@e?sOeXhMqLqL"
-"qLqLqLdUdQd`pKoJoJoJoHeFe@e_lMl`eLl`eLl`eLl`eLl`eLl`eLl^oVnIoJoJoJoLe@e@e@e>mJeYeJmHmHmHmHm%pJk`eKk`eKk`eKk`eGfFqGf     6b_b<c>c>c>cFd=gDd>dBdVdJkIeXd"
-"FfHxSxPg]fOcUiNg^fMhYiUxLtOtPk$e Zd\\dJnEdViTk]g,d>d SdIe \\eBd;kHqMrMo@eJnFlEeCmIlGe@e  PeCdZg^eVeSePqGnNqLrMe;oOeUePe@e@eWgPqLeQeTeWgKmMe;mMeUeQpDeAmG"
-"gDfVfVfWfIeGvPe<d?e  Vj_eLe`kHlHk`eJmJe?k`eMeYeLe@e@e[gLe@eYeYeXeYeIkIe`kIk`eMe@mFjEi_eGfBeYeQfZfGfGqDeEd:e  XrOoJjBkHnJeYeFfHeXeLe`g_fMj_jOoKeZgLoLe_"
-"jHkAhHkKwPrMeAl_lJeIeUeGeDm ^d \\f ^h%e>lLs!eEd7d \\m  6m Gx &e`g_fGd^d   QcOdScTdNcOdVlKeSeReSeReSeReSeReSeReSeReVrUnNrMrMrMrMe@e@e@e?qMeWgKmHmHmHmHmIb"
-"SbPd_mHmHmHmHmGeFe@e_kKj_eKj_eKj_eKj_eKj_eKj_eKj\\mTlGmHmHmHmKe@e@e@e=kIeYeIkFkFkFkFk%e`kHi_eJi_eJi_eJi_eGfFe`kFf     5c<e@e>b=bFd<eBb<cBdVdHgGdWeGfHxS"
-"xNlMcThLkKhXiVxJrMrNg\"e Zd\\dGiCcTgQh[g-e@e SdIe \\eCd8gFqMrKj=eHjBhDe@iEhEe@e  PeCeDeQeQoBhKnIrMe8iLeUePe@e@eVgQqLeQeTeWgIiKe9jLeUfOjAe?iDeCfVfWfUfJeGv"
-"Pe;d@e  Tf]eLe^gDhDg^eHiHe=g^eMeYeLe@e@eZgMe@eYeYeXeYeGgGe^gEg^eMe=hCiCf^eGfBeYeRfXfHeFqDeEd:e  Vh_gOe_gGh?gCiHeYeFeHfWeMe_e]dKi_iLkIeYfIiIe^gDg=fFgJy"
-"QrMeAl_lJeIeUeGeBi \\d [d \\f$e<hJs!eEdAcZe Zi  2i Ex &e_e]dFd^d   RdOdTdUkUdOdThJeQeTeQeTeQeTeQeTeQeTeQeTfVrRhKrMrMrMrMe@e@e@e?nJeWgIiDiDiDiDi'd[hDiDiD"
-"iDiEeFe@e^hGf]eIf]eIf]eIf]eIf]eIf]eJhYiPhCiDiDiDiIe@e@e@e;gGeYeGgBgBgBgBg#d^gCf^eHf^eHf^eHf^eGeEe^gDe     4c  1d 4c     Vb`e <d   %c  Ud@d 7d 9d      "
-"+d  ,e     :e    Ye     Ee;d@e     /e De   Je3e    Jf ZeEd:e  5e  GeFe!e=f[fHe \\eGe         .d 8c  XdAm       .e9d^d\"c  =dEk@d    *c         Ab       "
-" 7c         @c  'fEe<f        Cd      $e >d   $c  Ud@d 7d 9d      +d  +eQb     Le    Xe     Fe;d@e     0e Ce   Je3e    Je YeEd:e  5e  GeFe!e Ue \\eGe  "
-"         Cc  XdAl       -e9d^d!c        ;c                  Wc            FeDe<e        Bd      #e ?d   $c  TdBd 7d 9e      ,d  )fTd     Ne    Vd     "
-"Fi?eEi     ;bXf Ce   Je3e    Kf YfFd;f  5e  GeFe!e Ue \\eGe           Cc  Xd?h       +e9d^d!d        <d                  Xd            HfDe=f        Gd"
-"_d      #f @d   $c  ScBc 6d 9d      +d  (hZg     Of    Ve     Gi>dEi     ;d[g De   Ie3e    Kf XiJd?i  4e  GeFe!e Ue \\eGe           Cc  Xd        Ce 5b"
-"^d        @b^d                  \\b^d            HfDe=f        Gd_d      \"f @b   #c  SdDd 6c        @c  &s     Qh    Te     Hi `i     ;o Fh   Ie3e    N"
-"h WiJd?i  4e  GeFe!e Ue \\eGe           Cc  Xd        Ce 5h        @h                  \\h            KhCe@h        Eh                            Bo    "
-" Og           's    Jm Eg   He3e    Ng TgJd?g  2e  GeFe!e Ue \\eGe             8d        Ce 5h        @h                  \\h            KgBe@g    Tc   "
-" Sg                            >i     Lf           &s    Hh Be   Fe3e    Nf 6d   Ke  GeFe!e Ue \\eGe                      Xe 5g        ?g              "
-"    [g            JfAe@f    Tb`b    Qc                                              s                Md                                               "
-"                           !";
-
-    // Define a 47x53 font (huge size).
+    // Define a 47x53 font (extra-large size).
     const char *const data_font47x53 =
 "                                                                                                                                                      "
 "        :]']2]    +]']2^ D]']3_   E]']1]   \"]']2^ 8]                                                                                                  "
@@ -31858,7 +31597,7 @@ namespace cimg_library_suffixed {
        \param foreground_color Array of spectrum() values of type \c T, defining the foreground color (0 means 'transparent').
        \param background_color Array of spectrum() values of type \c T, defining the background color (0 means 'transparent').
        \param opacity Drawing opacity.
-       \param font_height Height of the text font (exact match for 13,23,33,43,53, interpolated otherwise).
+       \param font_height Height of the text font (exact match for 13,23,53, interpolated otherwise).
     **/
     template<typename tc1, typename tc2>
     CImg<T>& draw_text(const int x0, const int y0,
@@ -31870,7 +31609,7 @@ namespace cimg_library_suffixed {
       char tmp[2048] = { 0 }; std::va_list ap; va_start(ap,font_height); cimg_vsnprintf(tmp,sizeof(tmp),text,ap); va_end(ap);
       static CImgList<floatT> font;
       const unsigned int
-        ref_height = font_height<=13?13:font_height<=23?23:font_height<=33?33:font_height<=43?43:53,
+        ref_height = font_height<=13?13:font_height<=23?23:53,
         padding_x = font_height<=18?1:font_height<=33?2:3;
       if (!font || font[0]._height!=font_height) {
         font = CImgList<floatT>::font(ref_height,true);
@@ -32063,7 +31802,7 @@ namespace cimg_library_suffixed {
        \param color Pointer to \c spectrum() consecutive values, defining the drawing color.
        \param opacity Drawing opacity.
        \param pattern Drawing pattern.
-       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename t, typename tc>
@@ -32113,7 +31852,7 @@ namespace cimg_library_suffixed {
        \param color Pointer to \c spectrum() consecutive values, defining the drawing color.
        \param opacity Drawing opacity.
        \param pattern Drawing pattern.
-       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename t, typename tc>
@@ -32167,7 +31906,7 @@ namespace cimg_library_suffixed {
        \param opacity Drawing opacity.
        \param pattern_x Drawing pattern for the X-axis.
        \param pattern_y Drawing pattern for the Y-axis.
-       \param font_height Height of the labels (exact match for 13,23,33,43,53, interpolated otherwise).
+       \param font_height Height of the labels (exact match for 13,23,53, interpolated otherwise).
        \param allow_zero Enable/disable the drawing of label '0' if found.
     **/
     template<typename tx, typename ty, typename tc>
@@ -45800,7 +45539,7 @@ namespace cimg_library_suffixed {
 
     //! Return a CImg pre-defined font with desired size.
     /**
-       \param font_height Height of the desired font (exact match for 13,23,33,43,53)
+       \param font_height Height of the desired font (exact match for 13,23,53)
        \param is_variable_width Decide if the font has a variable (\c true) or fixed (\c false) width.
     **/
     static const CImgList<T>& font(const unsigned int font_height, const bool is_variable_width=true) {
@@ -45831,9 +45570,7 @@ namespace cimg_library_suffixed {
       if (!font_height) return CImgList<T>::empty();
       if (font_height<=13) { _cimg_font(12,13,86); } // [1,13] -> ref 13
       if (font_height<=23) { _cimg_font(20,23,79); } // [14,23] -> ref 23
-      if (font_height<=33) { _cimg_font(28,33,71); } // [24,33] -> ref 33
-      if (font_height<=43) { _cimg_font(37,43,65); } // [34,43] -> ref 43
-      _cimg_font(47,53,57);                          // [34,+inf] -> ref 53
+      _cimg_font(47,53,57);                          // [24,+inf] -> ref 53
     }
 
     static CImgList<T> _font(const char *const data_font, const unsigned int w, const unsigned int h, const unsigned int M, const bool is_variable_width) {
