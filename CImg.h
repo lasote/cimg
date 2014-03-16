@@ -32180,7 +32180,7 @@ namespace cimg_library_suffixed {
                         const char *const text,
                         const tc1 *const foreground_color, const tc2 *const background_color,
                         const float opacity, const CImgList<t>& font,
-                        const bool is_native_font) {
+                        const bool draw_all_channels) {
       if (!text) return *this;
       if (!font)
         throw CImgArgumentException(_cimg_instance
@@ -32216,7 +32216,7 @@ namespace cimg_library_suffixed {
         default : if (c<font._width) {
             CImg<T> letter = font[c];
             if (letter) {
-              if (is_native_font) letter.resize(-100,-100,1,_spectrum,0,2);
+              if (draw_all_channels) letter.resize(-100,-100,1,_spectrum,0,2);
               const unsigned int cmin = cimg::min(_spectrum,letter._spectrum);
               if (foreground_color) for (unsigned int c = 0; c<cmin; ++c) if (foreground_color[c]!=1) letter.get_shared_channel(c)*=foreground_color[c];
               if (c+256<font.width()) { // Letter has mask.
@@ -46046,53 +46046,57 @@ namespace cimg_library_suffixed {
       return res;
     }
 
-
     //! Return a CImg pre-defined font with desired size.
     /**
        \param font_height Height of the desired font (exact match for 13,23,53,103).
        \param is_variable_width Decide if the font has a variable (\c true) or fixed (\c false) width.
     **/
     static const CImgList<ucharT>& font(const unsigned int font_height, const bool is_variable_width=true) {
+      if (!font_height) return CImgList<ucharT>::empty();
 
-#define _cimg_font(sx,sy,M) \
-      static CImgList<ucharT> font##sx##x##sy, vfont##sx##x##sy; \
-      cimg::mutex(11); \
-      if (!is_variable_width && !font##sx##x##sy) font##sx##x##sy = CImgList<ucharT>::_font(cimg::data_font##sx##x##sy,sx,sy,M,false); \
-      if (is_variable_width && !vfont##sx##x##sy) vfont##sx##x##sy = CImgList<ucharT>::_font(cimg::data_font##sx##x##sy,sx,sy,M,true); \
-      cimg::mutex(11,0); \
-      if (is_variable_width) { \
-        if (vfont && font_height==vfont[0]._height) return vfont; \
-        cimg::mutex(11); vfont = vfont##sx##x##sy; \
-        if (font_height!=vfont[0]._height) cimglist_for(vfont,l) \
-          vfont[l].resize(cimg::max(1U,vfont[l]._width*font_height/vfont[l]._height),font_height,1,1, \
-                          vfont[0]._height>font_height?2:5); \
-        cimglist_for(vfont,l) vfont[l].resize(vfont[l]._width + padding_x,-100,1,1,0,0,0.5); \
-        vfont.insert(256,0); \
-        cimglist_for_in(vfont,0,255,l) vfont[l].assign(vfont[l+256]._width,vfont[l+256]._height,1,1,1); \
-        cimg::mutex(11,0); return vfont; \
-      } else { \
-        if (font && font_height==font[0]._height) return font; \
-        cimg::mutex(11); font = font##sx##x##sy; \
-        if (font_height!=vfont[0]._height) cimglist_for(font,l) \
-          font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100, \
-                         font[0]._height>font_height?2:5); \
-        cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5); \
-        font.insert(256,0); \
-        cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,1,1); \
-        cimg::mutex(11,0); return font; \
+      // Create nearest base font data if needed.
+      const char *data_fonts[] = { cimg::data_font12x13, cimg::data_font20x23, cimg::data_font47x53, cimg::data_font90x103 };
+      const unsigned int data_widths[] = { 12,20,47,90 }, data_heights[] = { 13,23,53,103 }, data_Ms[] = { 86,79,57,47 };
+      static CImgList<ucharT> base_fonts[8];
+      const unsigned int
+        data_ind = font_height<=13?0:font_height<=23?1:font_height<=53?2:3,
+        base_ind = data_ind + (is_variable_width?4:0);
+      CImgList<ucharT> &base_font = base_fonts[base_ind];
+      if (!base_font) {
+        cimg::mutex(11);
+        CImgList<ucharT>::_font(data_fonts[data_ind],data_widths[data_ind],data_heights[data_ind],data_Ms[data_ind],is_variable_width).
+          move_to(base_font);
+        cimg::mutex(11,0);
       }
 
-      static CImgList<ucharT> font, vfont;
+      // Find optimal static font to return.
+      static CImgList<ucharT> fonts[16]; // [0-7] for fixed sizes, [8-15] for variable sizes.
+      unsigned int ind = 0, distmin = ~0U;
+      CImgList<ucharT> *const p_fonts = fonts + (is_variable_width?8:0);
+      for (int i = 0; i<8; ++i) {
+        const unsigned int dist = p_fonts[i]?(unsigned int)cimg::abs((int)font_height-p_fonts[i][0].height()):0;
+        if (!dist) { distmin = 0; ind = i; break; }
+        if (dist<distmin) { distmin = dist; ind = i; }
+      }
+      CImgList<ucharT> &font = p_fonts[ind];
+
+      // Render requested font.
       const unsigned int padding_x = font_height<20?1:font_height<30?2:font_height<60?3:font_height<100?4:5;
-      if (!font_height) return CImgList<ucharT>::empty();
-      if (font_height<=13) { _cimg_font(12,13,86); } // [1,13] -> ref 13
-      if (font_height<=23) { _cimg_font(20,23,79); } // [14,23] -> ref 23
-      if (font_height<=53) { _cimg_font(47,53,57); } // [24,53] -> ref 53
-      _cimg_font(90,103,47);                         // [54,+inf] -> ref 103
+      if (!distmin && font) return font;  // Requested font has been already rendered.
+      cimg::mutex(11);
+      font = base_font;
+      if (font_height!=font[0]._height)
+        cimglist_for(font,l)
+          font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100,
+                         font[0]._height>font_height?2:5);
+      cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5);
+      font.insert(256,0);
+      cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,1,1);
+      cimg::mutex(11,0);
+      return font;
     }
 
     static CImgList<ucharT> _font(const char *const data_font, const unsigned int w, const unsigned int h, const unsigned int M, const bool is_variable_width) {
-
       CImg<ucharT> _res(256*w,h);
       unsigned char *ptrd = _res;
       const unsigned char *const ptrde = _res.end();
