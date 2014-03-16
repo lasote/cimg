@@ -32098,7 +32098,7 @@ namespace cimg_library_suffixed {
       if (!font) return *this;
       char tmp[2048] = { 0 }; std::va_list ap; va_start(ap,font);
       cimg_vsnprintf(tmp,sizeof(tmp),text,ap); va_end(ap);
-      return _draw_text(x0,y0,tmp,foreground_color,background_color,opacity,font);
+      return _draw_text(x0,y0,tmp,foreground_color,background_color,opacity,font,false);
     }
 
     //! Draw a text string \overloading.
@@ -32113,7 +32113,7 @@ namespace cimg_library_suffixed {
       if (!font) return *this;
       char tmp[2048] = { 0 }; std::va_list ap; va_start(ap,font);
       cimg_vsnprintf(tmp,sizeof(tmp),text,ap); va_end(ap);
-      return _draw_text(x0,y0,tmp,foreground_color,(tc*)0,opacity,font);
+      return _draw_text(x0,y0,tmp,foreground_color,(tc*)0,opacity,font,false);
     }
 
     //! Draw a text string \overloading.
@@ -32128,7 +32128,7 @@ namespace cimg_library_suffixed {
       if (!font) return *this;
       char tmp[2048] = { 0 }; std::va_list ap; va_start(ap,font);
       cimg_vsnprintf(tmp,sizeof(tmp),text,ap); va_end(ap);
-      return _draw_text(x0,y0,tmp,(tc*)0,background_color,opacity,font);
+      return _draw_text(x0,y0,tmp,(tc*)0,background_color,opacity,font,false);
     }
 
     //! Draw a text string \overloading.
@@ -32147,41 +32147,9 @@ namespace cimg_library_suffixed {
                        const tc1 *const foreground_color, const tc2 *const background_color,
                        const float opacity=1, const unsigned int font_height=13, ...) {
       if (!font_height) return *this;
-      cimg::mutex(9);
       char tmp[2048] = { 0 }; std::va_list ap; va_start(ap,font_height); cimg_vsnprintf(tmp,sizeof(tmp),text,ap); va_end(ap);
-      static CImgList<floatT> font;
-
-      const unsigned int
-        ref_height = font_height<=13?13:font_height<=23?23:font_height<=53?53:103,
-        padding_x = font_height<=18?1:font_height<=33?2:font_height<=103?3:4;
-
-      if (!font || font[0]._height!=font_height) {
-        font = CImgList<floatT>::font(ref_height,true);
-        font[0].assign(1,font_height);
-        if (ref_height==font_height) cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,-100,-100,0);
-      }
-      if (is_empty()) {
-        if (font[0]._spectrum!=1) cimglist_for_in(font,0,255,l) font[l].channel(0);
-      } else if (font[0]._spectrum<_spectrum) cimglist_for_in(font,0,255,l) font[l].resize(-100,-100,1,_spectrum);
-      if (ref_height!=font_height) for (const char *ptrs = tmp; *ptrs; ++ptrs) {
-          const unsigned int __c = (unsigned int)(unsigned char)*ptrs, _c = (__c=='\t')?' ':__c;
-          if (_c<font._width) {
-            CImg<floatT> &c = font[_c];
-            if (c._height!=font_height) {
-              c.resize(cimg::max(1U,c._width*font_height/c._height),font_height,-100,-100,c._height>font_height?2:3);
-              c.resize(c._width + padding_x,-100,-100,-100,0);
-            }
-          }
-          if (_c+256U<font._width) {
-            CImg<floatT> &c = font[_c+256];
-            if (c._height!=font_height) {
-              c.resize(cimg::max(1U,c._width*font_height/c._height),font_height,-100,-100,c._height>font_height?2:3);
-              c.resize(c._width + padding_x,-100,-100,-100,0);
-            }
-          }
-        }
-      _draw_text(x0,y0,tmp,foreground_color,background_color,opacity,font);
-      cimg::mutex(9,0);
+      const CImgList<ucharT>& font = CImgList<ucharT>::font(font_height,true);
+      _draw_text(x0,y0,tmp,foreground_color,background_color,opacity,font,true);
       return *this;
     }
 
@@ -32212,12 +32180,14 @@ namespace cimg_library_suffixed {
     CImg<T>& _draw_text(const int x0, const int y0,
                         const char *const text,
                         const tc1 *const foreground_color, const tc2 *const background_color,
-                        const float opacity, const CImgList<t>& font) {
+                        const float opacity, const CImgList<t>& font,
+                        const bool is_native_font) {
       if (!text) return *this;
       if (!font)
         throw CImgArgumentException(_cimg_instance
                                     "draw_text(): Empty specified font.",
                                     cimg_instance);
+
       const unsigned int text_length = (unsigned int)std::strlen(text);
       if (is_empty()) {
         // If needed, pre-compute necessary size of the image
@@ -32236,29 +32206,26 @@ namespace cimg_library_suffixed {
           y+=font[0]._height;
         }
         assign(x0+w,y0+y,1,font[0]._spectrum,0);
-        if (background_color) cimg_forC(*this,c) get_shared_channel(c).fill((T)background_color[c]);
       }
 
       int x = x0, y = y0;
-      CImg<t> letter;
       for (unsigned int i = 0; i<text_length; ++i) {
         const unsigned char c = text[i];
         switch (c) {
         case '\n' : y+=font[0]._height; x = x0; break;
         case '\t' : x+=4*font[' ']._width; break;
         default : if (c<font._width) {
-          letter = font[c];
-          const unsigned int cmin = cimg::min(_spectrum,letter._spectrum);
-          const CImg<t>& mask = (c+256)<(int)font._width?font[c+256]:font[c];
-          if (foreground_color)
-            for (unsigned long p = 0; p<(unsigned long)letter._width*letter._height; ++p)
-              if (mask(p)) for (unsigned int c = 0; c<cmin; ++c) letter(p,0,0,c) = (t)(letter(p,0,0,c)*foreground_color[c]);
-          if (background_color)
-            for (unsigned long p = 0; p<(unsigned long)letter._width*letter._height; ++p)
-              if (!mask(p)) for (unsigned int c = 0; c<cmin; ++c) letter(p,0,0,c) = (t)background_color[c];
-          if (!background_color && font._width>=512) draw_image(x,y,letter,mask,opacity,(T)1);
-          else draw_image(x,y,letter,opacity);
-          x+=letter._width;
+            CImg<T> letter = font[c];
+            if (letter) {
+              if (is_native_font) letter.resize(-100,-100,1,_spectrum,0,2);
+              const unsigned int cmin = cimg::min(_spectrum,letter._spectrum);
+              if (foreground_color) for (unsigned int c = 0; c<cmin; ++c) if (foreground_color[c]!=1) letter.get_shared_channel(c)*=foreground_color[c];
+              if (c+256<font.width()) { // Letter has mask.
+                if (background_color) for (unsigned int c = 0; c<cmin; ++c) draw_rectangle(x,y,0,c,x+letter._width-1,y+letter._height-1,0,c,background_color[c],opacity);
+                draw_image(x,y,letter,font[c+256],opacity,(T)255);
+              } else draw_image(x,y,letter,opacity); // Letter has no mask.
+              x+=letter._width;
+            }
           }
         }
       }
@@ -46086,52 +46053,58 @@ namespace cimg_library_suffixed {
        \param font_height Height of the desired font (exact match for 13,23,53,103).
        \param is_variable_width Decide if the font has a variable (\c true) or fixed (\c false) width.
     **/
-    static const CImgList<T>& font(const unsigned int font_height, const bool is_variable_width=true) {
+    static const CImgList<ucharT>& font(const unsigned int font_height, const bool is_variable_width=true) {
 
 #define _cimg_font(sx,sy,M) \
-      static CImgList<T> font##sx##x##sy, vfont##sx##x##sy; \
+      static CImgList<ucharT> font##sx##x##sy, vfont##sx##x##sy; \
       cimg::mutex(11); \
       if (!is_variable_width && !font##sx##x##sy) font##sx##x##sy = CImgList<ucharT>::_font(cimg::data_font##sx##x##sy,sx,sy,M,false); \
       if (is_variable_width && !vfont##sx##x##sy) vfont##sx##x##sy = CImgList<ucharT>::_font(cimg::data_font##sx##x##sy,sx,sy,M,true); \
       cimg::mutex(11,0); \
       if (is_variable_width) { \
-        if (font_height==vfont##sx##x##sy[0]._height) return vfont##sx##x##sy; \
         if (vfont && font_height==vfont[0]._height) return vfont; \
         cimg::mutex(11); vfont = vfont##sx##x##sy; \
-        cimglist_for(vfont,l) \
-          vfont[l].resize(cimg::max(1U,vfont[l]._width*font_height/vfont[l]._height),font_height,-100,-100, \
+        if (font_height!=vfont[0]._height) cimglist_for(vfont,l) \
+          vfont[l].resize(cimg::max(1U,vfont[l]._width*font_height/vfont[l]._height),font_height,1,1, \
                           vfont[0]._height>font_height?2:5); \
+        cimglist_for(vfont,l) vfont[l].resize(vfont[l]._width + padding_x,-100,1,1,0,0,0.5); \
+        vfont.insert(256,0); \
+        cimglist_for_in(vfont,0,255,l) vfont[l].assign(vfont[l+256]._width,vfont[l+256]._height,1,1,1); \
         cimg::mutex(11,0); return vfont; \
       } else { \
-        if (font_height==font##sx##x##sy[0]._height) return font##sx##x##sy; \
         if (font && font_height==font[0]._height) return font; \
         cimg::mutex(11); font = font##sx##x##sy; \
-        cimglist_for(font,l) \
+        if (font_height!=vfont[0]._height) cimglist_for(font,l) \
           font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100, \
                          font[0]._height>font_height?2:5); \
+        cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5); \
+        font.insert(256,0); \
+        cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,1,1); \
         cimg::mutex(11,0); return font; \
       }
 
-      static CImgList<T> font, vfont;
-      if (!font_height) return CImgList<T>::empty();
+      static CImgList<ucharT> font, vfont;
+      const unsigned int padding_x = font_height<20?1:font_height<30?2:font_height<60?3:font_height<100?4:5;
+      if (!font_height) return CImgList<ucharT>::empty();
       if (font_height<=13) { _cimg_font(12,13,86); } // [1,13] -> ref 13
       if (font_height<=23) { _cimg_font(20,23,79); } // [14,23] -> ref 23
       if (font_height<=53) { _cimg_font(47,53,57); } // [24,53] -> ref 53
       _cimg_font(90,103,47);                         // [54,+inf] -> ref 103
     }
 
-    static CImgList<T> _font(const char *const data_font, const unsigned int w, const unsigned int h, const unsigned int M, const bool is_variable_width) {
+    static CImgList<ucharT> _font(const char *const data_font, const unsigned int w, const unsigned int h, const unsigned int M, const bool is_variable_width) {
+
       CImg<ucharT> _res(256*w,h);
       unsigned char *ptrd = _res;
       const unsigned char *const ptrde = _res.end();
       for (const char *ptrs = data_font; *ptrs; ++ptrs) {
-        const int c = *ptrs-M-32, v = c>=0, n = c>=0?c:-c;
+        const int c = *ptrs-M-32, v = c>=0?255:0, n = c>=0?c:-c;
         if (ptrd+n<=ptrde) { std::memset(ptrd,v,n); ptrd+=n; }
          else { std::memset(ptrd,v,ptrde-ptrd); break; }
       }
-      CImgList<T> res = _res.get_split('x',256);
+      CImgList<ucharT> res = _res.get_split('x',256);
       if (is_variable_width) res.crop_font();
-      return res.insert(res);
+      return res;
     }
 
     //! Compute a 1d Fast Fourier Transform, along specified axis.
