@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 
       // Display a simple pre-round page
       CImg<unsigned char> logo, pressakey;
-      logo.draw_text(0,0," CImg-Tron ",white,0,1,32).resize(-100,-100,1,3);
+      logo.draw_text(0,0," CImg-Tron ",white,0,1,33).resize(-100,-100,1,3);
       CImg<unsigned char> tmp = (+background).draw_image((W-logo.width())/2,(H-logo.height())/2-20,logo,logo.get_channel(0).dilate(6).normalize(0,1)).
         draw_text(W/2-60,H/2+10,"Blue ( %u )",blue,0,1,13,score1).
         draw_text(W/2+10,H/2+10,"Red ( %u )",red,0,1,13,score2);

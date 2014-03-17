@@ -164,9 +164,9 @@ int main(int argc, char **argv) {
             redraw = true;
 
             // Handle board modification due to ball removal
-            for (int pmax = board.width(), p=0; p<pmax; ++p) {
+            for (int pmax = board.width(), p = 0; p<pmax; ++p) {
               for (int q = board.height()-1, qs = q; q>=0; --q) {
-                while (!board(p,qs)) --qs;
+                while (qs>=0 && !board(p,qs)) --qs;
                 board(p,q) = (qs>=0?board(p,qs--):0);
               }
               if (!board(p,board.height()-1)) {

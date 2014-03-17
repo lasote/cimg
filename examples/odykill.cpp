@@ -91,9 +91,9 @@ int main(int argc,char **argv) {
     }
     CImg<unsigned char> tmp = CImg<unsigned char>().draw_text(0,0,
                                                               weapon==0?" Tomato   ":
-                                                              weapon==1?"  Heart   ":
+                                                              weapon==1?"   Heart   ":
                                                               weapon==2?" Dynamite ":
-                                                              weapon==3?"  Brain   ":
+                                                              weapon==3?"   Brain    ":
                                                               weapon==4?"  CD-Rom  ":
                                                               "          ",white,black,1,32).resize(-100,-100,1,1),
       tmp2 = tmp.get_blur(6).normalize(0,255).draw_image(tmp,0.5f);

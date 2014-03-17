@@ -111,7 +111,7 @@ int main(int argc,char **argv) {
       nboard = board; visu = background;
       if (cx>=0 && cy>=0) cimg_forXY(piece,x,y) if (piece(x,y)) nboard(cx-piece.width()/2+x,cy-piece.height()/2+y)=piece(x,y);
       cimg_forXY(board,xx,yy) if (nboard(xx,yy)) visu.draw_image(xx*blocdim,yy*blocdim,blocs[nboard(xx,yy)-1]);
-      visu.draw_text(5,5,"Lines : %d",white,0,1,13,score,nn).draw_text(visu.width()-65,5,"Next :",white,0,1,13);
+      visu.draw_text(5,5,"Lines : %d",white,0,1,13,score,nn).draw_text(visu.width()-75,5,"Next :",white,0,1,13);
       if (next) visu.draw_image(visu.width()-next.width()-2,10-next.height()/2,next,next_mask).display(disp.wait(20));
 
       if (cn<0) {

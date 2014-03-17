@@ -77,7 +77,7 @@ int main(int argc,char **argv) {
     draw_disp(500,400,"Color profile of the X-axis",0);
 
   // Define colors used to plot the profile, and a hatch to draw the vertical line
-  unsigned long hatch = 0xF0F0F0F0;
+  unsigned int hatch = 0xF0F0F0F0;
   const unsigned char
     red[]   = { 255,0,0 },
     green[] = { 0,255,0 },
@@ -114,14 +114,14 @@ int main(int argc,char **argv) {
           draw_graph(image.get_shared_row(y,0,0),red,1,1,0,255,1).
           draw_graph(image.get_shared_row(y,0,1),green,1,1,0,255,1).
           draw_graph(image.get_shared_row(y,0,2),blue,1,1,0,255,1).
-          draw_text(30,5,"Pixel (%d,%d)={%d %d %d}",black,0,1,13,
+          draw_text(30,5,"Pixel (%d,%d)={%d %d %d}",black,0,1,16,
                     main_disp.mouse_x(),main_disp.mouse_y(),val_red,val_green,val_blue).
           draw_line(xl,0,xl,draw_disp.height()-1,black,0.5f,hatch=cimg::rol(hatch)).
           display(draw_disp);
       } else
         // else display a text in the profile display window.
         CImg<unsigned char>(draw_disp.width(),draw_disp.height()).fill(255).
-          draw_text(draw_disp.width()/2-110,draw_disp.height()/2-5,"Mouse pointer is outside the image",black).display(draw_disp);
+          draw_text(draw_disp.width()/2-110,draw_disp.height()/2-5,"Mouse pointer is outside the image",black,0,1,16).display(draw_disp);
 
       // Temporize event loop
       cimg::wait(20);

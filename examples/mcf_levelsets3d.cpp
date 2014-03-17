@@ -147,7 +147,7 @@ int main(int argc,char **argv) {
       opacities.insert(opacities0);
     }
 
-    // center and rescale the objects
+    // Center and rescale the objects
     cimg_forX(points,l) {
       points(l,0)=(points(l,0)-img.width()/2)*fact;
       points(l,1)=(points(l,1)-img.height()/2)*fact;
@@ -172,6 +172,7 @@ int main(int argc,char **argv) {
     }
     if (disp.is_resized()) disp.resize(false);
     if (disp3d.is_resized()) disp3d.resize(false);
+    disp.wait(50);
   }
 
   return 0;

@@ -554,7 +554,7 @@ void* item_virtual_landscape() {
 //-------------------------------------------
 void* item_plasma() {
   CImg<float> plasma, camp(3), cfreq(3), namp(3), nfreq(3);
-  CImgList<unsigned char> font = CImgList<unsigned char>::font(57);
+  CImgList<unsigned char> font = CImgList<unsigned char>::font(53);
   CImg<unsigned char> visu(400,300,1,3,0), letter, scroll(visu.width() + 2*font['W'].width(),font['W'].height(),1,1,0);
   const char *text = "   * The CImg Library : C++ Template Image Processing Toolkit *";
   CImgDisplay disp(visu,"[#13] - Plasma Effect");
@@ -599,7 +599,7 @@ void* item_plasma() {
       }
     }
     if (!pos) {
-      const CImg<unsigned char>& letter = font(text[tpos]);
+      const CImg<unsigned char>& letter = font(text[tpos]+256);
       lwidth = (unsigned int)letter.width();
       scroll.draw_image(visu.width(),letter);
       (++tpos) %= std::strlen(text);
@@ -1051,9 +1051,9 @@ void* item_rubber_logo() {
   CImgList<unsigned int> colors(faces.size(),CImg<unsigned char>::vector(100,100,255));
   cimglist_for(colors,l) {
     const float x = (points(faces(l,0),0) + points(faces(l,1),0) + points(faces(l,2),0))/3;
-    if (x<26) colors[l] = CImg<unsigned char>::vector(255,100,100);
-    else { if (x<37) colors[l] = CImg<unsigned char>::vector(200,155,100);
-    else { if (x<51) colors[l] = CImg<unsigned char>::vector(100,255,155);
+    if (x<30) colors[l] = CImg<unsigned char>::vector(255,100,100);
+    else { if (x<34) colors[l] = CImg<unsigned char>::vector(200,155,100);
+    else { if (x<55) colors[l] = CImg<unsigned char>::vector(100,255,155);
     }}}
   faces.reverse_object3d();
   points.shift_object3d()*=5.5f;
@@ -1524,7 +1524,7 @@ int main(int argc, char **argv) {
     CImg<unsigned char> back(1,2,1,3,10), fore, text, img;
     back.fillC(0,1,0,10,10,235).resize(320,420,1,3,3).get_shared_channel(2).noise(10,1).draw_plasma();
     back.draw_rectangle(0,y0-7,back.width()-1,y0+20,red);
-    fore.assign(back.width(),50,1,1,0).draw_text(20,y0-5,"** CImg %u.%u.%u Samples **",grey,0,1,24,
+    fore.assign(back.width(),50,1,1,0).draw_text(20,y0-5,"** CImg %u.%u.%u Samples **",grey,0,1,23,
                                                 cimg_version/100,(cimg_version/10)%10,cimg_version%10);
     (fore+=fore.get_dilate(3).dilate(3)).resize(-100,-100,1,3);
     cimg_forXY(fore,x,y)
