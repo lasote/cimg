@@ -46069,21 +46069,26 @@ namespace cimg_library_suffixed {
         cimg::mutex(11,0);
       }
 
-      // Find optimal static font to return.
-      static CImgList<ucharT> fonts[16]; // [0-7] for fixed sizes, [8-15] for variable sizes.
-      unsigned int ind = 0, distmin = ~0U;
-      CImgList<ucharT> *const p_fonts = fonts + (is_variable_width?8:0);
-      for (int i = 0; i<8; ++i) {
-        const unsigned int dist = p_fonts[i]?(unsigned int)cimg::abs((int)font_height-p_fonts[i][0].height()):0;
-        if (!dist) { distmin = 0; ind = i; break; }
-        if (dist<distmin) { distmin = dist; ind = i; }
+      // Find optimal font cache location to return.
+      static CImgList<ucharT> fonts[16];
+      static bool is_variable_widths[16] = { 0 };
+      unsigned int ind = ~0U;
+      for (int i = 0; i<16; ++i)
+        if (!fonts[i] || (is_variable_widths[i]==is_variable_width && font_height==fonts[i][0]._height)) { ind = i; break; }  // Found empty slot or cached font.
+      if (ind==~0U) { // No empty slots nor existing font in cache.
+        cimg::mutex(11);
+        std::memmove(fonts,fonts+1,15*sizeof(CImgList<ucharT>));
+        std::memmove(is_variable_widths,is_variable_widths+1,15*sizeof(bool));
+        std::memset(fonts[ind=15],0,sizeof(CImgList<ucharT>));  // Free a slot in cache for new font.
+        cimg::mutex(11,0);
       }
-      CImgList<ucharT> &font = p_fonts[ind];
 
       // Render requested font.
+      CImgList<ucharT> &font = fonts[ind];
+      if (font) return font;
       const unsigned int padding_x = font_height<20?1:font_height<30?2:font_height<60?3:font_height<100?4:5;
-      if (!distmin && font) return font;  // Requested font has been already rendered.
       cimg::mutex(11);
+      is_variable_widths[ind] = is_variable_width;
       font = base_font;
       if (font_height!=font[0]._height)
         cimglist_for(font,l)
