@@ -32180,7 +32180,7 @@ namespace cimg_library_suffixed {
                         const char *const text,
                         const tc1 *const foreground_color, const tc2 *const background_color,
                         const float opacity, const CImgList<t>& font,
-                        const bool draw_all_channels) {
+                        const bool is_native_font) {
       if (!text) return *this;
       if (!font)
         throw CImgArgumentException(_cimg_instance
@@ -32188,7 +32188,8 @@ namespace cimg_library_suffixed {
                                     cimg_instance);
 
       const unsigned int text_length = (unsigned int)std::strlen(text);
-      if (is_empty()) {
+      const bool _is_empty = is_empty();
+      if (_is_empty) {
         // If needed, pre-compute necessary size of the image
         int x = 0, y = 0, w = 0;
         unsigned char c = 0;
@@ -32204,7 +32205,7 @@ namespace cimg_library_suffixed {
           if (x>w) w=x;
           y+=font[0]._height;
         }
-        assign(x0+w,y0+y,1,font[0]._spectrum,0);
+        assign(x0+w,y0+y,1,is_native_font?1:font[0]._spectrum,0);
       }
 
       int x = x0, y = y0;
@@ -32216,7 +32217,7 @@ namespace cimg_library_suffixed {
         default : if (c<font._width) {
             CImg<T> letter = font[c];
             if (letter) {
-              if (draw_all_channels) letter.resize(-100,-100,1,_spectrum,0,2);
+              if (is_native_font && _spectrum>letter._spectrum) letter.resize(-100,-100,1,_spectrum,0,2);
               const unsigned int cmin = cimg::min(_spectrum,letter._spectrum);
               if (foreground_color) for (unsigned int c = 0; c<cmin; ++c) if (foreground_color[c]!=1) letter.get_shared_channel(c)*=foreground_color[c];
               if (c+256<font.width()) { // Letter has mask.
@@ -46082,10 +46083,10 @@ namespace cimg_library_suffixed {
         std::memset(fonts[ind=15],0,sizeof(CImgList<ucharT>));  // Free a slot in cache for new font.
         cimg::mutex(11,0);
       }
-
-      // Render requested font.
       CImgList<ucharT> &font = fonts[ind];
       if (font) return font;
+
+      // Render requested font.
       const unsigned int padding_x = font_height<20?1:font_height<30?2:font_height<60?3:font_height<100?4:5;
       cimg::mutex(11);
       is_variable_widths[ind] = is_variable_width;
@@ -46096,7 +46097,7 @@ namespace cimg_library_suffixed {
                          font[0]._height>font_height?2:5);
       cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5);
       font.insert(256,0);
-      cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,1,1);
+      cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,3,1);
       cimg::mutex(11,0);
       return font;
     }
