@@ -1524,7 +1524,7 @@ int main(int argc, char **argv) {
     CImg<unsigned char> back(1,2,1,3,10), fore, text, img;
     back.fillC(0,1,0,10,10,235).resize(320,420,1,3,3).get_shared_channel(2).noise(10,1).draw_plasma();
     back.draw_rectangle(0,y0-7,back.width()-1,y0+20,red);
-    fore.assign(back.width(),50,1,1,0).draw_text(20,y0-5,"** CImg %u.%u.%u Samples **",grey,0,1,23,
+    fore.assign(back.width(),50,1,1,0).draw_text(20,y0-3,"** CImg %u.%u.%u Samples **",grey,0,1,23,
                                                 cimg_version/100,(cimg_version/10)%10,cimg_version%10);
     (fore+=fore.get_dilate(3).dilate(3)).resize(-100,-100,1,3);
     cimg_forXY(fore,x,y)
@@ -1590,7 +1590,7 @@ int main(int argc, char **argv) {
         int y = disp.mouse_y();
         if (y>=y0 && y<y0+27*13) {
           y = (y/13)*13+7;
-          for (int yy = y-7; yy<=y+6; ++yy) img.draw_rectangle(0,yy,0,1,img.width()-1,yy,0,1,(unsigned char)(130-15*cimg::abs(yy-y)));
+          for (int yy = y-6; yy<=y+6; ++yy) img.draw_rectangle(0,yy,0,1,img.width()-1,yy,0,1,(unsigned char)(130-15*cimg::abs(yy-y)));
           img.draw_triangle(2,y-4,2,y+4,8,y,yellow).draw_triangle(img.width()-2,y-4,img.width()-2,y+4,img.width()-8,y,yellow);
         }
         gamma+=vgamma; if (gamma>1) { gamma = vgamma = 0; rx = nrx; ry = nry; nrx=(float)(2*cimg::crand()); nry=(float)(2*cimg::crand()); }
