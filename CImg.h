@@ -46059,7 +46059,7 @@ namespace cimg_library_suffixed {
         cimg::mutex(11);
         std::memmove(fonts,fonts+1,15*sizeof(CImgList<ucharT>));
         std::memmove(is_variable_widths,is_variable_widths+1,15*sizeof(bool));
-        std::memset(fonts[ind=15],0,sizeof(CImgList<ucharT>));  // Free a slot in cache for new font.
+        std::memset(fonts+(ind=15),0,sizeof(CImgList<ucharT>));  // Free a slot in cache for new font.
         cimg::mutex(11,0);
       }
       CImgList<ucharT> &font = fonts[ind];
