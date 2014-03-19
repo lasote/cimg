@@ -46034,18 +46034,23 @@ namespace cimg_library_suffixed {
     static const CImgList<ucharT>& font(const unsigned int font_height, const bool is_variable_width=true) {
       if (!font_height) return CImgList<ucharT>::empty();
 
-      // Create nearest base font data if needed.
+      // Decompress nearest base font data if needed.
       const char *data_fonts[] = { cimg::data_font12x13, cimg::data_font20x23, cimg::data_font47x53, cimg::data_font90x103 };
       const unsigned int data_widths[] = { 12,20,47,90 }, data_heights[] = { 13,23,53,103 }, data_Ms[] = { 86,79,57,47 };
-      static CImgList<ucharT> base_fonts[8];
-      const unsigned int
-        data_ind = font_height<=13?0:font_height<=23?1:font_height<=53?2:3,
-        base_ind = data_ind + (is_variable_width?4:0);
-      CImgList<ucharT> &base_font = base_fonts[base_ind];
+      const unsigned int data_ind = font_height<=13?0:font_height<=23?1:font_height<=53?2:3;
+      static CImg<ucharT> base_fonts[4];
+      CImg<ucharT> &base_font = base_fonts[data_ind];
       if (!base_font) {
         cimg::mutex(11);
-        CImgList<ucharT>::_font(data_fonts[data_ind],data_widths[data_ind],data_heights[data_ind],data_Ms[data_ind],is_variable_width).
-          move_to(base_font);
+        const unsigned int w = data_widths[data_ind], h = data_heights[data_ind], M = data_Ms[data_ind];
+        base_font.assign(256*w,h);
+        unsigned char *ptrd = base_font;
+        const unsigned char *const ptrde = base_font.end();
+        for (const char *ptrs = data_fonts[data_ind]; *ptrs; ++ptrs) {
+          const int c = *ptrs-M-32, v = c>=0?255:0, n = c>=0?c:-c;
+          if (ptrd+n<=ptrde) { std::memset(ptrd,v,n); ptrd+=n; }
+          else { std::memset(ptrd,v,ptrde-ptrd); break; }
+        }
         cimg::mutex(11,0);
       }
 
@@ -46066,33 +46071,20 @@ namespace cimg_library_suffixed {
       if (font) return font;
 
       // Render requested font.
-      const unsigned int padding_x = font_height<20?1:font_height<30?2:font_height<60?3:font_height<100?4:5;
+      const unsigned int padding_x = font_height<33?1:font_height<53?2:font_height<103?3:4;
       cimg::mutex(11);
       is_variable_widths[ind] = is_variable_width;
-      font = base_font;
+      font = base_font.get_split('x',256);
       if (font_height!=font[0]._height)
         cimglist_for(font,l)
           font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100,
                          font[0]._height>font_height?2:5);
+      if (is_variable_width) font.crop_font();
       cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5);
       font.insert(256,0);
       cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,3,1);
       cimg::mutex(11,0);
       return font;
-    }
-
-    static CImgList<ucharT> _font(const char *const data_font, const unsigned int w, const unsigned int h, const unsigned int M, const bool is_variable_width) {
-      CImg<ucharT> _res(256*w,h);
-      unsigned char *ptrd = _res;
-      const unsigned char *const ptrde = _res.end();
-      for (const char *ptrs = data_font; *ptrs; ++ptrs) {
-        const int c = *ptrs-M-32, v = c>=0?255:0, n = c>=0?c:-c;
-        if (ptrd+n<=ptrde) { std::memset(ptrd,v,n); ptrd+=n; }
-         else { std::memset(ptrd,v,ptrde-ptrd); break; }
-      }
-      CImgList<ucharT> res = _res.get_split('x',256);
-      if (is_variable_width) res.crop_font();
-      return res;
     }
 
     //! Compute a 1d Fast Fourier Transform, along specified axis.
