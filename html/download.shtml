@@ -37,6 +37,8 @@
       </td></tr></table>
       <br>in your favorite console. Nevertheless, you have to know that some code in the source repository
         is under development and may be experimental, so always test the latest stable archive before complaining !
+        <p>If you just want to look at the source code, you may also be interested by <a href="https://sourceforge.net/p/cimg/source/ci/master/tree/">the online source viewer</a>.
+        </p>
     </td></tr>
   </table>
 </p>
@@ -44,3 +46,4 @@
 </div></div><div id="footer"><img src="images/footer.jpg" /></div></div>
 
 <!--#include file="footer.html" -->
+
