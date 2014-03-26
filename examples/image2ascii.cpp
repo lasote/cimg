@@ -61,14 +61,15 @@ int main(int argc,char **argv) {
   const bool invert   = cimg_option("-invert",false,"Invert image intensities");
   const float contour = (float)cimg_option("-contour",0.0f,"Use image contours higher than specified threshold");
   const float blur    = (float)cimg_option("-blur",0.8f,"Image pre-blur");
-  const float sigma   = (float)cimg_option("-sigma",1.5f,"Font pre-blur");
+  const float sigma   = (float)cimg_option("-sigma",10.0f,"Font pre-blur");
   const char *file_i  = cimg_argument1(0,"-invert");
   int w = 79, h = 40;
   std::sscanf(geom,"%d%*c%d",&w,&h);
   if (cimg_option("-h",false,0)) std::exit(0);
 
   // Init fonts
-  const CImgList<> font_full = CImgList<>::font(11,false);
+  CImgList<> font_full = CImgList<>::font(13,false);
+  font_full.remove(0,255);
   const int fw = font_full['A'].width(), fh = font_full['A'].height();
   CImgList<> font, font_blur;
   CImgList<unsigned char> font_code;
