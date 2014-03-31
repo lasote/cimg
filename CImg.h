@@ -46033,6 +46033,7 @@ namespace cimg_library_suffixed {
     **/
     static const CImgList<ucharT>& font(const unsigned int font_height, const bool is_variable_width=true) {
       if (!font_height) return CImgList<ucharT>::empty();
+      cimg::mutex(11);
 
       // Decompress nearest base font data if needed.
       const char *data_fonts[] = { cimg::data_font12x13, cimg::data_font20x23, cimg::data_font47x53, cimg::data_font90x103 };
@@ -46041,7 +46042,6 @@ namespace cimg_library_suffixed {
       static CImg<ucharT> base_fonts[4];
       CImg<ucharT> &base_font = base_fonts[data_ind];
       if (!base_font) {
-        cimg::mutex(11);
         const unsigned int w = data_widths[data_ind], h = data_heights[data_ind], M = data_Ms[data_ind];
         base_font.assign(256*w,h);
         unsigned char *ptrd = base_font;
@@ -46051,7 +46051,6 @@ namespace cimg_library_suffixed {
           if (ptrd+n<=ptrde) { std::memset(ptrd,v,n); ptrd+=n; }
           else { std::memset(ptrd,v,ptrde-ptrd); break; }
         }
-        cimg::mutex(11,0);
       }
 
       // Find optimal font cache location to return.
@@ -46061,28 +46060,27 @@ namespace cimg_library_suffixed {
       for (int i = 0; i<16; ++i)
         if (!fonts[i] || (is_variable_widths[i]==is_variable_width && font_height==fonts[i][0]._height)) { ind = i; break; }  // Found empty slot or cached font.
       if (ind==~0U) { // No empty slots nor existing font in cache.
-        cimg::mutex(11);
         std::memmove(fonts,fonts+1,15*sizeof(CImgList<ucharT>));
         std::memmove(is_variable_widths,is_variable_widths+1,15*sizeof(bool));
         std::memset(fonts+(ind=15),0,sizeof(CImgList<ucharT>));  // Free a slot in cache for new font.
-        cimg::mutex(11,0);
       }
       CImgList<ucharT> &font = fonts[ind];
-      if (font) return font;
 
       // Render requested font.
-      const unsigned int padding_x = font_height<33?1:font_height<53?2:font_height<103?3:4;
-      cimg::mutex(11);
-      is_variable_widths[ind] = is_variable_width;
-      font = base_font.get_split('x',256);
-      if (font_height!=font[0]._height)
-        cimglist_for(font,l)
-          font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100,
-                         font[0]._height>font_height?2:5);
-      if (is_variable_width) font.crop_font();
-      cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5);
-      font.insert(256,0);
-      cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,3,1);
+      if (!font) {
+        const unsigned int padding_x = font_height<33?1:font_height<53?2:font_height<103?3:4;
+
+        is_variable_widths[ind] = is_variable_width;
+        font = base_font.get_split('x',256);
+        if (font_height!=font[0]._height)
+          cimglist_for(font,l)
+            font[l].resize(cimg::max(1U,font[l]._width*font_height/font[l]._height),font_height,-100,-100,
+                           font[0]._height>font_height?2:5);
+        if (is_variable_width) font.crop_font();
+        cimglist_for(font,l) font[l].resize(font[l]._width + padding_x,-100,1,1,0,0,0.5);
+        font.insert(256,0);
+        cimglist_for_in(font,0,255,l) font[l].assign(font[l+256]._width,font[l+256]._height,1,3,1);
+      }
       cimg::mutex(11,0);
       return font;
     }
