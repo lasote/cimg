@@ -12198,6 +12198,7 @@ namespace cimg_library_suffixed {
     /**
        Return a cubicly-interpolated pixel value of the image instance located at (\c fx,\c y,\c z,\c c),
        or a specified default value in case of out-of-bounds access along the X-axis.
+       The cubic interpolation uses Hermite splines.
        \param fx d X-coordinate of the pixel value (float-valued).
        \param y Y-coordinate of the pixel value.
        \param z Z-coordinate of the pixel value.
@@ -12235,6 +12236,7 @@ namespace cimg_library_suffixed {
     /**
        Return a cubicly-interpolated pixel value of the image instance located at (\c fx,\c y,\c z,\c c),
        or the value of the nearest pixel location in the image instance in case of out-of-bounds access along the X-axis.
+       The cubic interpolation uses Hermite splines.
        \param fx X-coordinate of the pixel value (float-valued).
        \param y Y-coordinate of the pixel value.
        \param z Z-coordinate of the pixel value.
