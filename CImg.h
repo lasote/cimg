@@ -3181,7 +3181,8 @@ namespace cimg_library_suffixed {
 "                                                F]']2]    +]']2^ D]']3_   E]']1]   \"]']2^ 8]                             H";
 
     // Define a 90x103 font (huge size).
-    const char *const data_font90x103 =
+    const char *const _data_font90x103[] = {  // Defined as an array to avoid MS compiler limit about constant string (65Kb).
+      // Start of first string.
 "                                                                                                                                                      "
 "                                                                                                                                                      "
 "                                                                        HX     4V         >X       IX           *W             FW                     "
@@ -3448,7 +3449,8 @@ namespace cimg_library_suffixed {
 "  Id$Y 9UAW<XAU;W<W Lw X *X*X,w Lq IX6f+~R'X -X -d 9X -XFVFVFX0XCWDX)X%X.t LX%X.p ;k ;X <X/X!X@X HXDVCVDX*^ 4X ,Z ?W *W $W       $W JX5W\"W ,W5X W3W LW"
 " 0W5X MW6W MW ,W ,WKY :W ,W7W7W=W6W W4W MX5W\"W5X MX /Y ,W ,W6W LX>X GWEVJVEW#a >W>W 7Y 1Y 8V  KY 9e8T  0T?Z>T0X:[ KWIf GdLW HW4W MW ,W6W JV?X >XKW BW6"
 "W W#W2XDWDX!W=W JWCWCW!W4W#W4W >W >| IW<W :Y @X 0X%X1X?X?X-X0X&XBXBX-XImIX0Y  AV  BY FV GY%Y FV   DX 2WAS ?r DW:W =\\ <V 2V;W   CSFV'S7]JV =XFX A~X  .S"
-"@d:S    (V Ii <a   8W6W FaGU IX   4g 6_ 2XFX GgGV:Z<gGVFUFY?a@V:Z2Y 2W<W GW<W GW<W GW<W GW<W GX>X GX>w?X *w Lw Lw Lw LX -X -X -X 5p9X-XCWDX)X%X1X%X1X%"
+"@d:S    (V Ii <a   8W6W FaGU IX   4g 6_ 2XFX GgGV:Z<gGVFUFY?a@V:Z2Y 2W<W GW<W GW<W GW<W GW<W GX>X GX>w?X *w Lw Lw Lw LX -X -X -X 5p9X-XCWDX)X%X1X%X1X%",
+// Start of second string.
 "X1X%X1X%X Ia MX?W=X.X/X'X/X'X/X'X/X GX <X7X NWDZ $W ,W ,W ,W ,W ,W ,X4WAW ,W3W!W3W!W3W!W3W NW ,W ,W ,W .W4W MW6W W4W W4W W4W W4W W4W  $W?VKW MW6W MW6W"
 " MW6W MW6W KW>W GX5W MW>W     LVLuKU/VLuKU/V?\\?U/V?Y<U/V=X=U&V 2W>X     8X DWBT   ?~Q)~W)~R&~(V4V NW4W EWHW >WBW K~^               $X   ,X   &VBV Kg \""
 "VEc8WFZ=W  /W !W +T 4~W      5V 1X4X >X (Y -] IW>X )Y M[9X 9X >\\F\\ H[C`    'a    Ca$Y 9UAV:WAU;W<W LX<\\!X *X*X,X -X 0X6f+X/X'X -X -XN[ :X -XEVHVEX0XCX"
@@ -3716,7 +3718,7 @@ namespace cimg_library_suffixed {
 "                                                                             /Z .W                                                                    "
 "                                                                                                                     =}                               "
 "                                                                                                                                                      "
-"                                                                                                                              D";
+"                                                                                                                              D" };
 
     // Define a 40x38 'danger' color logo (used by cimg::dialog()).
     const unsigned char logo40x38[4576] = {
@@ -46038,7 +46040,7 @@ namespace cimg_library_suffixed {
       cimg::mutex(11);
 
       // Decompress nearest base font data if needed.
-      const char *data_fonts[] = { cimg::data_font12x13, cimg::data_font20x23, cimg::data_font47x53, cimg::data_font90x103 };
+      const char *data_fonts[] = { cimg::data_font12x13, cimg::data_font20x23, cimg::data_font47x53, 0 };
       const unsigned int data_widths[] = { 12,20,47,90 }, data_heights[] = { 13,23,53,103 }, data_Ms[] = { 86,79,57,47 };
       const unsigned int data_ind = font_height<=13?0:font_height<=23?1:font_height<=53?2:3;
       static CImg<ucharT> base_fonts[4];
@@ -46046,9 +46048,20 @@ namespace cimg_library_suffixed {
       if (!base_font) {
         const unsigned int w = data_widths[data_ind], h = data_heights[data_ind], M = data_Ms[data_ind];
         base_font.assign(256*w,h);
+        const char *data_font = data_fonts[data_ind];
         unsigned char *ptrd = base_font;
         const unsigned char *const ptrde = base_font.end();
-        for (const char *ptrs = data_fonts[data_ind]; *ptrs; ++ptrs) {
+
+        // Special case needed for 90x103 to avoid MS compiler limit with big strings.
+        CImg<char> data90x103;
+        if (!data_font) {
+          ((CImg<char>(cimg::_data_font90x103[0],std::strlen(cimg::_data_font90x103[0]),1,1,1,true),
+            CImg<char>(cimg::_data_font90x103[1],std::strlen(cimg::_data_font90x103[0])))>'x').move_to(data90x103);
+          data_font = data90x103.data();
+        }
+
+        // Uncompress font data (decode RLE).
+        for (const char *ptrs = data_font; *ptrs; ++ptrs) {
           const int c = *ptrs-M-32, v = c>=0?255:0, n = c>=0?c:-c;
           if (ptrd+n<=ptrde) { std::memset(ptrd,v,n); ptrd+=n; }
           else { std::memset(ptrd,v,ptrde-ptrd); break; }
