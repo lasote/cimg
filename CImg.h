@@ -14319,7 +14319,7 @@ namespace cimg_library_suffixed {
         return (double)reference[off];
       }
       double mp_joff() {
-        const double x = mem[9], y = mem[10], z = mem[11], c = mem[12];
+        const int x = (int)mem[9], y = (int)mem[10], z = (int)mem[11], c = (int)mem[12];
         const unsigned long off = reference.offset(x,y,z,c) + (unsigned long)(mem[opcode(2)]);
         if (off>=reference.size()) return 0;
         return (double)reference[off];
@@ -34971,7 +34971,7 @@ namespace cimg_library_suffixed {
         if (is_inf || is_nan) {
           T m0 = cimg::type<T>::max(), M0 = cimg::type<T>::min();
           if (!normalization) { m0 = 0; M0 = 255; }
-          else if (normalization==2) { m0 = disp._min; M0 = disp._max; }
+          else if (normalization==2) { m0 = (T)disp._min; M0 = (T)disp._max; }
           else cimg_for(img2d,ptr,Tuchar) if (!cimg::type<T>::is_inf(*ptr) && !cimg::type<T>::is_nan(*ptr)) { if (*ptr<m0) m0 = *ptr; if (*ptr>M0) M0 = *ptr; }
           const T
             val_minf = (normalization==1 || normalization==3)?m0-(M0-m0)*20-1:m0,
