@@ -2539,7 +2539,7 @@ namespace cimg_library_suffixed {
           pthread_cancel(*events_thread);
           delete events_thread;
         }
-        if (display) XCloseDisplay(display);
+        if (display) {} // XCloseDisplay(display);
         pthread_cond_destroy(&wait_event);
         pthread_mutex_unlock(&wait_event_mutex);
         pthread_mutex_destroy(&wait_event_mutex);
@@ -46056,7 +46056,7 @@ namespace cimg_library_suffixed {
         CImg<char> data90x103;
         if (!data_font) {
           ((CImg<char>(cimg::_data_font90x103[0],std::strlen(cimg::_data_font90x103[0]),1,1,1,true),
-            CImg<char>(cimg::_data_font90x103[1],std::strlen(cimg::_data_font90x103[0])))>'x').move_to(data90x103);
+            CImg<char>(cimg::_data_font90x103[1],std::strlen(cimg::_data_font90x103[1])+1,1,1,1,true))>'x').move_to(data90x103);
           data_font = data90x103.data();
         }
 
@@ -46084,7 +46084,6 @@ namespace cimg_library_suffixed {
       // Render requested font.
       if (!font) {
         const unsigned int padding_x = font_height<33?1:font_height<53?2:font_height<103?3:4;
-
         is_variable_widths[ind] = is_variable_width;
         font = base_font.get_split('x',256);
         if (font_height!=font[0]._height)
