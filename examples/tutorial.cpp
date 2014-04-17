@@ -121,7 +121,7 @@ int main(int argc,char **argv) {
       } else
         // else display a text in the profile display window.
         CImg<unsigned char>(draw_disp.width(),draw_disp.height()).fill(255).
-          draw_text(draw_disp.width()/2-110,draw_disp.height()/2-5,"Mouse pointer is outside the image",black,0,1,16).display(draw_disp);
+          draw_text(draw_disp.width()/2-130,draw_disp.height()/2-5,"Mouse pointer is outside the image",black,0,1,16).display(draw_disp);
 
       // Temporize event loop
       cimg::wait(20);

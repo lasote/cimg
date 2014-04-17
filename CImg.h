@@ -38372,7 +38372,7 @@ namespace cimg_library_suffixed {
           go_in_center = false;
         const CImg<T>& visu = zoom?zoom:*this;
 
-        disp.set_title(dtitle._data);
+        disp.set_title("%s",dtitle._data);
         if (_width>1 && visu._width==1) disp.set_title("%s | x=%u",disp._title,x0);
         if (_height>1 && visu._height==1) disp.set_title("%s | y=%u",disp._title,y0);
         if (_depth>1 && visu._depth==1) disp.set_title("%s | z=%u",disp._title,z0);
@@ -39239,8 +39239,9 @@ namespace cimg_library_suffixed {
         throw CImgInstanceException(_cimg_instance
                                     "display_graph(): Empty instance.",
                                     cimg_instance);
-      CImgDisplay disp;
-      return display_graph(disp.set_title("%s",title),plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
+      CImgDisplay disp(cimg_fitscreen(640,480,1),title,0);
+      if (title) disp.set_title("%s",title);
+      return display_graph(disp,plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
     }
 
     //! Save image as a file.
