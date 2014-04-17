@@ -159,7 +159,9 @@ int main(int argc,char **argv) {
 
       if (disp.key()==cimg::keyARROWDOWN || !((++time)%speed)) { ++cy; disp.set_key(); }
       // Detect collisiong along the Y axis
-      collision = false; cimg_forXY(piece,ii,jj) if (piece(ii,jj) && board(cx-piece.width()/2+ii,cy-piece.height()/2+jj)) collision = true;
+      collision = false;
+      cimg_forXY(piece,ii,jj)
+        if (piece(ii,jj) && (cy-piece.height()/2+jj>=board.height() || board(cx-piece.width()/2+ii,cy-piece.height()/2+jj))) collision = true;
       if (collision || cy+(piece.height()-1)/2>=board.height()) { cy = oy; cn = -1; }
       if (collision && cy==piece.height()/2) gameover = true;
     } else {
