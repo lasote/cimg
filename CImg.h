@@ -39119,11 +39119,27 @@ namespace cimg_library_suffixed {
                                  const unsigned int plot_type=1, const unsigned int vertex_type=1,
                                  const char *const labelx=0, const double xmin=0, const double xmax=0,
                                  const char *const labely=0, const double ymin=0, const double ymax=0) const {
+      return _display_graph(disp,0,plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
+    }
+
+    //! Display 1d graph in an interactive window \overloading.
+    const CImg<T>& display_graph(const char *const title=0,
+                                 const unsigned int plot_type=1, const unsigned int vertex_type=1,
+                                 const char *const labelx=0, const double xmin=0, const double xmax=0,
+                                 const char *const labely=0, const double ymin=0, const double ymax=0) const {
+      CImgDisplay disp;
+      return _display_graph(disp,title,plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
+    }
+
+    const CImg<T>& _display_graph(CImgDisplay &disp, const char *const title=0,
+                                 const unsigned int plot_type=1, const unsigned int vertex_type=1,
+                                 const char *const labelx=0, const double xmin=0, const double xmax=0,
+                                 const char *const labely=0, const double ymin=0, const double ymax=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
                                     "display_graph(): Empty instance.",
                                     cimg_instance);
-      if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title("CImg<%s>",pixel_type());
+      if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title(title?"%s":"CImg<%s>",title?title:pixel_type());
       const unsigned long siz = (unsigned long)_width*_height*_depth, siz1 = cimg::max(1U,siz-1);
       const unsigned int old_normalization = disp.normalization();
       disp.show().flush()._normalization = 0;
@@ -39228,20 +39244,6 @@ namespace cimg_library_suffixed {
       }
       disp._normalization = old_normalization;
       return *this;
-    }
-
-    //! Display 1d graph in an interactive window \overloading.
-    const CImg<T>& display_graph(const char *const title=0,
-                                 const unsigned int plot_type=1, const unsigned int vertex_type=1,
-                                 const char *const labelx=0, const double xmin=0, const double xmax=0,
-                                 const char *const labely=0, const double ymin=0, const double ymax=0) const {
-      if (is_empty())
-        throw CImgInstanceException(_cimg_instance
-                                    "display_graph(): Empty instance.",
-                                    cimg_instance);
-      CImgDisplay disp(cimg_fitscreen(640,480,1),title,0);
-      if (title) disp.set_title("%s",title);
-      return display_graph(disp,plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
     }
 
     //! Save image as a file.
