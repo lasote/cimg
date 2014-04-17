@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
           if (!selected_board || selected_board(x,y)!=6) {
             (selected_board=board).draw_fill(x,y,0,&six,1,shape);
             if ((shape_score=(unsigned int)shape.sum())<2) selected_board.assign();
-            else { (shape_score-=1)*=shape_score; opac = 1.0f; redraw = true; }
+            else { shape_score-=1; shape_score*=shape_score; opac = 1.0f; redraw = true; }
           } else {
             selected_board.assign();
             previous_board = board;
