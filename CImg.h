@@ -42269,6 +42269,12 @@ namespace cimg_library_suffixed {
        \endcode
     **/
     template<typename t>
+    CImgList<T>& operator,(const CImg<t>& img) {
+      return insert(img);
+    }
+
+    //! Return a copy of the list instance, where image \c img has been inserted at the end \const.
+    template<typename t>
     CImgList<T> operator,(const CImg<t>& img) const {
       return (+*this).insert(img);
     }
@@ -42278,7 +42284,13 @@ namespace cimg_library_suffixed {
        \param list List inserted at the end of the instance copy.
     **/
     template<typename t>
-    CImgList<T> operator,(const CImgList<t>& list) const {
+    CImgList<T>& operator,(const CImgList<t>& list) {
+      return insert(list);
+    }
+
+    //! Return a copy of the list instance, where all elements of input list \c list have been inserted at the end \const.
+    template<typename t>
+    CImgList<T>& operator,(const CImgList<t>& list) const {
       return (+*this).insert(list);
     }
 
