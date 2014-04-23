@@ -54,7 +54,7 @@
 
 // Set version number of the library.
 #ifndef cimg_version
-#define cimg_version 158
+#define cimg_version 159
 
 /*-----------------------------------------------------------
  #
@@ -16867,7 +16867,7 @@ namespace cimg_library_suffixed {
     **/
     static CImg<T> string(const char *const str, const bool is_last_zero=true) {
       if (!str) return CImg<T>();
-      return CImg<T>(str,std::strlen(str)+(is_last_zero?1:0));
+      return CImg<T>(str,(unsigned int)std::strlen(str)+(is_last_zero?1:0));
     }
 
     //! Return a \c 1x1 image containing specified value.
@@ -18676,8 +18676,8 @@ namespace cimg_library_suffixed {
 
     // [internal] Replace possibly malicious characters for commands to be called by system() by their escaped version.
     CImg<T>& _system_strescape() {
-#define cimg_system_strescape(c,s) case c : if (p!=ptrs) CImg<T>(ptrs,p-ptrs,1,1,1,false).move_to(list); \
-      CImg<T>(s,std::strlen(s),1,1,1,false).move_to(list); ptrs = p+1; break
+#define cimg_system_strescape(c,s) case c : if (p!=ptrs) CImg<T>(ptrs,(unsigned int)(p-ptrs),1,1,1,false).move_to(list); \
+      CImg<T>(s,(unsigned int)std::strlen(s),1,1,1,false).move_to(list); ptrs = p+1; break
       CImgList<T> list;
       const T *ptrs = _data;
       cimg_for(*this,p,T) switch ((int)*p) {
@@ -18687,7 +18687,7 @@ namespace cimg_library_suffixed {
         cimg_system_strescape('`',"\\`");
         cimg_system_strescape('$',"\\$");
       }
-      if (ptrs<end()) CImg<T>(ptrs,end()-ptrs,1,1,1,false).move_to(list);
+      if (ptrs<end()) CImg<T>(ptrs,(unsigned int)(end()-ptrs),1,1,1,false).move_to(list);
       return (list>'x').move_to(*this);
     }
 
@@ -46071,8 +46071,8 @@ namespace cimg_library_suffixed {
         // Special case needed for 90x103 to avoid MS compiler limit with big strings.
         CImg<char> data90x103;
         if (!data_font) {
-          ((CImg<char>(cimg::_data_font90x103[0],std::strlen(cimg::_data_font90x103[0]),1,1,1,true),
-            CImg<char>(cimg::_data_font90x103[1],std::strlen(cimg::_data_font90x103[1])+1,1,1,1,true))>'x').move_to(data90x103);
+          ((CImg<char>(cimg::_data_font90x103[0],(unsigned int)std::strlen(cimg::_data_font90x103[0]),1,1,1,true),
+            CImg<char>(cimg::_data_font90x103[1],(unsigned int)std::strlen(cimg::_data_font90x103[1])+1,1,1,1,true))>'x').move_to(data90x103);
           data_font = data90x103.data();
         }
 
