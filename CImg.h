@@ -10363,7 +10363,7 @@ namespace cimg_library_suffixed {
        \note
        - The size of the image instance is never modified.
        - It is not mandatory that input image \c img has the same size as the image instance. If less values are available
-         in \c img, then the values are added cyclically. For instance, adding one WxH scalar image (spectrum() equal to \c 1) to
+         in \c img, then the values are added periodically. For instance, adding one WxH scalar image (spectrum() equal to \c 1) to
          one WxH color image (spectrum() equal to \c 3) means each color channel will be incremented with the same values at the same
          locations.
        \par Example
@@ -19844,7 +19844,7 @@ namespace cimg_library_suffixed {
           cc = (int)(centering_c*((int)sc - spectrum()));
 
         switch (boundary_conditions) {
-        case 2 : { // Cyclic borders.
+        case 2 : { // Periodic borders.
           res.assign(sx,sy,sz,sc);
           const int
             x0 = ((int)xc%width()) - width(),
@@ -21248,7 +21248,7 @@ namespace cimg_library_suffixed {
     /**
        \param angle Rotation angle, in degrees.
        \param interpolation Type of interpolation. Can be <tt>{ 0=nearest | 1=linear | 2=cubic }</tt>.
-       \param boundary Boundary conditions. Can be <tt>{  0=dirichlet | 1=neumann | 2=cyclic }</tt>.
+       \param boundary Boundary conditions. Can be <tt>{  0=dirichlet | 1=neumann | 2=periodic }</tt>.
        \note Most of the time, size of the image is modified.
     **/
     CImg<T>& rotate(const float angle, const unsigned int interpolation=1, const unsigned int boundary=0) {
@@ -21330,7 +21330,7 @@ namespace cimg_library_suffixed {
           }
           }
         } break;
-        case 2 : { // Cyclic boundaries.
+        case 2 : { // Periodic boundaries.
           switch (interpolation) {
           case 2 : { // Cubic interpolation.
             cimg_forXY(res,x,y) cimg_forZC(*this,z,c) {
@@ -21354,7 +21354,7 @@ namespace cimg_library_suffixed {
 	default :
 	  throw CImgArgumentException(_cimg_instance
                                       "rotate(): Invalid specified border conditions %d "
-                                      "(should be { 0=dirichlet | 1=neumann | 2=cyclic }).",
+                                      "(should be { 0=dirichlet | 1=neumann | 2=periodic }).",
 				      cimg_instance,
                                       boundary);
         }
@@ -21368,7 +21368,7 @@ namespace cimg_library_suffixed {
        \param cx X-coordinate of the rotation center.
        \param cy Y-coordinate of the rotation center.
        \param zoom Zoom factor.
-       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann | 2=cyclic }</tt>.
+       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann | 2=periodic }</tt>.
        \param interpolation_type Type of interpolation. Can be <tt>{ 0=nearest | 1=linear | 2=cubic }</tt>.
     **/
     CImg<T>& rotate(const float angle, const float cx, const float cy, const float zoom,
@@ -21453,7 +21453,7 @@ namespace cimg_library_suffixed {
       default :
         throw CImgArgumentException(_cimg_instance
                                     "rotate(): Invalid specified border conditions %d "
-                                    "(should be { 0=dirichlet | 1=neumann | 2=cyclic }).",
+                                    "(should be { 0=dirichlet | 1=neumann | 2=periodic }).",
                                     cimg_instance,
                                     boundary);
       }
@@ -21465,7 +21465,7 @@ namespace cimg_library_suffixed {
        \param warp Warping field.
        \param is_relative Tells if warping field gives absolute or relative warping coordinates.
        \param interpolation Can be <tt>{ 0=nearest | 1=linear | 2=cubic }</tt>.
-       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann | 2=cyclic }</tt>.
+       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann | 2=periodic }</tt>.
      **/
     template<typename t>
     CImg<T>& warp(const CImg<t>& warp, const bool is_relative=false,
@@ -21491,7 +21491,7 @@ namespace cimg_library_suffixed {
       if (warp._spectrum==1) { // 1d warping.
         if (is_relative) { // Relative warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21510,7 +21510,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atX(x - (float)*(ptrs0++),y,z,c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21529,7 +21529,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atX(x - (float)*(ptrs0++),y,z,c,0);
               }
           } else { // Nearest-neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21550,7 +21550,7 @@ namespace cimg_library_suffixed {
           }
         } else { // Absolute warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21569,7 +21569,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atX((float)*(ptrs0++),0,0,c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21588,7 +21588,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atX((float)*(ptrs0++),0,0,c,0);
               }
           } else { // Nearest-neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp._data;
                 cimg_forXYZ(res,x,y,z)
@@ -21612,7 +21612,7 @@ namespace cimg_library_suffixed {
       } else if (warp._spectrum==2) { // 2d warping.
         if (is_relative) { // Relative warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21632,7 +21632,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atXY(x - (float)*(ptrs0++),y - (float)*(ptrs1++),z,c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21652,7 +21652,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atXY(x - (float)*(ptrs0++),y - (float)*(ptrs1++),z,c,0);
               }
           } else { // Nearest-neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21674,7 +21674,7 @@ namespace cimg_library_suffixed {
           }
         } else { // Absolute warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21694,7 +21694,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atXY((float)*(ptrs0++),(float)*(ptrs1++),0,c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21714,7 +21714,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atXY((float)*(ptrs0++),(float)*(ptrs1++),0,c,0);
               }
           } else { // Nearest-neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1);
                 cimg_forXYZ(res,x,y,z)
@@ -21739,7 +21739,7 @@ namespace cimg_library_suffixed {
       } else if (warp._spectrum==3) { // 3d warping.
         if (is_relative) { // Relative warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
@@ -21760,7 +21760,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atXYZ(x - (float)*(ptrs0++),y - (float)*(ptrs1++),z - (float)*(ptrs2++),c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
@@ -21781,7 +21781,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atXYZ(x - (float)*(ptrs0++),y - (float)*(ptrs1++),z - (float)*(ptrs2++),c,0);
               }
           } else { // Nearest neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
@@ -21804,7 +21804,7 @@ namespace cimg_library_suffixed {
           }
         } else { // Absolute warp.
           if (interpolation==2) { // Cubic interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
@@ -21825,7 +21825,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)cubic_atXYZ((float)*(ptrs0++),(float)*(ptrs1++),(float)*(ptrs2++),c,0);
               }
           } else if (interpolation==1) { // Linear interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
@@ -21846,7 +21846,7 @@ namespace cimg_library_suffixed {
                   *(ptrd++) = (T)linear_atXYZ((float)*(ptrs0++),(float)*(ptrs1++),(float)*(ptrs2++),c,0);
               }
           } else { // Nearest-neighbor interpolation.
-            if (boundary_conditions==2) // Cyclic boundaries.
+            if (boundary_conditions==2) // Periodic boundaries.
               cimg_forC(res,c) {
                 const t *ptrs0 = warp.data(0,0,0,0), *ptrs1 = warp.data(0,0,0,1), *ptrs2 = warp.data(0,0,0,2);
                 cimg_forXYZ(res,x,y,z)
