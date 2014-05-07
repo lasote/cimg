@@ -35348,11 +35348,13 @@ namespace cimg_library_suffixed {
                  !cimg::strcasecmp(ext,"m2v") ||
                  !cimg::strcasecmp(ext,"m4v") ||
                  !cimg::strcasecmp(ext,"mjp") ||
+                 !cimg::strcasecmp(ext,"mp4") ||
                  !cimg::strcasecmp(ext,"mkv") ||
                  !cimg::strcasecmp(ext,"mpe") ||
                  !cimg::strcasecmp(ext,"movie") ||
                  !cimg::strcasecmp(ext,"ogm") ||
                  !cimg::strcasecmp(ext,"ogg") ||
+                 !cimg::strcasecmp(ext,"ogv") ||
                  !cimg::strcasecmp(ext,"qt") ||
                  !cimg::strcasecmp(ext,"rm") ||
                  !cimg::strcasecmp(ext,"vob") ||
@@ -39348,11 +39350,13 @@ namespace cimg_library_suffixed {
                !cimg::strcasecmp(ext,"m2v") ||
                !cimg::strcasecmp(ext,"m4v") ||
                !cimg::strcasecmp(ext,"mjp") ||
+               !cimg::strcasecmp(ext,"mp4") ||
                !cimg::strcasecmp(ext,"mkv") ||
                !cimg::strcasecmp(ext,"mpe") ||
                !cimg::strcasecmp(ext,"movie") ||
                !cimg::strcasecmp(ext,"ogm") ||
                !cimg::strcasecmp(ext,"ogg") ||
+               !cimg::strcasecmp(ext,"ogv") ||
                !cimg::strcasecmp(ext,"qt") ||
                !cimg::strcasecmp(ext,"rm") ||
                !cimg::strcasecmp(ext,"vob") ||
@@ -43934,11 +43938,13 @@ namespace cimg_library_suffixed {
                  !cimg::strcasecmp(ext,"m2v") ||
                  !cimg::strcasecmp(ext,"m4v") ||
                  !cimg::strcasecmp(ext,"mjp") ||
+                 !cimg::strcasecmp(ext,"mp4") ||
                  !cimg::strcasecmp(ext,"mkv") ||
                  !cimg::strcasecmp(ext,"mpe") ||
                  !cimg::strcasecmp(ext,"movie") ||
                  !cimg::strcasecmp(ext,"ogm") ||
                  !cimg::strcasecmp(ext,"ogg") ||
+                 !cimg::strcasecmp(ext,"ogv") ||
                  !cimg::strcasecmp(ext,"qt") ||
                  !cimg::strcasecmp(ext,"rm") ||
                  !cimg::strcasecmp(ext,"vob") ||
@@ -45138,11 +45144,13 @@ namespace cimg_library_suffixed {
                !cimg::strcasecmp(ext,"m2v") ||
                !cimg::strcasecmp(ext,"m4v") ||
                !cimg::strcasecmp(ext,"mjp") ||
+               !cimg::strcasecmp(ext,"mp4") ||
                !cimg::strcasecmp(ext,"mkv") ||
                !cimg::strcasecmp(ext,"mpe") ||
                !cimg::strcasecmp(ext,"movie") ||
                !cimg::strcasecmp(ext,"ogm") ||
                !cimg::strcasecmp(ext,"ogg") ||
+               !cimg::strcasecmp(ext,"ogv") ||
                !cimg::strcasecmp(ext,"qt") ||
                !cimg::strcasecmp(ext,"rm") ||
                !cimg::strcasecmp(ext,"vob") ||
@@ -45181,11 +45189,13 @@ namespace cimg_library_suffixed {
           !cimg::strcasecmp(ext,"m2v") ||
           !cimg::strcasecmp(ext,"m4v") ||
           !cimg::strcasecmp(ext,"mjp") ||
+          !cimg::strcasecmp(ext,"mp4") ||
           !cimg::strcasecmp(ext,"mkv") ||
           !cimg::strcasecmp(ext,"mpe") ||
           !cimg::strcasecmp(ext,"movie") ||
           !cimg::strcasecmp(ext,"ogm") ||
           !cimg::strcasecmp(ext,"ogg") ||
+          !cimg::strcasecmp(ext,"ogv") ||
           !cimg::strcasecmp(ext,"qt") ||
           !cimg::strcasecmp(ext,"rm") ||
           !cimg::strcasecmp(ext,"vob") ||
