@@ -18188,8 +18188,6 @@ namespace cimg_library_suffixed {
        \param max_value Maximum pixel value considered for the histogram computation. All pixel values higher than \p max_value will not be counted.
        \note
        - The histogram H of an image I is the 1d function where H(x) counts the number of occurences of the value x in the image I.
-       - If \p min_value==max_value==0 (default behavior), the function first estimates the whole range of pixel values
-       then uses it to compute the histogram.
        - The resulting histogram is always defined in 1d. Histograms of multi-valued images are not multi-dimensional.
        \par Example
        \code
@@ -18198,15 +18196,19 @@ namespace cimg_library_suffixed {
        \endcode
        \image html ref_histogram.jpg
     **/
-    CImg<T>& histogram(const unsigned int nb_levels, const T min_value=(T)0, const T max_value=(T)0) {
+    CImg<T>& histogram(const unsigned int nb_levels, const T min_value, const T max_value) {
       return get_histogram(nb_levels,min_value,max_value).move_to(*this);
     }
 
+    //! Compute the histogram of pixel values \overloading.
+    CImg<T>& histogram(const unsigned int nb_levels) {
+      return get_histogram(nb_levels).move_to(*this);
+    }
+
     //! Compute the histogram of pixel values \newinstance.
-    CImg<ulongT> get_histogram(const unsigned int nb_levels, const T min_value=(T)0, const T max_value=(T)0) const {
+    CImg<ulongT> get_histogram(const unsigned int nb_levels, const T min_value, const T max_value) const {
       if (!nb_levels || is_empty()) return CImg<ulongT>();
       T vmin = min_value<max_value?min_value:max_value, vmax = min_value<max_value?max_value:min_value;
-      if (vmin==vmax && vmin==0) vmin = min_max(vmax);
       CImg<ulongT> res(nb_levels,1,1,1,0);
       cimg_for(*this,ptrs,T) {
         const T val = *ptrs;
@@ -18215,14 +18217,18 @@ namespace cimg_library_suffixed {
       return res;
     }
 
+    //! Compute the histogram of pixel values \newinstance.
+    CImg<ulongT> get_histogram(const unsigned int nb_levels) const {
+      if (!nb_levels || is_empty()) return CImg<ulongT>();
+      T vmax = 0, vmin = min_max(vmax);
+      return get_histogram(nb_levels,vmin,vmax);
+    }
+
     //! Equalize histogram of pixel values.
     /**
        \param nb_levels Number of histogram levels used for the equalization.
        \param min_value Minimum pixel value considered for the histogram computation. All pixel values lower than \p min_value will not be counted.
        \param max_value Maximum pixel value considered for the histogram computation. All pixel values higher than \p max_value will not be counted.
-       \note
-       - If \p min_value==max_value==0 (default behavior), the function first estimates the whole range of pixel values
-       then uses it to equalize the histogram.
        \par Example
        \code
        const CImg<float> img("reference.jpg"), res = img.get_equalize(256);
@@ -18230,25 +18236,34 @@ namespace cimg_library_suffixed {
        \endcode
        \image html ref_equalize.jpg
     **/
-    CImg<T>& equalize(const unsigned int nb_levels, const T min_value=(T)0, const T max_value=(T)0) {
-      if (is_empty()) return *this;
-      T vmin = min_value, vmax = max_value;
-      if (vmin==vmax && vmin==0) vmin = min_max(vmax);
-      if (vmin<vmax) {
-        CImg<ulongT> hist = get_histogram(nb_levels,vmin,vmax);
-        unsigned long cumul = 0;
-        cimg_forX(hist,pos) { cumul+=hist[pos]; hist[pos] = cumul; }
-        cimg_for(*this,ptrd,T) {
-          const int pos = (int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
-          if (pos>=0 && pos<(int)nb_levels) *ptrd = (T)(vmin + (vmax-vmin)*hist[pos]/size());
-        }
+    CImg<T>& equalize(const unsigned int nb_levels, const T min_value, const T max_value) {
+      if (!nb_levels || is_empty()) return *this;
+      T vmin = min_value<max_value?min_value:max_value, vmax = min_value<max_value?max_value:min_value;
+      CImg<ulongT> hist = get_histogram(nb_levels,vmin,vmax);
+      unsigned long cumul = 0;
+      cimg_forX(hist,pos) { cumul+=hist[pos]; hist[pos] = cumul; }
+      cimg_for(*this,ptrd,T) {
+        const int pos = (int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
+        if (pos>=0 && pos<(int)nb_levels) *ptrd = (T)(vmin + (vmax-vmin)*hist[pos]/size());
       }
       return *this;
     }
 
+    //! Equalize histogram of pixel values \overloading.
+    CImg<T>& equalize(const unsigned int nb_levels) {
+      if (!nb_levels || is_empty()) return *this;
+      T vmax = 0, vmin = min_max(vmax);
+      return equalize(nb_levels,vmin,vmax);
+    }
+
     //! Equalize histogram of pixel values \newinstance.
-    CImg<T> get_equalize(const unsigned int nblevels, const T val_min=(T)0, const T val_max=(T)0) const {
+    CImg<T> get_equalize(const unsigned int nblevels, const T val_min, const T val_max) const {
       return (+*this).equalize(nblevels,val_min,val_max);
+    }
+
+    //! Equalize histogram of pixel values \newinstance.
+    CImg<T> get_equalize(const unsigned int nblevels) const {
+      return (+*this).equalize(nblevels);
     }
 
     //! Index multi-valued pixels regarding to a specified colormap.
