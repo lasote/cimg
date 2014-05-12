@@ -21267,6 +21267,8 @@ namespace cimg_library_suffixed {
        \note Most of the time, size of the image is modified.
     **/
     CImg<T>& rotate(const float angle, const unsigned int interpolation=1, const unsigned int boundary=0) {
+      const float nangle = cimg::mod(angle,360.0f);
+      if (nangle==0.0f) return *this;
       return get_rotate(angle,interpolation,boundary).move_to(*this);
     }
 
