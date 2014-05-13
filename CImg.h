@@ -8530,6 +8530,7 @@ namespace cimg_library_suffixed {
       } break;
       case WM_PAINT :
         disp->paint();
+	if (disp->_is_cursor_visible) while (ShowCursor(TRUE)<0); else while (ShowCursor(FALSE)>=0);
         break;
       case WM_KEYDOWN :
         disp->set_key((unsigned int)wParam);
@@ -8556,10 +8557,12 @@ namespace cimg_library_suffixed {
           disp->_mouse_x = disp->_mouse_y = -1;
         disp->_is_event = true;
         SetEvent(cimg::Win32_attr().wait_event);
-      } break;
+	if (disp->_is_cursor_visible) while (ShowCursor(TRUE)<0); else while (ShowCursor(FALSE)>=0);
+      }	break;
       case WM_MOUSELEAVE : {
         disp->_mouse_x = disp->_mouse_y = -1;
         disp->_is_mouse_tracked = false;
+	while (ShowCursor(TRUE)<0);
       } break;
       case WM_LBUTTONDOWN :
         disp->set_button(1);
@@ -8588,10 +8591,6 @@ namespace cimg_library_suffixed {
       case 0x020A : // WM_MOUSEWHEEL:
         disp->set_wheel((int)((short)HIWORD(wParam))/120);
         SetEvent(cimg::Win32_attr().wait_event);
-      case WM_SETCURSOR :
-        if (disp->_is_cursor_visible) while (ShowCursor(TRUE)<0);
-        else while (ShowCursor(FALSE)>=0);
-        break;
       }
       return DefWindowProc(window,msg,wParam,lParam);
     }
@@ -8885,14 +8884,12 @@ namespace cimg_library_suffixed {
     CImgDisplay& show_mouse() {
       if (is_empty()) return *this;
       _is_cursor_visible = true;
-      SendMessage(_window,WM_SETCURSOR,0,0);
       return *this;
     }
 
     CImgDisplay& hide_mouse() {
       if (is_empty()) return *this;
       _is_cursor_visible = false;
-      SendMessage(_window,WM_SETCURSOR,0,0);
       return *this;
     }
 
