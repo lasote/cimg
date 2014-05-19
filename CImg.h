@@ -38161,7 +38161,7 @@ namespace cimg_library_suffixed {
        \param skip_frames Number of frames to skip before the capture.
        \param release_camera Tells if the camera ressource must be released at the end of the method.
     **/
-    CImg<T>& load_camera(const unsigned int camera_index=0, const unsigned int skip_frames=0, const bool release_camera=false,
+    CImg<T>& load_camera(const unsigned int camera_index=0, const unsigned int skip_frames=0, const bool release_camera=true,
                          const unsigned int capture_width=0, const unsigned int capture_height=0) {
 #ifdef cimg_use_opencv
       if (camera_index>255)
@@ -38212,7 +38212,7 @@ namespace cimg_library_suffixed {
     }
 
     //! Load image from a camera stream, using OpenCV \newinstance.
-    static CImg<T> get_load_camera(const unsigned int camera_index=0, const unsigned int skip_frames=0, const bool release_camera=false,
+    static CImg<T> get_load_camera(const unsigned int camera_index=0, const unsigned int skip_frames=0, const bool release_camera=true,
                                    const unsigned int capture_width=0, const unsigned int capture_height=0) {
       return CImg<T>().load_camera(camera_index,skip_frames,release_camera,capture_width,capture_height);
     }
