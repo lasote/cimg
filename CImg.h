@@ -39282,9 +39282,10 @@ namespace cimg_library_suffixed {
                                     "save(): Specified filename is (null).",
                                     cimg_instance);
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
+      const bool is_stdout = *filename=='-' && (!filename[1] || filename[1]=='.');
       const char *const ext = cimg::split_filename(filename);
       char nfilename[1024] = { 0 };
-      const char *const fn = (number>=0)?cimg::number_filename(filename,number,digits,nfilename):filename;
+      const char *const fn = is_stdout?filename:(number>=0)?cimg::number_filename(filename,number,digits,nfilename):filename;
 
 #ifdef cimg_save_plugin
       cimg_save_plugin(fn);
@@ -45117,9 +45118,10 @@ namespace cimg_library_suffixed {
                                     "save(): Specified filename is (null).",
                                     cimglist_instance);
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
+      const bool is_stdout = *filename=='-' && (!filename[1] || filename[1]=='.');
       const char *const ext = cimg::split_filename(filename);
       char nfilename[1024] = { 0 };
-      const char *const fn = (number>=0)?cimg::number_filename(filename,number,digits,nfilename):filename;
+      const char *const fn = is_stdout?filename:number>=0?cimg::number_filename(filename,number,digits,nfilename):filename;
 
 #ifdef cimglist_save_plugin
       cimglist_save_plugin(fn);
@@ -45179,7 +45181,10 @@ namespace cimg_library_suffixed {
           !cimg::strcasecmp(ext,"tiff")) return save_tiff(fn);
 #endif
       else if (!cimg::strcasecmp(ext,"gz")) return save_gzip_external(fn);
-      else { if (_width==1) _data[0].save(fn,-1); else cimglist_for(*this,l) _data[l].save(fn,l); }
+      else {
+        if (_width==1) _data[0].save(fn,-1);
+        else cimglist_for(*this,l) { _data[l].save(fn,is_stdout?-1:l); std::fputc(EOF,stdout); }
+      }
       return *this;
     }
 
