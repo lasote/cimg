@@ -74,6 +74,7 @@ CIMG_FILES = CImg_demo \
 	     use_chlpca \
 	     use_draw_gradient \
 	     use_nlmeans \
+             use_patchmatch \
 	     use_skeleton \
 	     use_RGBclass \
 
