@@ -44,6 +44,7 @@
   - Pierre Buyssens
   - Sebastien Coudert
   - Frederic Devernay
+  - Olivier D'Hondt
   - Francois-Xavier Dupe
   - Gerd von Egidy
   - Eric Fausett
