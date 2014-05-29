@@ -25208,12 +25208,12 @@ namespace cimg_library_suffixed {
                 ixf = Incc - Iccc, ixb = Iccc - Ipcc,
                 iyf = Icnc - Iccc, iyb = Iccc - Icpc,
                 izf = Iccn - Iccc, izb = Iccc - Iccp;
-              *(ptrd0++)+=(ixf*ixf + ixf*ixb + ixb*ixf + ixb*ixb)/4;
+              *(ptrd0++)+=(ixf*ixf + 2*ixf*ixb + ixb*ixb)/4;
               *(ptrd1++)+=(ixf*iyf + ixf*iyb + ixb*iyf + ixb*iyb)/4;
               *(ptrd2++)+=(ixf*izf + ixf*izb + ixb*izf + ixb*izb)/4;
-              *(ptrd3++)+=(iyf*iyf + iyf*iyb + iyb*iyf + iyb*iyb)/4;
+              *(ptrd3++)+=(iyf*iyf + 2*iyf*iyb + iyb*iyb)/4;
               *(ptrd4++)+=(iyf*izf + iyf*izb + iyb*izf + iyb*izb)/4;
-              *(ptrd5++)+=(izf*izf + izf*izb + izb*izf + izb*izb)/4;
+              *(ptrd5++)+=(izf*izf + 2*izf*izb + izb*izb)/4;
             }
           }
         } break;
@@ -25261,9 +25261,9 @@ namespace cimg_library_suffixed {
               const Tfloat
                 ixf = Inc - Icc, ixb = Icc - Ipc,
                 iyf = Icn - Icc, iyb = Icc - Icp;
-              *(ptrd0++)+=(ixf*ixf + ixf*ixb + ixb*iyf + ixb*ixb)/4;
+              *(ptrd0++)+=(ixf*ixf + 2*ixf*ixb + ixb*ixb)/4;
               *(ptrd1++)+=(ixf*iyf + ixf*iyb + ixb*iyf + ixb*iyb)/4;
-              *(ptrd2++)+=(iyf*iyf + iyf*iyb + iyb*iyf + iyb*iyb)/4;
+              *(ptrd2++)+=(iyf*iyf + 2*iyf*iyb + iyb*iyb)/4;
             }
           }
         } break;
