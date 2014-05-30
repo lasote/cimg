@@ -6776,7 +6776,13 @@ namespace cimg_library_suffixed {
     **/
     template<typename T>
     CImgDisplay& display(const CImgList<T>& list, const char axis='x', const float align=0) {
-      return display(list.get_append(axis,align));
+      CImgList<typename CImg<T>::ucharT> visu(list._width);
+      cimglist_for(list,l) {
+        const CImg<T>& img = list._data[l];
+        img.__get_select(*this,_normalization,(img._width-1)/2,(img._height-1)/2,(img._depth-1)/2).move_to(visu[l]);
+      }
+      visu.get_append(axis,align).display(*this);
+      return *this;
     }
 
 #if cimg_display==0
@@ -25833,7 +25839,7 @@ namespace cimg_library_suffixed {
        \param metric Field of distance potentials.
      **/
     template<typename t>
-    CImg& distance_eikonal(const T value, const CImg<t>& metric) {
+    CImg<T>& distance_eikonal(const T value, const CImg<t>& metric) {
       return get_distance_eikonal(value,metric).move_to(*this);
     }
 
@@ -45000,7 +45006,7 @@ namespace cimg_library_suffixed {
        The function returns immediately.
     **/
     const CImgList<T>& display(CImgDisplay &disp, const char axis='x', const float align=0) const {
-      get_append(axis,align).display(disp);
+      disp.display(*this,axis,align);
       return *this;
     }
 
