@@ -33836,7 +33836,7 @@ namespace cimg_library_suffixed {
           const unsigned int
             n0 = (unsigned int)primitive[0],
             n1 = (unsigned int)primitive[1],
-            is_filled = (unsigned int)primitive[2];
+            is_wireframe = (unsigned int)primitive[2];
           const float
             Xc = 0.5f*((float)vertices(n0,0) + (float)vertices(n1,0)),
             Yc = 0.5f*((float)vertices(n0,1) + (float)vertices(n1,1)),
@@ -33868,12 +33868,12 @@ namespace cimg_library_suffixed {
 #endif
             break;
           default :
-            if (is_filled) draw_circle((int)xc,(int)yc,(int)radius,pcolor,opacity);
-            else draw_circle((int)xc,(int)yc,(int)radius,pcolor,opacity,~0U);
+            if (is_wireframe) draw_circle((int)xc,(int)yc,(int)radius,pcolor,opacity,~0U);
+            else draw_circle((int)xc,(int)yc,(int)radius,pcolor,opacity);
 #ifdef cimg_use_board
             if (pboard) {
               board.setPenColorRGBi(color[0],color[1],color[2],(unsigned char)(opacity*255));
-              if (is_filled) board.fillCircle(xc,height()-yc,radius);
+              if (!is_wireframe) board.fillCircle(xc,height()-yc,radius);
               else {
                 board.setFillColor(LibBoard::Color::None);
                 board.drawCircle(xc,height()-yc,radius);
