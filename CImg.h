@@ -34965,7 +34965,8 @@ namespace cimg_library_suffixed {
         throw CImgInstanceException(_cimg_instance
                                     "select_graph(): Empty instance.",
                                     cimg_instance);
-      if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title("CImg<%s>",pixel_type());
+      if (!disp) disp.assign(cimg_fitscreen(CImgDisplay::screen_width()/2,CImgDisplay::screen_height()/2,1),0,0).
+                   set_title("CImg<%s>",pixel_type());
       const unsigned long siz = (unsigned long)_width*_height*_depth;
       const unsigned int old_normalization = disp.normalization();
       disp.show().set_button().set_wheel()._normalization = 0;
@@ -35117,7 +35118,7 @@ namespace cimg_library_suffixed {
           disp.set_key(key,false); okey = 0;
         } break;
         case cimg::keyR : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
-          disp.set_fullscreen(false).resize(cimg_fitscreen(640,480,1),false)._is_resized = true;
+            disp.set_fullscreen(false).resize(cimg_fitscreen(CImgDisplay::screen_width()/2,CImgDisplay::screen_height()/2,1),false)._is_resized = true;
           disp.set_key(key,false); okey = 0;
         } break;
         case cimg::keyF : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
@@ -38677,7 +38678,8 @@ namespace cimg_library_suffixed {
                                       render_static,render_motion,is_double_sided,focale,
                                       light_x,light_y,light_z,specular_lightness,specular_shininess,
                                       display_axes,pose_matrix);
-	else return CImg<T>(1,2,1,1,64,128).resize(cimg_fitscreen(640,480,1),1,(colors && colors[0].size()==1)?1:3,3).
+	else return CImg<T>(1,2,1,1,64,128).resize(cimg_fitscreen(CImgDisplay::screen_width()/2,CImgDisplay::screen_height()/2,1),
+                                                   1,(colors && colors[0].size()==1)?1:3,3).
                _display_object3d(disp,title,vertices,primitives,colors,opacities,centering,
 				 render_static,render_motion,is_double_sided,focale,
                                  light_x,light_y,light_z,specular_lightness,specular_shininess,
@@ -39098,7 +39100,8 @@ namespace cimg_library_suffixed {
         throw CImgInstanceException(_cimg_instance
                                     "display_graph(): Empty instance.",
                                     cimg_instance);
-      if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title(title?"%s":"CImg<%s>",title?title:pixel_type());
+      if (!disp) disp.assign(cimg_fitscreen(CImgDisplay::screen_width()/2,CImgDisplay::screen_height()/2,1),0,0).
+                   set_title(title?"%s":"CImg<%s>",title?title:pixel_type());
       const unsigned long siz = (unsigned long)_width*_height*_depth, siz1 = cimg::max(1U,siz-1);
       const unsigned int old_normalization = disp.normalization();
       disp.show().flush()._normalization = 0;
