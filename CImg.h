@@ -15743,7 +15743,7 @@ namespace cimg_library_suffixed {
 #else
       const t *ps = xyzc._data;
       cimg_for(res,pd,double) {
-        const double x = (double)*(ps++); y = (double)*(ps++); z = (double)*(ps++); c = (double)*(ps++);
+        const double x = (double)*(ps++), y = (double)*(ps++), z = (double)*(ps++), c = (double)*(ps++);
         *pd = mp(x,y,z,c);
       }
 #endif
