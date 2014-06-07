@@ -10350,7 +10350,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator+=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((*this)(x,y,z,c) + lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this+=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10480,7 +10492,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator-=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((*this)(x,y,z,c) - lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this-=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10594,7 +10618,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator*=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((*this)(x,y,z,c) * lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         mul(CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -10688,7 +10724,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator/=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((*this)(x,y,z,c) / lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         div(CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -10762,7 +10810,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator%=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)cimg::mod((*this)(x,y,z,c),(T)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this%=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10839,7 +10899,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator&=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((unsigned long)(*this)(x,y,z,c) & (unsigned long)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this&=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10916,7 +10988,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator|=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((unsigned long)(*this)(x,y,z,c) | (unsigned long)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this|=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10997,7 +11081,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator^=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((unsigned long)(*this)(x,y,z,c) ^ (unsigned long)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this^=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11076,7 +11172,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((long)(*this)(x,y,z,c) << (int)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this<<=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11153,7 +11261,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((long)(*this)(x,y,z,c) >> (int)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this>>=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11246,9 +11366,21 @@ namespace cimg_library_suffixed {
       try {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
-        const T *ptrs = _data;
+        const T *ptrs = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs--)==mp(x,y,z,c)); }
-        else cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)((double)(*this)(x,y,z,c)==lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
+#endif
+        }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         is_equal = (*this==CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -13524,7 +13656,9 @@ namespace cimg_library_suffixed {
 #define _cimg_mp_opcode6(op,i1,i2,i3,i4,i5,i6) { const unsigned int _i1 = i1, _i2 = i2, _i3 = i3, _i4 = i4, _i5 = i5, _i6 = i6; \
         _cimg_mp_return(opcode6(op,_i1,_i2,_i3,_i4,_i5,_i6)); }
 
-      // Constructor - Destructor - Copy.
+      // Constructors.
+      _cimg_math_parser():reference(CImg<T>::empty()),calling_function(0) {}
+
       _cimg_math_parser(const CImg<T>& img, const char *const expression, const char *const funcname=0):
         reference(img),calling_function(funcname?funcname:"cimg_math_parser") {
         unsigned int l = 0;
@@ -14815,7 +14949,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"pow");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)std::pow((double)(*this)(x,y,z,c),lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -14884,7 +15030,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"rol");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)cimg::rol((*this)(x,y,z,c),(unsigned int)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -14953,7 +15111,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"ror");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)cimg::ror((*this)(x,y,z,c),(unsigned int)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -15048,7 +15218,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"min");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)cimg::min((*this)(x,y,z,c),(T)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         CImg<T> values(_width,_height,_depth,_spectrum);
         try {
@@ -15120,7 +15302,19 @@ namespace cimg_library_suffixed {
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"max");
         T *ptrd = *expression=='<'?end()-1:_data;
         if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)cimg::max((*this)(x,y,z,c),(T)lmp(x,y,z,c));
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
+#endif
+        }
       } catch (CImgException&) {
         CImg<T> values(_width,_height,_depth,_spectrum);
         try {
@@ -17607,8 +17801,20 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"fill");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) *(ptrd--) = (T)mp((double)x,(double)y,(double)z,(double)c);
-        else cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp((double)x,(double)y,(double)z,(double)c);
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) *(ptrd--) = (T)mp(x,y,z,c);
+        else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp(x,y,z,c);
+        else {
+#ifdef cimg_use_openmp
+#pragma omp parallel if (size()>512)
+          {
+            _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
+#pragma omp for collapse(4)
+            cimg_forXYZC(*this,x,y,z,c) (*this)(x,y,z,c) = (T)lmp(x,y,z,c);
+          }
+#else
+          cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp(x,y,z,c);
+#endif
+        }
       } catch (CImgException& e) { // If failed, try to recognize a list of values.
         char item[16384] = { 0 }, sep = 0;
         const char *nexpression = expression;
