@@ -220,7 +220,7 @@
 // OpenMP directives may be used in a (very) few CImg functions to get
 // advantages of multi-core CPUs.
 #ifdef cimg_use_openmp
-#include "omp.h"
+#include <omp.h>
 #endif
 
 // Configure OpenCV support.
@@ -10693,7 +10693,7 @@ namespace cimg_library_suffixed {
       CImg<_cimg_Tt> res(img._width,_height);
       _cimg_Ttdouble value;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=1000 && img.size()>=1000) private(value)
+#pragma omp parallel for if (size()>=1000 && img.size()>=1000) private(value) collapse(2)
       cimg_forXY(res,i,j) { value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); res(i,j) = (_cimg_Tt)value; }
 #else
       _cimg_Tt *ptrd = res._data;
@@ -33612,7 +33612,11 @@ namespace cimg_library_suffixed {
       CImg<tpfloat> projections(vertices._width,2);
       tpfloat parallzmin = cimg::type<tpfloat>::max();
       const float absfocale = focale?cimg::abs(focale):0;
-      if (absfocale) cimg_forX(projections,l) { // Perspective projection
+      if (absfocale) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (projections.size()>512)
+#endif
+        cimg_forX(projections,l) { // Perspective projection
           const tpfloat
             x = (tpfloat)vertices(l,0),
             y = (tpfloat)vertices(l,1),
@@ -33620,7 +33624,13 @@ namespace cimg_library_suffixed {
           const tpfloat projectedz = z + Z + absfocale;
           projections(l,1) = Y + absfocale*y/projectedz;
           projections(l,0) = X + absfocale*x/projectedz;
-        } else cimg_forX(projections,l) { // Parallel projection
+        }
+
+      } else {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (projections.size()>512)
+#endif
+        cimg_forX(projections,l) { // Parallel projection
           const tpfloat
             x = (tpfloat)vertices(l,0),
             y = (tpfloat)vertices(l,1),
@@ -33629,13 +33639,17 @@ namespace cimg_library_suffixed {
           projections(l,1) = Y + y;
           projections(l,0) = X + x;
         }
+      }
       const float _focale = absfocale?absfocale:(1e5f-parallzmin);
 
-      // Compute and sort visible primitives.
-      CImg<uintT> visibles(primitives._width);
+      // Compute visible primitives.
+      CImg<uintT> visibles(primitives._width,1,1,1,~0U);
       CImg<tpfloat> zrange(primitives._width);
-      unsigned int nb_visibles = 0;
       const tpfloat zmin = absfocale?(tpfloat)(1.5f - absfocale):cimg::type<tpfloat>::min();
+
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (primitives.size()>128)
+#endif
       cimglist_for(primitives,l) {
         const CImg<tf>& primitive = primitives[l];
         switch (primitive.size()) {
@@ -33643,8 +33657,8 @@ namespace cimg_library_suffixed {
           const unsigned int i0 = (unsigned int)primitive(0);
           const tpfloat z0 = Z + vertices(i0,2);
           if (z0>zmin) {
-            visibles(nb_visibles) = (unsigned int)l;
-            zrange(nb_visibles++) = z0;
+            visibles(l) = (unsigned int)l;
+            zrange(l) = z0;
           }
         } break;
         case 5 : { // Sphere
@@ -33667,8 +33681,8 @@ namespace cimg_library_suffixed {
             xM = xc + radius,
             yM = yc + radius;
           if (xM>=0 && xm<_width && yM>=0 && ym<_height && _zc>zmin) {
-            visibles(nb_visibles) = (unsigned int)l;
-            zrange(nb_visibles++) = _zc;
+            visibles(l) = (unsigned int)l;
+            zrange(l) = _zc;
           }
         } break;
         case 2 : // Segment
@@ -33683,8 +33697,8 @@ namespace cimg_library_suffixed {
           if (x0<x1) { xm = x0; xM = x1; } else { xm = x1; xM = x0; }
           if (y0<y1) { ym = y0; yM = y1; } else { ym = y1; yM = y0; }
           if (xM>=0 && xm<_width && yM>=0 && ym<_height && z0>zmin && z1>zmin) {
-            visibles(nb_visibles) = (unsigned int)l;
-            zrange(nb_visibles++) = (z0 + z1)/2;
+            visibles(l) = (unsigned int)l;
+            zrange(l) = (z0 + z1)/2;
           }
         } break;
         case 3 :  // Triangle
@@ -33707,8 +33721,8 @@ namespace cimg_library_suffixed {
           if (xM>=0 && xm<_width && yM>=0 && ym<_height && z0>zmin && z1>zmin && z2>zmin) {
             const tpfloat d = (x1-x0)*(y2-y0) - (x2-x0)*(y1-y0);
             if (is_double_sided || d<0) {
-              visibles(nb_visibles) = (unsigned int)l;
-              zrange(nb_visibles++) = (z0 + z1 + z2)/3;
+              visibles(l) = (unsigned int)l;
+              zrange(l) = (z0 + z1 + z2)/3;
             }
           }
         } break;
@@ -33738,8 +33752,8 @@ namespace cimg_library_suffixed {
           if (xM>=0 && xm<_width && yM>=0 && ym<_height && z0>zmin && z1>zmin && z2>zmin) {
             const float d = (x1 - x0)*(y2 - y0) - (x2 - x0)*(y1 - y0);
             if (is_double_sided || d<0) {
-              visibles(nb_visibles) = (unsigned int)l;
-              zrange(nb_visibles++) = (z0 + z1 + z2 + z3)/4;
+              visibles(l) = (unsigned int)l;
+              zrange(l) = (z0 + z1 + z2 + z3)/4;
             }
           }
         } break;
@@ -33752,7 +33766,16 @@ namespace cimg_library_suffixed {
         }
       }
 
-      if (nb_visibles<=0) return *this;
+      // Sort only visibles primitives.
+      unsigned int *p_visibles = visibles._data;
+      float *p_zrange = zrange._data;
+      const float *ptrz = p_zrange;
+      cimg_for(visibles,ptr,unsigned int) {
+        if (*ptr!=~0U) { *(p_visibles++) = *ptr; *(p_zrange++) = *ptrz; }
+        ++ptrz;
+      }
+      const unsigned int nb_visibles = p_zrange - zrange._data;
+      if (!nb_visibles) return *this;
       CImg<uintT> permutations;
       CImg<tpfloat>(zrange._data,nb_visibles,1,1,1,true).sort(permutations,false);
 
@@ -33761,6 +33784,9 @@ namespace cimg_library_suffixed {
       switch (render_type) {
       case 3 : { // Flat Shading
         lightprops.assign(nb_visibles);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (nb_visibles>128)
+#endif
         cimg_forX(lightprops,l) {
           const CImg<tf>& primitive = primitives(visibles(permutations(l)));
           const unsigned int psize = primitive.size();
@@ -33792,6 +33818,9 @@ namespace cimg_library_suffixed {
       case 4 : // Gouraud Shading
       case 5 : { // Phong-Shading
         CImg<tpfloat> vertices_normals(vertices._width,3,1,1,0);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (nb_visibles>128)
+#endif
         for (unsigned int l = 0; l<nb_visibles; ++l) {
           const CImg<tf>& primitive = primitives[visibles(l)];
           const unsigned int psize = primitive.size();
@@ -33832,6 +33861,9 @@ namespace cimg_library_suffixed {
 
         if (render_type==4) {
           lightprops.assign(vertices._width);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (nb_visibles>128)
+#endif
           cimg_forX(lightprops,l) {
             const tpfloat
               nx = vertices_normals(l,0),
@@ -33870,6 +33902,9 @@ namespace cimg_library_suffixed {
       typedef typename to::value_type _to;
       CImg<_to> _opacity;
 
+#ifdef cimg_use_openmp
+#pragma omp parallel for ordered if (zbuffer) private(_opacity)
+#endif
       for (unsigned int l = 0; l<nb_visibles; ++l) {
         const unsigned int n_primitive = visibles(permutations(l));
         const CImg<tf>& primitive = primitives[n_primitive];
@@ -39014,13 +39049,18 @@ namespace cimg_library_suffixed {
             }
 
           // Draw objects
+#ifdef cimg_use_openmp
+          const bool render_with_zbuffer = true;
+#else
+          const bool render_with_zbuffer = !clicked && nrender_static>0;
+#endif
           visu = visu0;
           if ((clicked && nrender_motion<0) || (!clicked && nrender_static<0))
             visu.draw_object3d(Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
                                rotated_bbox_vertices,bbox_primitives,bbox_colors,bbox_opacities,2,false,focale).
               draw_object3d(Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
                             rotated_bbox_vertices,bbox_primitives,bbox_colors2,1,false,focale);
-          else visu._draw_object3d((void*)0,(!clicked && nrender_static>0)?zbuffer.fill(0):CImg<tpfloat>::empty(),
+          else visu._draw_object3d((void*)0,render_with_zbuffer?zbuffer.fill(0):CImg<tpfloat>::empty(),
                                    Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,_is_double_sided==1,focale,
