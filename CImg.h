@@ -10349,8 +10349,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator+=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this+=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10479,8 +10479,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator-=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this-=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10593,8 +10593,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator*=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         mul(CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -10687,8 +10687,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator/=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         div(CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -10761,8 +10761,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator%=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this%=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10838,8 +10838,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator&=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this&=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10915,8 +10915,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator|=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this|=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -10996,8 +10996,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator^=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this^=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11075,8 +11075,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this<<=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11152,8 +11152,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         *this>>=CImg<T>(_width,_height,_depth,_spectrum,expression,true);
@@ -11247,8 +11247,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"operator<<=");
         const T *ptrs = _data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs--)==mp.eval(x,y,z,c)); }
-        else cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp.eval(x,y,z,c)); }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs--)==mp(x,y,z,c)); }
+        else cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
       } catch (CImgException&) {
         cimg::exception_mode() = omode;
         is_equal = (*this==CImg<T>(_width,_height,_depth,_spectrum,expression,true));
@@ -13524,7 +13524,7 @@ namespace cimg_library_suffixed {
 #define _cimg_mp_opcode6(op,i1,i2,i3,i4,i5,i6) { const unsigned int _i1 = i1, _i2 = i2, _i3 = i3, _i4 = i4, _i5 = i5, _i6 = i6; \
         _cimg_mp_return(opcode6(op,_i1,_i2,_i3,_i4,_i5,_i6)); }
 
-      // Constructor - Destructor.
+      // Constructor - Destructor - Copy.
       _cimg_math_parser(const CImg<T>& img, const char *const expression, const char *const funcname=0):
         reference(img),calling_function(funcname?funcname:"cimg_math_parser") {
         unsigned int l = 0;
@@ -14333,7 +14333,7 @@ namespace cimg_library_suffixed {
       }
 
       // Evaluation procedure, with image data.
-      double eval(const double x, const double y, const double z, const double c) {
+      double operator()(const double x, const double y, const double z, const double c) {
         if (!mem) return 0;
         mem[9] = x; mem[10] = y; mem[11] = z; mem[12] = c;
         opcode._is_shared = true; opcode._width = opcode._depth = opcode._spectrum = 1;
@@ -14814,8 +14814,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"pow");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -14883,8 +14883,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"rol");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -14952,8 +14952,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"ror");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         CImg<Tfloat> values(_width,_height,_depth,_spectrum);
         try {
@@ -15047,8 +15047,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"min");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         CImg<T> values(_width,_height,_depth,_spectrum);
         try {
@@ -15119,8 +15119,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"max");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp.eval(x,y,z,c)); --ptrd; }
-        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp.eval(x,y,z,c)); ++ptrd; }
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); --ptrd; }
+        else cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
       } catch (CImgException&) {
         CImg<T> values(_width,_height,_depth,_spectrum);
         try {
@@ -15522,7 +15522,7 @@ namespace cimg_library_suffixed {
     **/
     double eval(const char *const expression, const double x=0, const double y=0, const double z=0, const double c=0) const {
       if (!expression) return 0;
-      return _cimg_math_parser(*this,expression,"eval").eval(x,y,z,c);
+      return _cimg_math_parser(*this,expression,"eval")(x,y,z,c);
     }
 
     //! Evaluate math formula on a set of variables.
@@ -15539,7 +15539,7 @@ namespace cimg_library_suffixed {
       double x, y, z, c;
       cimg_for(res,pd,double) {
         x = (double)*(ps++); y = (double)*(ps++); z = (double)*(ps++); c = (double)*(ps++);
-        *pd = mp.eval(x,y,z,c);
+        *pd = mp(x,y,z,c);
       }
       return res;
     }
@@ -17607,8 +17607,8 @@ namespace cimg_library_suffixed {
         const CImg<T> _base = cimg::_is_self_expr(expression)?+*this:CImg<T>(), &base = _base?_base:*this;
         _cimg_math_parser mp(base,expression+(*expression=='>' || *expression=='<'?1:0),"fill");
         T *ptrd = *expression=='<'?end()-1:_data;
-        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) *(ptrd--) = (T)mp.eval((double)x,(double)y,(double)z,(double)c);
-        else cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp.eval((double)x,(double)y,(double)z,(double)c);
+        if (*expression=='<') cimg_rofXYZC(*this,x,y,z,c) *(ptrd--) = (T)mp((double)x,(double)y,(double)z,(double)c);
+        else cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp((double)x,(double)y,(double)z,(double)c);
       } catch (CImgException& e) { // If failed, try to recognize a list of values.
         char item[16384] = { 0 }, sep = 0;
         const char *nexpression = expression;
@@ -22435,7 +22435,7 @@ namespace cimg_library_suffixed {
       ~_functor4d_streamline_expr() { delete mp; }
       _functor4d_streamline_expr(const char *const expr):mp(0) { mp = new _cimg_math_parser(CImg<T>::empty(),expr,"streamline"); }
       float operator()(const float x, const float y, const float z, const unsigned int c) const {
-        return (float)mp->eval(x,y,z,c);
+        return (float)(*mp)(x,y,z,c);
       }
     };
 
@@ -27444,7 +27444,7 @@ namespace cimg_library_suffixed {
       _functor2d_expr(const char *const expr):mp(0) { mp = new _cimg_math_parser(CImg<T>::empty(),expr,0); }
       ~_functor2d_expr() { delete mp; }
       float operator()(const float x, const float y) const {
-        return (float)mp->eval(x,y,0,0);
+        return (float)(*mp)(x,y,0,0);
       }
     };
 
@@ -27469,7 +27469,7 @@ namespace cimg_library_suffixed {
       ~_functor3d_expr() { delete mp; }
       _functor3d_expr(const char *const expr):mp(0) { mp = new _cimg_math_parser(CImg<T>::empty(),expr,0); }
       float operator()(const float x, const float y, const float z) const {
-        return (float)mp->eval(x,y,z,0);
+        return (float)(*mp)(x,y,z,0);
       }
     };
 
