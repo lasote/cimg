@@ -647,7 +647,7 @@ extern "C" {
 //
 // These macros are simpler to use than loops with C++ iterators.
 #define cimg_for(img,ptrs,T_ptrs) for (T_ptrs *ptrs = (img)._data, *_max##ptrs = (img)._data + (img).size(); ptrs<_max##ptrs; ++ptrs)
-#define cimg_rof(img,ptrs,T_ptrs) for (T_ptrs *ptrs = (img)._data + (img).size(); (ptrs--)>(img)._data; )
+#define cimg_rof(img,ptrs,T_ptrs) for (T_ptrs *ptrs = (img)._data + (img).size() - 1; ptrs>=(img)._data; --ptrs)
 #define cimg_foroff(img,off) for (unsigned long off = 0, _max##off = (img).size(); off<_max##off; ++off)
 
 #define cimg_for1(bound,i) for (int i = 0; i<(int)(bound); ++i)
@@ -14494,7 +14494,10 @@ namespace cimg_library_suffixed {
        \image html ref_sqr.jpg
     **/
     CImg<T>& sqr() {
-      cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(val*val); };
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(val*val); };
       return *this;
     }
 
@@ -14517,7 +14520,10 @@ namespace cimg_library_suffixed {
        \image html ref_sqrt.jpg
     **/
     CImg<T>& sqrt() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::sqrt((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::sqrt((double)*ptrd);
       return *this;
     }
 
@@ -14534,7 +14540,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& exp() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::exp((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::exp((double)*ptrd);
       return *this;
     }
 
@@ -14551,7 +14560,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::log((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::log((double)*ptrd);
       return *this;
     }
 
@@ -14568,7 +14580,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log2() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)cimg::log2((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::log2((double)*ptrd);
       return *this;
     }
 
@@ -14585,7 +14600,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log10() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::log10((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::log10((double)*ptrd);
       return *this;
     }
 
@@ -14602,7 +14620,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& abs() {
-      cimg_for(*this,ptrd,T) *ptrd = cimg::abs(*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = cimg::abs(*ptrd);
       return *this;
     }
 
@@ -14623,7 +14644,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sign() {
-      cimg_for(*this,ptrd,T) *ptrd = cimg::sign(*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = cimg::sign(*ptrd);
       return *this;
     }
 
@@ -14641,7 +14665,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& cos() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::cos((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::cos((double)*ptrd);
       return *this;
     }
 
@@ -14659,7 +14686,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sin() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::sin((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::sin((double)*ptrd);
       return *this;
     }
 
@@ -14677,7 +14707,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sinc() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)cimg::sinc((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::sinc((double)*ptrd);
       return *this;
     }
 
@@ -14695,7 +14728,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& tan() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::tan((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::tan((double)*ptrd);
       return *this;
     }
 
@@ -14712,7 +14748,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& cosh() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::cosh((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::cosh((double)*ptrd);
       return *this;
     }
 
@@ -14729,7 +14768,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sinh() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::sinh((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::sinh((double)*ptrd);
       return *this;
     }
 
@@ -14746,7 +14788,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& tanh() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::tanh((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::tanh((double)*ptrd);
       return *this;
     }
 
@@ -14763,7 +14808,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& acos() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::acos((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::acos((double)*ptrd);
       return *this;
     }
 
@@ -14780,7 +14828,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& asin() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::asin((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::asin((double)*ptrd);
       return *this;
     }
 
@@ -14797,7 +14848,10 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& atan() {
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::atan((double)*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::atan((double)*ptrd);
       return *this;
     }
 
@@ -14916,18 +14970,63 @@ namespace cimg_library_suffixed {
        \endcode
     **/
     CImg<T>& pow(const double p) {
-      if (p==-4) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val*val)); } return *this; }
-      if (p==-3) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val)); } return *this; }
-      if (p==-2) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val)); } return *this; }
-      if (p==-1) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/val); } return *this; }
-      if (p==-0.5) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1/std::sqrt((double)val)); } return *this; }
+      if (p==-4) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val*val)); }
+        return *this;
+      }
+      if (p==-3) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val)); }
+        return *this;
+      }
+      if (p==-2) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val)); }
+        return *this;
+      }
+      if (p==-1) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/val); }
+        return *this;
+      }
+      if (p==-0.5) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1/std::sqrt((double)val)); }
+        return *this;
+      }
       if (p==0) return fill(1);
-      if (p==0.5) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)std::sqrt((double)val); } return *this; }
+      if (p==0.5) return sqrt();
       if (p==1) return *this;
-      if (p==2) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val; } return *this; }
-      if (p==3) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val; } return *this; }
-      if (p==4) { cimg_for(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val*val; } return *this; }
-      cimg_for(*this,ptrd,T) *ptrd = (T)std::pow((double)*ptrd,p);
+      if (p==2) return sqr();
+      if (p==3) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val; }
+        return *this;
+      }
+      if (p==4) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+        cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val*val; }
+        return *this;
+      }
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)std::pow((double)*ptrd,p);
       return *this;
     }
 
@@ -15008,7 +15107,10 @@ namespace cimg_library_suffixed {
        Similar to operator<<=(unsigned int), except that it performs a left rotation instead of a left shift.
     **/
     CImg<T>& rol(const unsigned int n=1) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)cimg::rol(*ptrd,n);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::rol(*ptrd,n);
       return *this;
     }
 
@@ -15089,7 +15191,10 @@ namespace cimg_library_suffixed {
        Similar to operator>>=(unsigned int), except that it performs a right rotation instead of a right shift.
     **/
     CImg<T>& ror(const unsigned int n=1) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)cimg::ror(*ptrd,n);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::ror(*ptrd,n);
       return *this;
     }
 
@@ -15171,7 +15276,10 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{min}(I_{(x,y,z,c)},\mathrm{val})\f$.
      **/
     CImg<T>& min(const T val) {
-      cimg_for(*this,ptrd,T) *ptrd = cimg::min(*ptrd,val);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = cimg::min(*ptrd,val);
       return *this;
     }
 
@@ -15255,7 +15363,10 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{max}(I_{(x,y,z,c)},\mathrm{val})\f$.
      **/
     CImg<T>& max(const T val) {
-      cimg_for(*this,ptrd,T) *ptrd = cimg::max(*ptrd,val);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = cimg::max(*ptrd,val);
       return *this;
     }
 
