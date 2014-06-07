@@ -10691,13 +10691,12 @@ namespace cimg_library_suffixed {
                                     cimg_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data);
       CImg<_cimg_Tt> res(img._width,_height);
-      _cimg_Ttdouble value;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=1000 && img.size()>=1000) private(value) collapse(2)
-      cimg_forXY(res,i,j) { value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); res(i,j) = (_cimg_Tt)value; }
+#pragma omp parallel for if (size()>=1000 && img.size()>=1000) collapse(2)
+      cimg_forXY(res,i,j) { _cimg_Ttdouble value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); res(i,j) = (_cimg_Tt)value; }
 #else
       _cimg_Tt *ptrd = res._data;
-      cimg_forXY(res,i,j) { value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); *(ptrd++) = (_cimg_Tt)value; }
+      cimg_forXY(res,i,j) { _cimg_Ttdouble value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); *(ptrd++) = (_cimg_Tt)value; }
 #endif
       return res;
     }
@@ -23955,6 +23954,7 @@ namespace cimg_library_suffixed {
     **/
     CImg<T>& deriche(const float sigma, const int order=0, const char axis='x', const bool boundary_conditions=true) {
 #define _cimg_deriche_apply \
+  CImg<Tfloat> Y(N); \
   Tfloat *ptrY = Y._data, yb = 0, yp = 0; \
   T xp = (T)0; \
   if (boundary_conditions) { xp = *ptrX; yb = yp = (Tfloat)(coefp*xp); } \
@@ -24020,25 +24020,33 @@ namespace cimg_library_suffixed {
       case 'x' : {
         const int N = _width;
         const unsigned long off = 1U;
-        CImg<Tfloat> Y(N);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
         cimg_forYZC(*this,y,z,c) { T *ptrX = data(0,y,z,c); _cimg_deriche_apply; }
       } break;
       case 'y' : {
         const int N = _height;
         const unsigned long off = (unsigned long)_width;
-        CImg<Tfloat> Y(N);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
         cimg_forXZC(*this,x,z,c) { T *ptrX = data(x,0,z,c); _cimg_deriche_apply; }
       } break;
       case 'z' : {
         const int N = _depth;
         const unsigned long off = (unsigned long)_width*_height;
-        CImg<Tfloat> Y(N);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
         cimg_forXYC(*this,x,y,c) { T *ptrX = data(x,y,0,c); _cimg_deriche_apply; }
       } break;
       default : {
         const int N = _spectrum;
         const unsigned long off = (unsigned long)_width*_height*_depth;
-        CImg<Tfloat> Y(N);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
         cimg_forXYZ(*this,x,y,z) { T *ptrX = data(x,y,z,0); _cimg_deriche_apply; }
       }
       }
@@ -33900,12 +33908,12 @@ namespace cimg_library_suffixed {
       // Draw visible primitives
       const CImg<tc> default_color(1,_spectrum,1,1,(tc)200);
       typedef typename to::value_type _to;
-      CImg<_to> _opacity;
 
 #ifdef cimg_use_openmp
-#pragma omp parallel for ordered if (zbuffer) private(_opacity)
+#pragma omp parallel for ordered if (zbuffer)
 #endif
       for (unsigned int l = 0; l<nb_visibles; ++l) {
+        CImg<_to> _opacity;
         const unsigned int n_primitive = visibles(permutations(l));
         const CImg<tf>& primitive = primitives[n_primitive];
         const CImg<tc>
