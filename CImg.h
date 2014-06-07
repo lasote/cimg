@@ -33602,7 +33602,8 @@ namespace cimg_library_suffixed {
                             const bool is_double_sided, const float focale,
                             const float lightx, const float lighty, const float lightz,
                             const float specular_lightness, const float specular_shininess,
-                            const float sprite_scale) {
+                            const float sprite_scale,
+                            const bool allow_render_approximation=false) {
       typedef typename cimg::superset2<tp,tz,float>::type tpfloat;
       if (is_empty() || !vertices || !primitives) return *this;
       char error_message[1024] = { 0 };
@@ -33964,7 +33965,7 @@ namespace cimg_library_suffixed {
       typedef typename to::value_type _to;
 
 #ifdef cimg_use_openmp
-#pragma omp parallel for ordered if (zbuffer)
+#pragma omp parallel for ordered if (zbuffer && (allow_render_approximation || render_type<2))
 #endif
       for (unsigned int l = 0; l<nb_visibles; ++l) {
         CImg<_to> _opacity;
@@ -39127,7 +39128,7 @@ namespace cimg_library_suffixed {
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,_is_double_sided==1,focale,
                                    width()/2.0f+light_x,height()/2.0f+light_y,light_z+Zoff,specular_lightness,specular_shininess,
-                                   sprite_scale);
+                                   sprite_scale,clicked);
           // Draw axes
           if (ndisplay_axes) {
             const float
