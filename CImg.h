@@ -20386,6 +20386,9 @@ namespace cimg_library_suffixed {
             const int dx = sx*2, dy = width()*2;
             int err = (int)(dy + centering_x*(sx*dy/width() - dy)), xs = 0;
             cimg_forX(resx,x) if ((err-=dy)<=0) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (resx.size()>512)
+#endif
               cimg_forYZC(resx,y,z,c) resx(x,y,z,c) = (*this)(xs,y,z,c);
               ++xs;
               err+=dx;
@@ -20400,6 +20403,9 @@ namespace cimg_library_suffixed {
             const int dx = sy*2, dy = height()*2;
             int err = (int)(dy + centering_y*(sy*dy/height() - dy)), ys = 0;
             cimg_forY(resy,y) if ((err-=dy)<=0) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (resy.size()>512)
+#endif
               cimg_forXZC(resy,x,z,c) resy(x,y,z,c) = resx(x,ys,z,c);
               ++ys;
               err+=dx;
@@ -20415,6 +20421,9 @@ namespace cimg_library_suffixed {
             const int dx = sz*2, dy = depth()*2;
             int err = (int)(dy + centering_z*(sz*dy/depth() - dy)), zs = 0;
             cimg_forZ(resz,z) if ((err-=dy)<=0) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (resz.size()>512)
+#endif
               cimg_forXYC(resz,x,y,c) resz(x,y,z,c) = resy(x,y,zs,c);
               ++zs;
               err+=dx;
@@ -20430,6 +20439,9 @@ namespace cimg_library_suffixed {
             const int dx = sc*2, dy = spectrum()*2;
             int err = (int)(dy + centering_c*(sc*dy/spectrum() - dy)), cs = 0;
             cimg_forC(resc,c) if ((err-=dy)<=0) {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (resc.size()>512)
+#endif
               cimg_forXYZ(resc,x,y,z) resc(x,y,z,c) = resz(x,y,z,cs);
               ++cs;
               err+=dx;
