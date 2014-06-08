@@ -20180,7 +20180,6 @@ namespace cimg_library_suffixed {
       case 1 : {
         res.assign(sx,sy,sz,sc);
         CImg<ulongT> off_x(sx), off_y(sy+1), off_z(sz+1), off_c(sc+1);
-        unsigned long *poff_x, *poff_y, *poff_z, *poff_c, curr, old;
         const unsigned long
           wh = (unsigned long)_width*_height,
           whd = (unsigned long)_width*_height*_depth,
@@ -20188,37 +20187,37 @@ namespace cimg_library_suffixed {
           sxyz = (unsigned long)sx*sy*sz;
         if (sx==_width) off_x.fill(1);
         else {
-          poff_x = off_x._data; curr = 0;
-          cimg_forX(res,x) { old = curr; curr = ((x+1LU)*_width/sx); *(poff_x++) = curr - old; }
+          unsigned long *poff_x = off_x._data, curr = 0;
+          cimg_forX(res,x) { const unsigned long old = curr; curr = ((x+1LU)*_width/sx); *(poff_x++) = curr - old; }
         }
         if (sy==_height) off_y.fill(_width);
         else {
-          poff_y = off_y._data; curr = 0;
-          cimg_forY(res,y) { old = curr; curr = ((y+1LU)*_height/sy); *(poff_y++) = _width*(curr - old); } *poff_y = 0;
+          unsigned long *poff_y = off_y._data, curr = 0;
+          cimg_forY(res,y) { const unsigned long old = curr; curr = ((y+1LU)*_height/sy); *(poff_y++) = _width*(curr - old); } *poff_y = 0;
         }
         if (sz==_depth) off_z.fill(wh);
         else {
-          poff_z = off_z._data; curr = 0;
-          cimg_forZ(res,z) { old = curr; curr = ((z+1LU)*_depth/sz); *(poff_z++) = wh*(curr - old); } *poff_z = 0;
+          unsigned long *poff_z = off_z._data, curr = 0;
+          cimg_forZ(res,z) { const unsigned long old = curr; curr = ((z+1LU)*_depth/sz); *(poff_z++) = wh*(curr - old); } *poff_z = 0;
         }
         if (sc==_spectrum) off_c.fill(whd);
         else {
-          poff_c = off_c._data; curr = 0;
-          cimg_forC(res,c) { old = curr; curr = ((c+1LU)*_spectrum/sc); *(poff_c++) = whd*(curr - old); } *poff_c = 0;
+          unsigned long *poff_c = off_c._data, curr = 0;
+          cimg_forC(res,c) { const unsigned long old = curr; curr = ((c+1LU)*_spectrum/sc); *(poff_c++) = whd*(curr - old); } *poff_c = 0;
         }
 
         T *ptrd = res._data;
-        const T* ptrv = _data;
-        poff_c = off_c._data;
+        const T* ptrc = _data;
+        const unsigned long *poff_c = off_c._data;
         for (unsigned int c = 0; c<sc; ) {
-          const T *ptrz = ptrv;
-          poff_z = off_z._data;
+          const T *ptrz = ptrc;
+          const unsigned long *poff_z = off_z._data;
           for (unsigned int z = 0; z<sz; ) {
             const T *ptry = ptrz;
-            poff_y = off_y._data;
+            const unsigned long *poff_y = off_y._data;
             for (unsigned int y = 0; y<sy; ) {
               const T *ptrx = ptry;
-              poff_x = off_x._data;
+              const unsigned long *poff_x = off_x._data;
               cimg_forX(res,x) { *(ptrd++) = *ptrx; ptrx+=*(poff_x++); }
               ++y;
               unsigned long dy = *(poff_y++);
@@ -20233,7 +20232,7 @@ namespace cimg_library_suffixed {
           ++c;
           unsigned long dc = *(poff_c++);
           for (;!dc && c<dc; std::memcpy(ptrd,ptrd-sxyz,sizeof(T)*sxyz), ++c, ptrd+=sxyz, dc = *(poff_c++)) {}
-          ptrv+=dc;
+          ptrc+=dc;
         }
       } break;
 
