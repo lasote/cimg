@@ -10330,7 +10330,11 @@ namespace cimg_library_suffixed {
      **/
     template<typename t>
     CImg<T>& operator+=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(*ptrd + value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd + value);
       return *this;
     }
 
@@ -10343,6 +10347,7 @@ namespace cimg_library_suffixed {
          instead of assigning them.
     **/
     CImg<T>& operator+=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10411,7 +10416,11 @@ namespace cimg_library_suffixed {
        - Writing \c ++img is equivalent to \c img+=1.
      **/
     CImg<T>& operator++() {
-      cimg_for(*this,ptrd,T) ++*ptrd;
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) ++*ptrd;
       return *this;
     }
 
@@ -10476,7 +10485,11 @@ namespace cimg_library_suffixed {
      **/
     template<typename t>
     CImg<T>& operator-=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(*ptrd - value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd - value);
       return *this;
     }
 
@@ -10485,6 +10498,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a substraction instead of an addition.
      **/
     CImg<T>& operator-=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10535,7 +10549,11 @@ namespace cimg_library_suffixed {
        Similar to operator++(), except that it performs a decrement instead of an increment.
     **/
     CImg<T>& operator--() {
-      cimg_for(*this,ptrd,T) *ptrd = *ptrd-(T)1;
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = *ptrd-(T)1;
       return *this;
     }
 
@@ -10602,7 +10620,11 @@ namespace cimg_library_suffixed {
      **/
     template<typename t>
     CImg<T>& operator*=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(*ptrd * value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd * value);
       return *this;
     }
 
@@ -10611,6 +10633,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a multiplication instead of an addition.
      **/
     CImg<T>& operator*=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10707,7 +10730,11 @@ namespace cimg_library_suffixed {
      **/
     template<typename t>
     CImg<T>& operator/=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(*ptrd / value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd / value);
       return *this;
     }
 
@@ -10716,6 +10743,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a division instead of an addition.
      **/
     CImg<T>& operator/=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10793,7 +10821,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator%=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)cimg::mod(*ptrd,(T)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::mod(*ptrd,(T)value);
       return *this;
     }
 
@@ -10802,6 +10834,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a modulo operation instead of an addition.
     **/
     CImg<T>& operator%=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10882,7 +10915,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator&=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd & (unsigned long)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd & (unsigned long)value);
       return *this;
     }
 
@@ -10891,6 +10928,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a bitwise AND operation instead of an addition.
     **/
     CImg<T>& operator&=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -10971,7 +11009,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator|=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd | (unsigned long)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd | (unsigned long)value);
       return *this;
     }
 
@@ -10980,6 +11022,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a bitwise OR operation instead of an addition.
     **/
     CImg<T>& operator|=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -11062,7 +11105,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator^=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)value);
       return *this;
     }
 
@@ -11073,6 +11120,7 @@ namespace cimg_library_suffixed {
        - It does \e not compute the \e power of pixel values. For this purpose, use pow(const char*) instead.
     **/
     CImg<T>& operator^=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -11155,7 +11203,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator<<=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) << (int)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) << (int)value);
       return *this;
     }
 
@@ -11164,6 +11216,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a bitwise left shift instead of an addition.
     **/
     CImg<T>& operator<<=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -11244,7 +11297,11 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& operator>>=(const t value) {
-      cimg_for(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) >> (int)value);
+      if (is_empty()) return *this;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>512)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) >> (int)value);
       return *this;
     }
 
@@ -11253,6 +11310,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except that it performs a bitwise right shift instead of an addition.
     **/
     CImg<T>& operator>>=(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -14494,6 +14552,7 @@ namespace cimg_library_suffixed {
        \image html ref_sqr.jpg
     **/
     CImg<T>& sqr() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14520,6 +14579,7 @@ namespace cimg_library_suffixed {
        \image html ref_sqrt.jpg
     **/
     CImg<T>& sqrt() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14540,6 +14600,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& exp() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14560,6 +14621,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14580,6 +14642,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log2() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14600,6 +14663,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& log10() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14620,6 +14684,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& abs() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14644,6 +14709,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sign() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14665,6 +14731,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& cos() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14686,6 +14753,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sin() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14707,6 +14775,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sinc() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14728,6 +14797,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& tan() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14748,6 +14818,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& cosh() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14768,6 +14839,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& sinh() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14788,6 +14860,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& tanh() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14808,6 +14881,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& acos() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14828,6 +14902,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& asin() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14848,6 +14923,7 @@ namespace cimg_library_suffixed {
        - The \newinstance returns a \c CImg<float> image, if the pixel type \c T is \e not float-valued.
     **/
     CImg<T>& atan() {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -14970,6 +15046,7 @@ namespace cimg_library_suffixed {
        \endcode
     **/
     CImg<T>& pow(const double p) {
+      if (is_empty()) return *this;
       if (p==-4) {
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
@@ -15040,6 +15117,7 @@ namespace cimg_library_suffixed {
        Similar to operator+=(const char*), except it performs a pointwise exponentiation instead of an addition.
     **/
     CImg<T>& pow(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -15107,6 +15185,7 @@ namespace cimg_library_suffixed {
        Similar to operator<<=(unsigned int), except that it performs a left rotation instead of a left shift.
     **/
     CImg<T>& rol(const unsigned int n=1) {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -15124,6 +15203,7 @@ namespace cimg_library_suffixed {
        Similar to operator<<=(const char*), except that it performs a left rotation instead of a left shift.
     **/
     CImg<T>& rol(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -15191,6 +15271,7 @@ namespace cimg_library_suffixed {
        Similar to operator>>=(unsigned int), except that it performs a right rotation instead of a right shift.
     **/
     CImg<T>& ror(const unsigned int n=1) {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -15208,6 +15289,7 @@ namespace cimg_library_suffixed {
        Similar to operator>>=(const char*), except that it performs a right rotation instead of a right shift.
     **/
     CImg<T>& ror(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -15276,6 +15358,7 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{min}(I_{(x,y,z,c)},\mathrm{val})\f$.
      **/
     CImg<T>& min(const T val) {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -15318,6 +15401,7 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{min}(I_{(x,y,z,c)},\mathrm{expr}_{(x,y,z,c)})\f$.
     **/
     CImg<T>& min(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
@@ -15363,6 +15447,7 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{max}(I_{(x,y,z,c)},\mathrm{val})\f$.
      **/
     CImg<T>& max(const T val) {
+      if (is_empty()) return *this;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>512)
 #endif
@@ -15405,6 +15490,7 @@ namespace cimg_library_suffixed {
        \note Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by \f$\mathrm{max}(I_{(x,y,z,c)},\mathrm{expr}_{(x,y,z,c)})\f$.
     **/
     CImg<T>& max(const char *const expression) {
+      if (is_empty()) return *this;
       const unsigned int omode = cimg::exception_mode();
       cimg::exception_mode() = 0;
       try {
