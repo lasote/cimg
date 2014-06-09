@@ -20331,12 +20331,12 @@ namespace cimg_library_suffixed {
           for (unsigned int a = _width*sx, b = _width, c = sx, s = 0, t = 0; a; ) {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
             cimg_forYZC(tmp,y,z,v) tmp(t,y,z,v)+=(Tfloat)(*this)(s,y,z,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forYZC(tmp,y,z,v) tmp(t,y,z,v)/=_width;
@@ -20354,17 +20354,17 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)+=(Tfloat)(*this)(x,s,z,v)*d;
             else
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)+=(Tfloat)res(x,s,z,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)/=_height;
@@ -20382,17 +20382,17 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)+=(Tfloat)(*this)(x,y,s,v)*d;
             else
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)+=(Tfloat)res(x,y,s,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)/=_depth;
@@ -20410,17 +20410,17 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)+=(Tfloat)(*this)(x,y,z,s)*d;
             else
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)+=(Tfloat)res(x,y,z,s)*d;
             if (!b) {
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (tmp.size()>512)
 #endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)/=_spectrum;
@@ -34341,7 +34341,7 @@ namespace cimg_library_suffixed {
       const CImg<tc> default_color(1,_spectrum,1,1,(tc)200);
       typedef typename to::value_type _to;
 
-#ifndef cimg_use_openmp_donotwork
+#ifndef cimg_use_openmp_doesntwork
       cimg::unused(allow_render_approximation);
 #else
 #pragma omp parallel for ordered if (zbuffer && (allow_render_approximation || render_type<2))
