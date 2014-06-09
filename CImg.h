@@ -34341,7 +34341,7 @@ namespace cimg_library_suffixed {
       const CImg<tc> default_color(1,_spectrum,1,1,(tc)200);
       typedef typename to::value_type _to;
 
-#ifndef cimg_use_openmp
+#ifndef cimg_use_openmp_donotwork
       cimg::unused(allow_render_approximation);
 #else
 #pragma omp parallel for ordered if (zbuffer && (allow_render_approximation || render_type<2))
