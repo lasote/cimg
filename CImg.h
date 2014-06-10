@@ -18378,6 +18378,9 @@ namespace cimg_library_suffixed {
     CImg<T>& normalize() {
       T *ptrd = _data;
       const unsigned long whd = (unsigned long)_width*_height*_depth;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>16384)
+#endif
       cimg_forXYZ(*this,x,y,z) {
         const T *ptrs = ptrd;
         float n = 0;
@@ -18420,6 +18423,9 @@ namespace cimg_library_suffixed {
       Tfloat *ptrd = res._data;
       switch (norm_type) {
       case -1 : {             // Linf norm
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>16384)
+#endif
         cimg_forXYZ(*this,x,y,z) {
           Tfloat n = 0;
           const T *_ptrs = ptrs++;
@@ -18428,6 +18434,9 @@ namespace cimg_library_suffixed {
         }
       } break;
       case 1 : {              // L1 norm
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>16384)
+#endif
         cimg_forXYZ(*this,x,y,z) {
           Tfloat n = 0;
           const T *_ptrs = ptrs++;
@@ -18436,6 +18445,9 @@ namespace cimg_library_suffixed {
         }
       } break;
       default : {             // L2 norm
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>16384)
+#endif
         cimg_forXYZ(*this,x,y,z) {
           Tfloat n = 0;
           const T *_ptrs = ptrs++;
@@ -20341,14 +20353,8 @@ namespace cimg_library_suffixed {
           for (unsigned int a = _width*sx, b = _width, c = sx, s = 0, t = 0; a; ) {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
             cimg_forYZC(tmp,y,z,v) tmp(t,y,z,v)+=(Tfloat)(*this)(s,y,z,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forYZC(tmp,y,z,v) tmp(t,y,z,v)/=_width;
               ++t;
               b = _width;
@@ -20364,19 +20370,10 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)+=(Tfloat)(*this)(x,s,z,v)*d;
             else
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)+=(Tfloat)res(x,s,z,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXZC(tmp,x,z,v) tmp(x,t,z,v)/=_height;
               ++t;
               b = _height;
@@ -20392,19 +20389,10 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)+=(Tfloat)(*this)(x,y,s,v)*d;
             else
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)+=(Tfloat)res(x,y,s,v)*d;
             if (!b) {
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYC(tmp,x,y,v) tmp(x,y,t,v)/=_depth;
               ++t;
               b = _depth;
@@ -20420,19 +20408,10 @@ namespace cimg_library_suffixed {
             const unsigned int d = cimg::min(b,c);
             a-=d; b-=d; c-=d;
             if (instance_first)
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)+=(Tfloat)(*this)(x,y,z,s)*d;
             else
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)+=(Tfloat)res(x,y,z,s)*d;
             if (!b) {
-#ifdef cimg_use_openmp_notworking
-#pragma omp parallel for collapse(3) if (tmp.size()>1024)
-#endif
               cimg_forXYZ(tmp,x,y,z) tmp(x,y,z,t)/=_spectrum;
               ++t;
               b = _spectrum;
@@ -24760,7 +24739,7 @@ namespace cimg_library_suffixed {
         const unsigned long whd = (unsigned long)_width*_height*_depth;
         const float sqrt2amplitude = (float)std::sqrt(2*amplitude);
         const int dx1 = width() - 1, dy1 = height() - 1, dz1 = depth() - 1;
-        CImg<Tfloat> res(_width,_height,_depth,_spectrum,0), W(_width,_height,_depth,is_3d?4:3), val(_spectrum);
+        CImg<Tfloat> res(_width,_height,_depth,_spectrum,0), W(_width,_height,_depth,is_3d?4:3);
         int N = 0;
         if (is_3d) { // 3d version
           for (float phi = (180%(int)da)/2.0f; phi<=180; phi+=da) {
@@ -24789,9 +24768,11 @@ namespace cimg_library_suffixed {
                 *(pd3++) = (Tfloat)n;
               }
 
-              Tfloat *ptrd = res._data;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>4096)
+#endif
               cimg_forXYZ(*this,x,y,z) {
-                val.fill(0);
+                CImg<Tfloat> val(_spectrum,1,1,1,0);
                 const float
                   n = (float)W(x,y,z,3),
                   fsigma = (float)(n*sqrt2amplitude),
@@ -24856,9 +24837,9 @@ namespace cimg_library_suffixed {
                   }
                 } break;
                 }
-                Tfloat *_ptrd = ptrd++;
-                if (S>0) cimg_forC(res,c) { *_ptrd+=val[c]/S; _ptrd+=whd; }
-                else cimg_forC(res,c) { *_ptrd+=(Tfloat)((*this)(x,y,z,c)); _ptrd+=whd; }
+                Tfloat *ptrd = res.data(x,y,z);
+                if (S>0) cimg_forC(res,c) { *ptrd+=val[c]/S; ptrd+=whd; }
+                else cimg_forC(res,c) { *ptrd+=(Tfloat)((*this)(x,y,z,c)); ptrd+=whd; }
               }
             }
           }
@@ -24878,9 +24859,12 @@ namespace cimg_library_suffixed {
               *(pd1++) = (Tfloat)(v*dln);
               *(pd2++) = (Tfloat)n;
             }
-            Tfloat *ptrd = res._data;
+
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (width()*height()*depth()>4096)
+#endif
             cimg_forXY(*this,x,y) {
-              val.fill(0);
+              CImg<Tfloat> val(_spectrum,1,1,1,0);
               const float
                 n = (float)W(x,y,0,2),
                 fsigma = (float)(n*sqrt2amplitude),
@@ -24939,9 +24923,9 @@ namespace cimg_library_suffixed {
                 }
               }
               }
-              Tfloat *_ptrd = ptrd++;
-              if (S>0) cimg_forC(res,c) { *_ptrd+=val[c]/S; _ptrd+=whd; }
-              else cimg_forC(res,c) { *_ptrd+=(Tfloat)((*this)(x,y,0,c)); _ptrd+=whd; }
+              Tfloat *ptrd = res.data(x,y);
+              if (S>0) cimg_forC(res,c) { *ptrd+=val[c]/S; ptrd+=whd; }
+              else cimg_forC(res,c) { *ptrd+=(Tfloat)((*this)(x,y,0,c)); ptrd+=whd; }
             }
           }
         }
