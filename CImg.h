@@ -13713,7 +13713,7 @@ namespace cimg_library_suffixed {
 #define _cimg_mp_opcode6(op,i1,i2,i3,i4,i5,i6) { const unsigned int _i1 = i1, _i2 = i2, _i3 = i3, _i4 = i4, _i5 = i5, _i6 = i6; \
         _cimg_mp_return(opcode6(op,_i1,_i2,_i3,_i4,_i5,_i6)); }
 
-#if defined(__GNUC__) && defined(_WIN64)
+#if defined(_WIN64)
       // On Win64 and gcc 4.7, sizeof(long)!=sizeof(pointer), so a workaround is needed..
 #define _cimg_mp_enfunc(op) (char*)(op)-(char*)mp_u
 #define _cimg_mp_defunc(mp) (*(mp_func)((char*)mp_u+(mp).opcode[0]))(mp)
