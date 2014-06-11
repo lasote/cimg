@@ -18473,7 +18473,10 @@ namespace cimg_library_suffixed {
     CImg<T>& cut(const T min_value, const T max_value) {
       if (is_empty()) return *this;
       const T a = min_value<max_value?min_value:max_value, b = min_value<max_value?max_value:min_value;
-      cimg_for(*this,ptrd,T) *ptrd = (*ptrd<a)?a:((*ptrd>b)?b:*ptrd);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (size()>1048576)
+#endif
+      cimg_rof(*this,ptrd,T) *ptrd = (*ptrd<a)?a:((*ptrd>b)?b:*ptrd);
       return *this;
     }
 
@@ -25474,6 +25477,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || n<=1) return +*this;
       CImg<T> res(_width,_height,_depth,_spectrum);
       T *ptrd = res._data;
+      cimg::unused(ptrd);
       const int hl = n/2, hr = hl - 1 + n%2;
       if (res._depth!=1)
 #if cimg_use_openmp
@@ -25504,7 +25508,7 @@ namespace cimg_library_suffixed {
                 _cimg_median_sort(Jpc, Jpn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jnp, Jnc);
                 _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcc, Jnp); _cimg_median_sort(Jpn, Jcc);
                 _cimg_median_sort(Jcc, Jnp);
-                *(ptrd++) = Jcc;
+                res(x,y,c) = Jcc;
               }
             }
           } break;
@@ -25542,7 +25546,7 @@ namespace cimg_library_suffixed {
                 _cimg_median_sort(Jpp, Jbc); _cimg_median_sort(Jpp, Jcn); _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcp, Jcn);
                 _cimg_median_sort(Jcp, Jbc); _cimg_median_sort(Jcc, Jnn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jbc, Jnn);
                 _cimg_median_sort(Jcc, Jba); _cimg_median_sort(Jbc, Jba); _cimg_median_sort(Jbc, Jcc);
-                *(ptrd++) = Jcc;
+                res(x,y,c) = Jcc;
               }
             }
           } break;
@@ -25565,7 +25569,7 @@ namespace cimg_library_suffixed {
 #endif
             cimg_forC(*this,c) {
               T I[4] = { 0 };
-              cimg_for2x2(*this,x,y,0,c,I,T) *(ptrd++) = (T)(0.5f*(I[0]+I[1]));
+              cimg_for2x2(*this,x,y,0,c,I,T) res(x,c) = (T)(0.5f*(I[0]+I[1]));
             }
           } break;
           case 3 : {
@@ -25575,7 +25579,7 @@ namespace cimg_library_suffixed {
             cimg_forC(*this,c) {
               T I[9] = { 0 };
               cimg_for3x3(*this,x,y,0,c,I,T)
-                *(ptrd++) = I[3]<I[4]?(I[4]<I[5]?I[4]:(I[3]<I[5]?I[5]:I[3])):(I[3]<I[5]?I[3]:(I[4]<I[5]?I[5]:I[4]));
+                res(x,c) = I[3]<I[4]?(I[4]<I[5]?I[4]:(I[3]<I[5]?I[5]:I[3])):(I[3]<I[5]?I[3]:(I[4]<I[5]?I[5]:I[4]));
             }
           } break;
           default : {
