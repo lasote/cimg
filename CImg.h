@@ -16545,7 +16545,7 @@ namespace cimg_library_suffixed {
                      INFO);
 	assign(NRHS, N);
         if (!INFO != 0)
-          cimg_forXY(*this,k,l) (*this)(k,l) = (T) lapB[k*M+l];
+          cimg_forXY(*this,k,l) (*this)(k,l) = (T)lapB[k*M+l];
         else
           assign(A.get_pseudoinvert()*(*this));
         delete[] lapA; delete[] lapB; delete[] WORK;
