@@ -23730,6 +23730,9 @@ namespace cimg_library_suffixed {
           mx2 = mask.width()/2, my2 = mask.height()/2, mz2 = mask.depth()/2,
           mx1 = mx2 - 1 + (mask.width()%2), my1 = my2 - 1 + (mask.height()%2), mz1 = mz2 - 1 + (mask.depth()%2),
           mxe = width() - mx2, mye = height() - my2, mze = depth() - mz2;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (res._spectrum>1)
+#endif
         cimg_forC(res,c) {
           const CImg<T> _img = get_shared_channel(c%_spectrum);
           const CImg<t> _mask = mask.get_shared_channel(c%mask._spectrum);
@@ -23878,6 +23881,9 @@ namespace cimg_library_suffixed {
         mx2 = mask.width()/2, my2 = mask.height()/2, mz2 = mask.depth()/2,
         mx1 = mx2 - 1 + (mask.width()%2), my1 = my2 - 1 + (mask.height()%2), mz1 = mz2 - 1 + (mask.depth()%2),
         mxe = width() - mx2, mye = height() - my2, mze = depth() - mz2;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
       cimg_forC(*this,c) {
         const CImg<T> _img = get_shared_channel(c%_spectrum);
         const CImg<t> _mask = mask.get_shared_channel(c%mask._spectrum);
@@ -23993,7 +23999,7 @@ namespace cimg_library_suffixed {
         const int L = width(), off = 1, s = (int)sx, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forYZC(*this,y,z,c) {
           T *const ptrdb = buf._data, *const ptrde = buf._data + L - 1;
@@ -24021,7 +24027,7 @@ namespace cimg_library_suffixed {
         const int L = height(), off = width(), s = (int)sy, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forXZC(*this,x,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
@@ -24049,7 +24055,7 @@ namespace cimg_library_suffixed {
         const int L = depth(), off = width()*height(), s = (int)sz, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forXYC(*this,x,y,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
@@ -24116,6 +24122,9 @@ namespace cimg_library_suffixed {
         mx2 = mask.width()/2, my2 = mask.height()/2, mz2 = mask.depth()/2,
         mx1 = mx2 - 1 + (mask.width()%2), my1 = my2 - 1 + (mask.height()%2), mz1 = mz2 - 1 + (mask.depth()%2),
         mxe = width() - mx2, mye = height() - my2, mze = depth() - mz2;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
       cimg_forC(*this,c) {
         const CImg<T> _img = get_shared_channel(c%_spectrum);
         const CImg<t> _mask = mask.get_shared_channel(c%mask._spectrum);
@@ -24231,7 +24240,7 @@ namespace cimg_library_suffixed {
         const int L = width(), off = 1, s = (int)sx, _s2 = s/2 + 1, _s1 = s - _s2, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forYZC(*this,y,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
@@ -24259,7 +24268,7 @@ namespace cimg_library_suffixed {
         const int L = height(), off = width(), s = (int)sy, _s2 = s/2 + 1, _s1 = s - _s2, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forXZC(*this,x,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
@@ -24287,7 +24296,7 @@ namespace cimg_library_suffixed {
         const int L = depth(), off = width()*height(), s = (int)sz, _s2 = s/2 + 1, _s1 = s - _s2, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
 #ifdef cimg_use_opemp
-#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forXYC(*this,x,y,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
@@ -24864,7 +24873,7 @@ namespace cimg_library_suffixed {
         const unsigned long whd = (unsigned long)_width*_height*_depth;
         const float sqrt2amplitude = (float)std::sqrt(2*amplitude);
         const int dx1 = width() - 1, dy1 = height() - 1, dz1 = depth() - 1;
-        CImg<Tfloat> res(_width,_height,_depth,_spectrum,0), W(_width,_height,_depth,is_3d?4:3);
+        CImg<Tfloat> res(_width,_height,_depth,_spectrum,0), W(_width,_height,_depth,is_3d?4:3), val(_spectrum,1,1,1,0);
         int N = 0;
         if (is_3d) { // 3d version
           for (float phi = (180%(int)da)/2.0f; phi<=180; phi+=da) {
@@ -24894,10 +24903,10 @@ namespace cimg_library_suffixed {
               }
 
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(3) if (width()*height()*depth()>4096)
+#pragma omp parallel for collapse(3) if (width()*height()*depth()>4096) firstprivate(val)
 #endif
               cimg_forXYZ(*this,x,y,z) {
-                CImg<Tfloat> val(_spectrum,1,1,1,0);
+                val.fill(0);
                 const float
                   n = (float)W(x,y,z,3),
                   fsigma = (float)(n*sqrt2amplitude),
@@ -24986,10 +24995,10 @@ namespace cimg_library_suffixed {
             }
 
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (width()*height()*depth()>4096)
+#pragma omp parallel for collapse(2) if (width()*height()*depth()>4096) firstprivate(val)
 #endif
             cimg_forXY(*this,x,y) {
-              CImg<Tfloat> val(_spectrum,1,1,1,0);
+              val.fill(0);
               const float
                 n = (float)W(x,y,0,2),
                 fsigma = (float)(n*sqrt2amplitude),
@@ -25342,91 +25351,112 @@ namespace cimg_library_suffixed {
         Pnorm = P.size()*sigma_p2;
       const int rsize2 = (int)lookup_size/2, rsize1 = (int)lookup_size - rsize2 - 1;
       const unsigned int N2 = patch_size*patch_size, N3 = N2*patch_size;
+      cimg::unused(N2,N3);
       if (_depth>1) switch (patch_size) { // 3d
+#ifndef cimg_use_openmp
       case 2 : if (is_fast_approx) _cimg_blur_patch3d_fast(2) else _cimg_blur_patch3d(2) break;
       case 3 : if (is_fast_approx) _cimg_blur_patch3d_fast(3) else _cimg_blur_patch3d(3) break;
+#endif
       default : {
         const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
-        if (is_fast_approx) cimg_forXYZ(res,x,y,z) { // Fast
-          P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
-          const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
-          float sum_weights = 0;
-          cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (cimg::abs(img(x,y,z,0)-img(p,q,r,0))<sigma_p3) {
-            (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
-            const float
-              dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
-              distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
-              weight = distance2>3?0.0f:1.0f;
-            sum_weights+=weight;
-            cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+        if (is_fast_approx)
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (res.size()>4096) private(P,Q)
+#endif
+          cimg_forXYZ(res,x,y,z) { // Fast
+            P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
+            const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
+            float sum_weights = 0;
+            cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (cimg::abs(img(x,y,z,0)-img(p,q,r,0))<sigma_p3) {
+              (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
+              const float
+                dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
+                distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
+                weight = distance2>3?0.0f:1.0f;
+              sum_weights+=weight;
+              cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+            }
+            if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
+            else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
+          } else
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (res.size()>4096) firstprivate(P,Q)
+#endif
+          cimg_forXYZ(res,x,y,z) { // Exact
+            P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
+            const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
+            float sum_weights = 0, weight_max = 0;
+            cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (p!=x || q!=y || r!=z) {
+              (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
+              const float
+                dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
+                distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
+                weight = (float)std::exp(-distance2);
+              if (weight>weight_max) weight_max = weight;
+              sum_weights+=weight;
+              cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+            }
+            sum_weights+=weight_max; cimg_forC(res,c) res(x,y,z,c)+=weight_max*(*this)(x,y,z,c);
+            if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
+            else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
           }
-          if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
-          else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
-        } else cimg_forXYZ(res,x,y,z) { // Exact
-          P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
-          const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
-          float sum_weights = 0, weight_max = 0;
-          cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (p!=x || q!=y || r!=z) {
-            (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
-            const float
-              dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
-              distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
-              weight = (float)std::exp(-distance2);
-            if (weight>weight_max) weight_max = weight;
-            sum_weights+=weight;
-            cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
-          }
-          sum_weights+=weight_max; cimg_forC(res,c) res(x,y,z,c)+=weight_max*(*this)(x,y,z,c);
-          if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
-          else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
+      }
+        } else switch (patch_size) { // 2d
+#ifndef cimg_use_openmp
+        case 2 : if (is_fast_approx) _cimg_blur_patch2d_fast(2) else _cimg_blur_patch2d(2) break;
+        case 3 : if (is_fast_approx) _cimg_blur_patch2d_fast(3) else _cimg_blur_patch2d(3) break;
+        case 4 : if (is_fast_approx) _cimg_blur_patch2d_fast(4) else _cimg_blur_patch2d(4) break;
+        case 5 : if (is_fast_approx) _cimg_blur_patch2d_fast(5) else _cimg_blur_patch2d(5) break;
+        case 6 : if (is_fast_approx) _cimg_blur_patch2d_fast(6) else _cimg_blur_patch2d(6) break;
+        case 7 : if (is_fast_approx) _cimg_blur_patch2d_fast(7) else _cimg_blur_patch2d(7) break;
+        case 8 : if (is_fast_approx) _cimg_blur_patch2d_fast(8) else _cimg_blur_patch2d(8) break;
+        case 9 : if (is_fast_approx) _cimg_blur_patch2d_fast(9) else _cimg_blur_patch2d(9) break;
+#endif
+        default : { // Fast
+          const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
+          if (is_fast_approx)
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
+#endif
+            cimg_forXY(res,x,y) { // 2d fast approximation.
+              P = img.get_crop(x - psize1,y - psize1,x + psize2,y + psize2,true);
+              const int x0 = x - rsize1, y0 = y - rsize1, x1 = x + rsize2, y1 = y + rsize2;
+              float sum_weights = 0;
+              cimg_for_inXY(res,x0,y0,x1,y1,p,q) if (cimg::abs(img(x,y,0)-img(p,q,0))<sigma_p3) {
+                (Q = img.get_crop(p - psize1,q - psize1,p + psize2,q + psize2,true))-=P;
+                const float
+                  dx = (float)x - p, dy = (float)y - q,
+                  distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy)/sigma_s2),
+                  weight = distance2>3?0.0f:1.0f;
+                sum_weights+=weight;
+                cimg_forC(res,c) res(x,y,c)+=weight*(*this)(p,q,c);
+              }
+              if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
+              else cimg_forC(res,c) res(x,y,c) = (Tfloat)((*this)(x,y,c));
+            } else
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
+#endif
+            cimg_forXY(res,x,y) { // 2d exact algorithm.
+              P = img.get_crop(x - psize1,y - psize1,x + psize2,y + psize2,true);
+              const int x0 = x - rsize1, y0 = y - rsize1, x1 = x + rsize2, y1 = y + rsize2;
+              float sum_weights = 0, weight_max = 0;
+              cimg_for_inXY(res,x0,y0,x1,y1,p,q) if (p!=x || q!=y) {
+                (Q = img.get_crop(p - psize1,q - psize1,p + psize2,q + psize2,true))-=P;
+                const float
+                  dx = (float)x - p, dy = (float)y - q,
+                  distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy)/sigma_s2),
+                  weight = (float)std::exp(-distance2);
+                if (weight>weight_max) weight_max = weight;
+                sum_weights+=weight;
+                cimg_forC(res,c) res(x,y,c)+=weight*(*this)(p,q,c);
+              }
+              sum_weights+=weight_max; cimg_forC(res,c) res(x,y,c)+=weight_max*(*this)(x,y,c);
+              if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
+              else cimg_forC(res,c) res(x,y,0,c) = (Tfloat)((*this)(x,y,c));
+            }
         }
-      }
-      } else switch (patch_size) { // 2d
-      case 2 : if (is_fast_approx) _cimg_blur_patch2d_fast(2) else _cimg_blur_patch2d(2) break;
-      case 3 : if (is_fast_approx) _cimg_blur_patch2d_fast(3) else _cimg_blur_patch2d(3) break;
-      case 4 : if (is_fast_approx) _cimg_blur_patch2d_fast(4) else _cimg_blur_patch2d(4) break;
-      case 5 : if (is_fast_approx) _cimg_blur_patch2d_fast(5) else _cimg_blur_patch2d(5) break;
-      case 6 : if (is_fast_approx) _cimg_blur_patch2d_fast(6) else _cimg_blur_patch2d(6) break;
-      case 7 : if (is_fast_approx) _cimg_blur_patch2d_fast(7) else _cimg_blur_patch2d(7) break;
-      case 8 : if (is_fast_approx) _cimg_blur_patch2d_fast(8) else _cimg_blur_patch2d(8) break;
-      case 9 : if (is_fast_approx) _cimg_blur_patch2d_fast(9) else _cimg_blur_patch2d(9) break;
-      default : { // Fast
-        const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
-        if (is_fast_approx) cimg_forXY(res,x,y) { // 2d fast approximation.
-          P = img.get_crop(x - psize1,y - psize1,x + psize2,y + psize2,true);
-          const int x0 = x - rsize1, y0 = y - rsize1, x1 = x + rsize2, y1 = y + rsize2;
-          float sum_weights = 0;
-          cimg_for_inXY(res,x0,y0,x1,y1,p,q) if (cimg::abs(img(x,y,0)-img(p,q,0))<sigma_p3) {
-            (Q = img.get_crop(p - psize1,q - psize1,p + psize2,q + psize2,true))-=P;
-            const float
-              dx = (float)x - p, dy = (float)y - q,
-              distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy)/sigma_s2),
-              weight = distance2>3?0.0f:1.0f;
-            sum_weights+=weight;
-            cimg_forC(res,c) res(x,y,c)+=weight*(*this)(p,q,c);
-          }
-          if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
-          else cimg_forC(res,c) res(x,y,c) = (Tfloat)((*this)(x,y,c));
-        } else cimg_forXY(res,x,y) { // 2d exact algorithm.
-          P = img.get_crop(x - psize1,y - psize1,x + psize2,y + psize2,true);
-          const int x0 = x - rsize1, y0 = y - rsize1, x1 = x + rsize2, y1 = y + rsize2;
-          float sum_weights = 0, weight_max = 0;
-          cimg_for_inXY(res,x0,y0,x1,y1,p,q) if (p!=x || q!=y) {
-            (Q = img.get_crop(p - psize1,q - psize1,p + psize2,q + psize2,true))-=P;
-            const float
-              dx = (float)x - p, dy = (float)y - q,
-              distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy)/sigma_s2),
-              weight = (float)std::exp(-distance2);
-            if (weight>weight_max) weight_max = weight;
-            sum_weights+=weight;
-            cimg_forC(res,c) res(x,y,c)+=weight*(*this)(p,q,c);
-          }
-          sum_weights+=weight_max; cimg_forC(res,c) res(x,y,c)+=weight_max*(*this)(x,y,c);
-          if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
-          else cimg_forC(res,c) res(x,y,0,c) = (Tfloat)((*this)(x,y,c));
         }
-      }
-      }
       return res;
     }
 
@@ -25445,91 +25475,121 @@ namespace cimg_library_suffixed {
       CImg<T> res(_width,_height,_depth,_spectrum);
       T *ptrd = res._data;
       const int hl = n/2, hr = hl - 1 + n%2;
-      if (res._depth!=1) cimg_forXYZC(*this,x,y,z,c) { // 3d
-        const int
-          x0 = x - hl, y0 = y - hl, z0 = z-hl, x1 = x + hr, y1 = y + hr, z1 = z+hr,
-          nx0 = x0<0?0:x0, ny0 = y0<0?0:y0, nz0 = z0<0?0:z0,
-          nx1 = x1>=width()?width()-1:x1, ny1 = y1>=height()?height()-1:y1, nz1 = z1>=depth()?depth()-1:z1;
-        *(ptrd++) = get_crop(nx0,ny0,nz0,c,nx1,ny1,nz1,c).median();
-      } else {
+      if (res._depth!=1)
+#if cimg_use_openmp
+#pragma omp parallel for collapse(4) if (size()>1024)
+#endif
+        cimg_forXYZC(*this,x,y,z,c) { // 3d
+          const int
+            x0 = x - hl, y0 = y - hl, z0 = z-hl, x1 = x + hr, y1 = y + hr, z1 = z+hr,
+            nx0 = x0<0?0:x0, ny0 = y0<0?0:y0, nz0 = z0<0?0:z0,
+                                                       nx1 = x1>=width()?width()-1:x1, ny1 = y1>=height()?height()-1:y1, nz1 = z1>=depth()?depth()-1:z1;
+          res(x,y,z,c) = get_crop(nx0,ny0,nz0,c,nx1,ny1,nz1,c).median();
+        } else {
 #define _cimg_median_sort(a,b) if ((a)>(b)) cimg::swap(a,b)
         if (res._height!=1) switch (n) { // 2d
-        case 3 : {
-          T I[9] = { 0 };
-          CImg_3x3(J,T);
-          cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,T) {
-            std::memcpy(J,I,9*sizeof(T));
-            _cimg_median_sort(Jcp, Jnp); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jcn, Jnn);
-            _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jpc, Jcc); _cimg_median_sort(Jpn, Jcn);
-            _cimg_median_sort(Jcp, Jnp); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jcn, Jnn);
-            _cimg_median_sort(Jpp, Jpc); _cimg_median_sort(Jnc, Jnn); _cimg_median_sort(Jcc, Jcn);
-            _cimg_median_sort(Jpc, Jpn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jnp, Jnc);
-            _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcc, Jnp); _cimg_median_sort(Jpn, Jcc);
-            _cimg_median_sort(Jcc, Jnp);
-            *(ptrd++) = Jcc;
+          case 3 : {
+#if cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
+            cimg_forC(*this,c) {
+              T I[9] = { 0 };
+              CImg_3x3(J,T);
+              cimg_for3x3(*this,x,y,0,c,I,T) {
+                std::memcpy(J,I,9*sizeof(T));
+                _cimg_median_sort(Jcp, Jnp); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jcn, Jnn);
+                _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jpc, Jcc); _cimg_median_sort(Jpn, Jcn);
+                _cimg_median_sort(Jcp, Jnp); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jcn, Jnn);
+                _cimg_median_sort(Jpp, Jpc); _cimg_median_sort(Jnc, Jnn); _cimg_median_sort(Jcc, Jcn);
+                _cimg_median_sort(Jpc, Jpn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jnp, Jnc);
+                _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcc, Jnp); _cimg_median_sort(Jpn, Jcc);
+                _cimg_median_sort(Jcc, Jnp);
+                *(ptrd++) = Jcc;
+              }
+            }
+          } break;
+          case 5 : {
+#if cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
+            cimg_forC(*this,c) {
+              T I[25] = { 0 };
+              CImg_5x5(J,T);
+              cimg_for5x5(*this,x,y,0,c,I,T) {
+                std::memcpy(J,I,25*sizeof(T));
+                _cimg_median_sort(Jbb, Jpb); _cimg_median_sort(Jnb, Jab); _cimg_median_sort(Jcb, Jab); _cimg_median_sort(Jcb, Jnb);
+                _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jbp, Jcp); _cimg_median_sort(Jbp, Jpp); _cimg_median_sort(Jap, Jbc);
+                _cimg_median_sort(Jnp, Jbc); _cimg_median_sort(Jnp, Jap); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jpc, Jnc);
+                _cimg_median_sort(Jpc, Jcc); _cimg_median_sort(Jbn, Jpn); _cimg_median_sort(Jac, Jpn); _cimg_median_sort(Jac, Jbn);
+                _cimg_median_sort(Jnn, Jan); _cimg_median_sort(Jcn, Jan); _cimg_median_sort(Jcn, Jnn); _cimg_median_sort(Jpa, Jca);
+                _cimg_median_sort(Jba, Jca); _cimg_median_sort(Jba, Jpa); _cimg_median_sort(Jna, Jaa); _cimg_median_sort(Jcb, Jbp);
+                _cimg_median_sort(Jnb, Jpp); _cimg_median_sort(Jbb, Jpp); _cimg_median_sort(Jbb, Jnb); _cimg_median_sort(Jab, Jcp);
+                _cimg_median_sort(Jpb, Jcp); _cimg_median_sort(Jpb, Jab); _cimg_median_sort(Jpc, Jac); _cimg_median_sort(Jnp, Jac);
+                _cimg_median_sort(Jnp, Jpc); _cimg_median_sort(Jcc, Jbn); _cimg_median_sort(Jap, Jbn); _cimg_median_sort(Jap, Jcc);
+                _cimg_median_sort(Jnc, Jpn); _cimg_median_sort(Jbc, Jpn); _cimg_median_sort(Jbc, Jnc); _cimg_median_sort(Jba, Jna);
+                _cimg_median_sort(Jcn, Jna); _cimg_median_sort(Jcn, Jba); _cimg_median_sort(Jpa, Jaa); _cimg_median_sort(Jnn, Jaa);
+                _cimg_median_sort(Jnn, Jpa); _cimg_median_sort(Jan, Jca); _cimg_median_sort(Jnp, Jcn); _cimg_median_sort(Jap, Jnn);
+                _cimg_median_sort(Jbb, Jnn); _cimg_median_sort(Jbb, Jap); _cimg_median_sort(Jbc, Jan); _cimg_median_sort(Jpb, Jan);
+                _cimg_median_sort(Jpb, Jbc); _cimg_median_sort(Jpc, Jba); _cimg_median_sort(Jcb, Jba); _cimg_median_sort(Jcb, Jpc);
+                _cimg_median_sort(Jcc, Jpa); _cimg_median_sort(Jnb, Jpa); _cimg_median_sort(Jnb, Jcc); _cimg_median_sort(Jnc, Jca);
+                _cimg_median_sort(Jab, Jca); _cimg_median_sort(Jab, Jnc); _cimg_median_sort(Jac, Jna); _cimg_median_sort(Jbp, Jna);
+                _cimg_median_sort(Jbp, Jac); _cimg_median_sort(Jbn, Jaa); _cimg_median_sort(Jpp, Jaa); _cimg_median_sort(Jpp, Jbn);
+                _cimg_median_sort(Jcp, Jpn); _cimg_median_sort(Jcp, Jan); _cimg_median_sort(Jnc, Jpa); _cimg_median_sort(Jbn, Jna);
+                _cimg_median_sort(Jcp, Jnc); _cimg_median_sort(Jcp, Jbn); _cimg_median_sort(Jpb, Jap); _cimg_median_sort(Jnb, Jpc);
+                _cimg_median_sort(Jbp, Jcn); _cimg_median_sort(Jpc, Jcn); _cimg_median_sort(Jap, Jcn); _cimg_median_sort(Jab, Jbc);
+                _cimg_median_sort(Jpp, Jcc); _cimg_median_sort(Jcp, Jac); _cimg_median_sort(Jab, Jpp); _cimg_median_sort(Jab, Jcp);
+                _cimg_median_sort(Jcc, Jac); _cimg_median_sort(Jbc, Jac); _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jbc, Jcc);
+                _cimg_median_sort(Jpp, Jbc); _cimg_median_sort(Jpp, Jcn); _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcp, Jcn);
+                _cimg_median_sort(Jcp, Jbc); _cimg_median_sort(Jcc, Jnn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jbc, Jnn);
+                _cimg_median_sort(Jcc, Jba); _cimg_median_sort(Jbc, Jba); _cimg_median_sort(Jbc, Jcc);
+                *(ptrd++) = Jcc;
+              }
+            }
+          } break;
+          default : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (size()>1024)
+#endif
+            cimg_forXYC(*this,x,y,c) {
+              const int
+                x0 = x - hl, y0 = y - hl, x1 = x + hr, y1 = y + hr,
+                nx0 = x0<0?0:x0, ny0 = y0<0?0:y0,
+                                          nx1 = x1>=width()?width()-1:x1, ny1 = y1>=height()?height()-1:y1;
+              res(x,y,c) = get_crop(nx0,ny0,0,c,nx1,ny1,0,c).median();
+            }
           }
-        } break;
-        case 5 : {
-          T I[25] = { 0 };
-          CImg_5x5(J,T);
-          cimg_forC(*this,c) cimg_for5x5(*this,x,y,0,c,I,T) {
-            std::memcpy(J,I,25*sizeof(T));
-            _cimg_median_sort(Jbb, Jpb); _cimg_median_sort(Jnb, Jab); _cimg_median_sort(Jcb, Jab); _cimg_median_sort(Jcb, Jnb);
-            _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jbp, Jcp); _cimg_median_sort(Jbp, Jpp); _cimg_median_sort(Jap, Jbc);
-            _cimg_median_sort(Jnp, Jbc); _cimg_median_sort(Jnp, Jap); _cimg_median_sort(Jcc, Jnc); _cimg_median_sort(Jpc, Jnc);
-            _cimg_median_sort(Jpc, Jcc); _cimg_median_sort(Jbn, Jpn); _cimg_median_sort(Jac, Jpn); _cimg_median_sort(Jac, Jbn);
-            _cimg_median_sort(Jnn, Jan); _cimg_median_sort(Jcn, Jan); _cimg_median_sort(Jcn, Jnn); _cimg_median_sort(Jpa, Jca);
-            _cimg_median_sort(Jba, Jca); _cimg_median_sort(Jba, Jpa); _cimg_median_sort(Jna, Jaa); _cimg_median_sort(Jcb, Jbp);
-            _cimg_median_sort(Jnb, Jpp); _cimg_median_sort(Jbb, Jpp); _cimg_median_sort(Jbb, Jnb); _cimg_median_sort(Jab, Jcp);
-            _cimg_median_sort(Jpb, Jcp); _cimg_median_sort(Jpb, Jab); _cimg_median_sort(Jpc, Jac); _cimg_median_sort(Jnp, Jac);
-            _cimg_median_sort(Jnp, Jpc); _cimg_median_sort(Jcc, Jbn); _cimg_median_sort(Jap, Jbn); _cimg_median_sort(Jap, Jcc);
-            _cimg_median_sort(Jnc, Jpn); _cimg_median_sort(Jbc, Jpn); _cimg_median_sort(Jbc, Jnc); _cimg_median_sort(Jba, Jna);
-            _cimg_median_sort(Jcn, Jna); _cimg_median_sort(Jcn, Jba); _cimg_median_sort(Jpa, Jaa); _cimg_median_sort(Jnn, Jaa);
-            _cimg_median_sort(Jnn, Jpa); _cimg_median_sort(Jan, Jca); _cimg_median_sort(Jnp, Jcn); _cimg_median_sort(Jap, Jnn);
-            _cimg_median_sort(Jbb, Jnn); _cimg_median_sort(Jbb, Jap); _cimg_median_sort(Jbc, Jan); _cimg_median_sort(Jpb, Jan);
-            _cimg_median_sort(Jpb, Jbc); _cimg_median_sort(Jpc, Jba); _cimg_median_sort(Jcb, Jba); _cimg_median_sort(Jcb, Jpc);
-            _cimg_median_sort(Jcc, Jpa); _cimg_median_sort(Jnb, Jpa); _cimg_median_sort(Jnb, Jcc); _cimg_median_sort(Jnc, Jca);
-            _cimg_median_sort(Jab, Jca); _cimg_median_sort(Jab, Jnc); _cimg_median_sort(Jac, Jna); _cimg_median_sort(Jbp, Jna);
-            _cimg_median_sort(Jbp, Jac); _cimg_median_sort(Jbn, Jaa); _cimg_median_sort(Jpp, Jaa); _cimg_median_sort(Jpp, Jbn);
-            _cimg_median_sort(Jcp, Jpn); _cimg_median_sort(Jcp, Jan); _cimg_median_sort(Jnc, Jpa); _cimg_median_sort(Jbn, Jna);
-            _cimg_median_sort(Jcp, Jnc); _cimg_median_sort(Jcp, Jbn); _cimg_median_sort(Jpb, Jap); _cimg_median_sort(Jnb, Jpc);
-            _cimg_median_sort(Jbp, Jcn); _cimg_median_sort(Jpc, Jcn); _cimg_median_sort(Jap, Jcn); _cimg_median_sort(Jab, Jbc);
-            _cimg_median_sort(Jpp, Jcc); _cimg_median_sort(Jcp, Jac); _cimg_median_sort(Jab, Jpp); _cimg_median_sort(Jab, Jcp);
-            _cimg_median_sort(Jcc, Jac); _cimg_median_sort(Jbc, Jac); _cimg_median_sort(Jpp, Jcp); _cimg_median_sort(Jbc, Jcc);
-            _cimg_median_sort(Jpp, Jbc); _cimg_median_sort(Jpp, Jcn); _cimg_median_sort(Jcc, Jcn); _cimg_median_sort(Jcp, Jcn);
-            _cimg_median_sort(Jcp, Jbc); _cimg_median_sort(Jcc, Jnn); _cimg_median_sort(Jcp, Jcc); _cimg_median_sort(Jbc, Jnn);
-            _cimg_median_sort(Jcc, Jba); _cimg_median_sort(Jbc, Jba); _cimg_median_sort(Jbc, Jcc);
-            *(ptrd++) = Jcc;
+          } else switch (n) { // 1d
+          case 2 : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
+            cimg_forC(*this,c) {
+              T I[4] = { 0 };
+              cimg_for2x2(*this,x,y,0,c,I,T) *(ptrd++) = (T)(0.5f*(I[0]+I[1]));
+            }
+          } break;
+          case 3 : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
+            cimg_forC(*this,c) {
+              T I[9] = { 0 };
+              cimg_for3x3(*this,x,y,0,c,I,T)
+                *(ptrd++) = I[3]<I[4]?(I[4]<I[5]?I[4]:(I[3]<I[5]?I[5]:I[3])):(I[3]<I[5]?I[3]:(I[4]<I[5]?I[5]:I[4]));
+            }
+          } break;
+          default : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (size()>1024)
+#endif
+            cimg_forXC(*this,x,c) {
+              const int
+                x0 = x - hl, x1 = x + hr,
+                nx0 = x0<0?0:x0, nx1 = x1>=width()?width()-1:x1;
+              res(x,c) = get_crop(nx0,0,0,c,nx1,0,0,c).median();
+            }
           }
-        } break;
-        default : {
-          cimg_forXYC(*this,x,y,c) {
-            const int
-              x0 = x - hl, y0 = y - hl, x1 = x + hr, y1 = y + hr,
-              nx0 = x0<0?0:x0, ny0 = y0<0?0:y0,
-              nx1 = x1>=width()?width()-1:x1, ny1 = y1>=height()?height()-1:y1;
-            *(ptrd++) = get_crop(nx0,ny0,0,c,nx1,ny1,0,c).median();
           }
-        }
-        } else switch (n) { // 1d
-        case 2 : {
-          T I[4] = { 0 };
-          cimg_forC(*this,c) cimg_for2x2(*this,x,y,0,c,I,T) *(ptrd++) = (T)(0.5f*(I[0]+I[1]));
-        } break;
-        case 3 : {
-          T I[9] = { 0 };
-          cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,T)
-            *(ptrd++) = I[3]<I[4]?(I[4]<I[5]?I[4]:(I[3]<I[5]?I[5]:I[3])):(I[3]<I[5]?I[3]:(I[4]<I[5]?I[5]:I[4]));
-        } break;
-        default : {
-          cimg_forXC(*this,x,c) {
-            const int
-              x0 = x - hl, x1 = x + hr,
-              nx0 = x0<0?0:x0, nx1 = x1>=width()?width()-1:x1;
-            *(ptrd++) = get_crop(nx0,0,0,c,nx1,0,0,c).median();
-          }
-        }
-        }
       }
       return res;
     }
@@ -26306,23 +26366,39 @@ namespace cimg_library_suffixed {
     CImg<T>& _distance_core(long (*const sep)(const long, const long, const long *const),
                             long (*const f)(const long, const long, const long *const)) {
       const unsigned long wh = (unsigned long)_width*_height;
+      CImg<longT> g(_width), dt(_width), s(_width), t(_width);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1) firstprivate(g,dt,s,t)
+#endif
       cimg_forC(*this,c) {
-        CImg<longT> g(_width), dt(_width), s(_width), t(_width);
         CImg<T> img = get_shared_channel(c);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
+#endif
         cimg_forYZ(*this,y,z) { // Over X-direction.
           cimg_forX(*this,x) g[x] = (long)img(x,y,z,0,wh);
           _distance_scan(_width,g,sep,f,s,t,dt);
           cimg_forX(*this,x) img(x,y,z,0,wh) = (T)dt[x];
         }
-        g.assign(_height); dt.assign(_height); s.assign(_height); t.assign(_height);
-        cimg_forXZ(*this,x,z) { // Over Y-direction.
-          cimg_forY(*this,y) g[y] = (long)img(x,y,z,0,wh);
-          _distance_scan(_height,g,sep,f,s,t,dt);
-          cimg_forY(*this,y) img(x,y,z,0,wh) = (T)dt[y];
+        if (_height>1) {
+          g.assign(_height); dt.assign(_height); s.assign(_height); t.assign(_height);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
+#endif
+          cimg_forXZ(*this,x,z) { // Over Y-direction.
+            CImg<longT> g(_width), dt(_width), s(_width), t(_width);
+            cimg_forY(*this,y) g[y] = (long)img(x,y,z,0,wh);
+            _distance_scan(_height,g,sep,f,s,t,dt);
+            cimg_forY(*this,y) img(x,y,z,0,wh) = (T)dt[y];
+          }
         }
         if (_depth>1) {
           g.assign(_depth); dt.assign(_depth); s.assign(_depth); t.assign(_depth);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
+#endif
           cimg_forXY(*this,x,y) { // Over Z-direction.
+            CImg<longT> g(_width), dt(_width), s(_width), t(_width);
             cimg_forZ(*this,z) g[z] = (long)img(x,y,z,0,wh);
             _distance_scan(_depth,g,sep,f,s,t,dt);
             cimg_forZ(*this,z) img(x,y,z,0,wh) = (T)dt[z];
@@ -26345,8 +26421,14 @@ namespace cimg_library_suffixed {
       cimg_for(*this,ptr,T) *ptr = *ptr==value?is_value=true,0:(T)999999999;
       if (!is_value) return fill(cimg::type<T>::max());
       const unsigned long wh = (unsigned long)_width*_height;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1)
+#endif
       cimg_forC(*this,c) {
         CImg<T> img = get_shared_channel(c);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3) if (size()>1024)
+#endif
         cimg_forXYZ(metric_mask,dx,dy,dz) {
           const t weight = metric_mask(dx,dy,dz);
           if (weight) {
@@ -26555,9 +26637,12 @@ namespace cimg_library_suffixed {
                                     "distance_eikonal(): image instance and metric map (%u,%u,%u,%u) have incompatible dimensions.",
                                     cimg_instance,
                                     metric._width,metric._height,metric._depth,metric._spectrum);
-      CImg<Tfloat> result(_width,_height,_depth,_spectrum,cimg::type<Tfloat>::max()),Q;
+      CImg<Tfloat> result(_width,_height,_depth,_spectrum,cimg::type<Tfloat>::max()), Q;
       CImg<charT> state(_width,_height,_depth); // -1=far away, 0=narrow, 1=frozen.
 
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1) firstprivate(Q,state)
+#endif
       cimg_forC(*this,c) {
         const CImg<T> img = get_shared_channel(c);
         const CImg<t> met = metric.get_shared_channel(c%metric._spectrum);
