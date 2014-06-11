@@ -23992,10 +23992,13 @@ namespace cimg_library_suffixed {
       if (sx>1 && _width>1) { // Along X-axis.
         const int L = width(), off = 1, s = (int)sx, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
-        T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
+#ifdef cimg_use_opemp
+#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#endif
         cimg_forYZC(*this,y,z,c) {
+          T *const ptrdb = buf._data, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(0,y,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
+          T *ptrd = buf._data, cur = *ptrs; ptrs+=off; bool is_first = true;
           for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
           for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
           for (int p = L - s - 1; p>0; --p) {
@@ -24017,8 +24020,11 @@ namespace cimg_library_suffixed {
       if (sy>1 && _height>1) { // Along Y-axis.
         const int L = height(), off = width(), s = (int)sy, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
-        T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
+#ifdef cimg_use_opemp
+#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#endif
         cimg_forXZC(*this,x,z,c) {
+          T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,0,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
           ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
           for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
@@ -24042,8 +24048,11 @@ namespace cimg_library_suffixed {
       if (sz>1 && _depth>1) { // Along Z-axis.
         const int L = depth(), off = width()*height(), s = (int)sz, _s1 = s/2, _s2 = s - _s1, s1 = _s1>L?L:_s1, s2 = _s2>L?L:_s2;
         CImg<T> buf(L);
-        T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
+#ifdef cimg_use_opemp
+#pragma omp parallel for collapse(3) private(buf) if (size()>524288)
+#endif
         cimg_forXYC(*this,x,y,c) {
+          T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,y,0,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
           ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
           for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
