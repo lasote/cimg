@@ -28,7 +28,7 @@
     </td></tr>
     <tr><td><img src="img/item_portability.jpg" alt="Portability"></img></td>
       <td><hr noshade="noshade" size="1" width="100%"></hr>
-        <tt><i>CImg</i></tt> is <i>self-contained</i> and thus <i>highly portable</i>. It fully works on
+        <tt><i>CImg</i></tt> is <i>self-contained</i>, <i>thread-safe</i> and thus <i>highly portable</i>. It fully works on
         <i>different operating systems</i> (<tt>Unix,Windows,MacOS X,*BSD,...</tt>) and is compatible
         with <i>various C++ compilers</i> (<tt>Visual C++,g++,clang++,icc,...</tt>).
     </td></tr>
@@ -44,20 +44,21 @@
     <tr><td><img src="img/item_extensibility.jpg" alt="Extensibility"></img></td>
       <td><hr noshade="noshade" size="1" width="100%"></hr>
         Although not mandatory, <tt><i>CImg</i></tt> can use functionalities of external tools/libraries such as
-        <a href="http://www.imagemagick.org/">ImageMagick</a>,
-        <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>,
-        <a href="http://xmedcon.sourceforge.net/">XMedCon</a>,
+        <a href="http://libboard.sourceforge.net/">Board</a>,
         <a href="http://ffmpeg.mplayerhq.hu/">FFMPEG</a>,
-        <a href="http://www.libpng.org/pub/png/libpng.html">libpng</a>,
+        <a href="http://www.fftw.org/">FFTW3</a>.
+        <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>,
+        <a href="http://www.imagemagick.org/">ImageMagick</a>,
+        <a href="http://www.netlib.org/lapack/">Lapack</a>,
         <a href="http://www.ijg.org/">libjpeg</a>,
+        <a href="http://www.libpng.org/pub/png/libpng.html">libpng</a>,
         <a href="http://www.libtiff.org/">libtiff</a>,
         <a href="http://www.imagemagick.org/Magick++/">Magick++</a>,
-        <a href="http://http://opencv.willowgarage.com/wiki/">OpenCV</a>,
-        <a href="http://www.netlib.org/lapack/">Lapack</a>,
-        <a href="http://libboard.sourceforge.net/">Board</a>,
         <a href="http://www.openexr.com/">OpenEXR</a>
+        <a href="http://http://opencv.willowgarage.com/wiki/">OpenCV</a>
+        <a href="http://www.openmp.org/">OpenMP</a>
         or
-        <a href="http://www.fftw.org/">FFTW3</a>.
+        <a href="http://xmedcon.sourceforge.net/">XMedCon</a>.
         Moreover, a simple <i>plug-in</i> mechanism allows any user to directly enhance the library
         capabilities according to his needs.
     </td></tr>
