@@ -25447,56 +25447,53 @@ namespace cimg_library_suffixed {
       const unsigned int N2 = patch_size*patch_size, N3 = N2*patch_size;
       cimg::unused(N2,N3);
       if (_depth>1) switch (patch_size) { // 3d
-#ifndef cimg_use_openmp_notworking
-      case 2 : if (is_fast_approx) _cimg_blur_patch3d_fast(2) else _cimg_blur_patch3d(2) break;
-      case 3 : if (is_fast_approx) _cimg_blur_patch3d_fast(3) else _cimg_blur_patch3d(3) break;
-#endif
-      default : {
-        const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
-        if (is_fast_approx)
-#ifdef cimg_use_openmp_notworking
+        case 2 : if (is_fast_approx) _cimg_blur_patch3d_fast(2) else _cimg_blur_patch3d(2) break;
+        case 3 : if (is_fast_approx) _cimg_blur_patch3d_fast(3) else _cimg_blur_patch3d(3) break;
+        default : {
+          const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
+          if (is_fast_approx)
+#ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (res.size()>4096) private(P,Q)
 #endif
-          cimg_forXYZ(res,x,y,z) { // Fast
-            P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
-            const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
-            float sum_weights = 0;
-            cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (cimg::abs(img(x,y,z,0)-img(p,q,r,0))<sigma_p3) {
-              (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
-              const float
-                dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
-                distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
-                weight = distance2>3?0.0f:1.0f;
-              sum_weights+=weight;
-              cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
-            }
-            if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
-            else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
-          } else
-#ifdef cimg_use_openmp_notworking
+            cimg_forXYZ(res,x,y,z) { // Fast
+              P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
+              const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
+              float sum_weights = 0;
+              cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (cimg::abs(img(x,y,z,0)-img(p,q,r,0))<sigma_p3) {
+                (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
+                const float
+                  dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
+                  distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
+                  weight = distance2>3?0.0f:1.0f;
+                sum_weights+=weight;
+                cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+              }
+              if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
+              else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
+            } else
+#ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (res.size()>4096) firstprivate(P,Q)
 #endif
-          cimg_forXYZ(res,x,y,z) { // Exact
-            P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
-            const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
-            float sum_weights = 0, weight_max = 0;
-            cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (p!=x || q!=y || r!=z) {
-              (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
-              const float
-                dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
-                distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
-                weight = (float)std::exp(-distance2);
-              if (weight>weight_max) weight_max = weight;
-              sum_weights+=weight;
-              cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+            cimg_forXYZ(res,x,y,z) { // Exact
+              P = img.get_crop(x - psize1,y - psize1,z - psize1,x + psize2,y + psize2,z + psize2,true);
+              const int x0 = x - rsize1, y0 = y - rsize1, z0 = z - rsize1, x1 = x + rsize2, y1 = y + rsize2, z1 = z + rsize2;
+              float sum_weights = 0, weight_max = 0;
+              cimg_for_inXYZ(res,x0,y0,z0,x1,y1,z1,p,q,r) if (p!=x || q!=y || r!=z) {
+                (Q = img.get_crop(p - psize1,q - psize1,r - psize1,p + psize2,q + psize2,r + psize2,true))-=P;
+                const float
+                  dx = (float)x - p, dy = (float)y - q, dz = (float)z - r,
+                  distance2 = (float)(Q.pow(2).sum()/Pnorm + (dx*dx + dy*dy + dz*dz)/sigma_s2),
+                  weight = (float)std::exp(-distance2);
+                if (weight>weight_max) weight_max = weight;
+                sum_weights+=weight;
+                cimg_forC(res,c) res(x,y,z,c)+=weight*(*this)(p,q,r,c);
+              }
+              sum_weights+=weight_max; cimg_forC(res,c) res(x,y,z,c)+=weight_max*(*this)(x,y,z,c);
+              if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
+              else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
             }
-            sum_weights+=weight_max; cimg_forC(res,c) res(x,y,z,c)+=weight_max*(*this)(x,y,z,c);
-            if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
-            else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
-          }
-      }
+        }
         } else switch (patch_size) { // 2d
-#ifndef cimg_use_openmp_notworking
         case 2 : if (is_fast_approx) _cimg_blur_patch2d_fast(2) else _cimg_blur_patch2d(2) break;
         case 3 : if (is_fast_approx) _cimg_blur_patch2d_fast(3) else _cimg_blur_patch2d(3) break;
         case 4 : if (is_fast_approx) _cimg_blur_patch2d_fast(4) else _cimg_blur_patch2d(4) break;
@@ -25505,11 +25502,10 @@ namespace cimg_library_suffixed {
         case 7 : if (is_fast_approx) _cimg_blur_patch2d_fast(7) else _cimg_blur_patch2d(7) break;
         case 8 : if (is_fast_approx) _cimg_blur_patch2d_fast(8) else _cimg_blur_patch2d(8) break;
         case 9 : if (is_fast_approx) _cimg_blur_patch2d_fast(9) else _cimg_blur_patch2d(9) break;
-#endif
         default : { // Fast
           const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
           if (is_fast_approx)
-#ifdef cimg_use_openmp_notworking
+#ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
 #endif
             cimg_forXY(res,x,y) { // 2d fast approximation.
@@ -25528,7 +25524,7 @@ namespace cimg_library_suffixed {
               if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
               else cimg_forC(res,c) res(x,y,c) = (Tfloat)((*this)(x,y,c));
             } else
-#ifdef cimg_use_openmp_notworking
+#ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
 #endif
             cimg_forXY(res,x,y) { // 2d exact algorithm.
