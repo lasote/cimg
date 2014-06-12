@@ -18825,59 +18825,81 @@ namespace cimg_library_suffixed {
       } else { // Non-dithered versions
         switch (_spectrum) {
         case 1 : { // Optimized for scalars.
-          for (const T *ptrs0 = _data, *ptrs_end = ptrs0 + whd; ptrs0<ptrs_end; ) {
-            const Tfloat val0 = (Tfloat)*(ptrs0++);
-            Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
-            for (const t *ptrp0 = colormap._data, *ptrp_end = ptrp0 + pwhd; ptrp0<ptrp_end; ) {
-              const Tfloat pval0 = (Tfloat)*(ptrp0++) - val0, dist = pval0*pval0;
-              if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (size()/_spectrum>16384)
+#endif
+          cimg_forYZ(*this,y,z) {
+            tuint *ptrd = res.data(0,y,z);
+            for (const T *ptrs0 = data(0,y,z), *ptrs_end = ptrs0 + _width; ptrs0<ptrs_end; ) {
+              const Tfloat val0 = (Tfloat)*(ptrs0++);
+              Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
+              for (const t *ptrp0 = colormap._data, *ptrp_end = ptrp0 + pwhd; ptrp0<ptrp_end; ) {
+                const Tfloat pval0 = (Tfloat)*(ptrp0++) - val0, dist = pval0*pval0;
+                if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+              }
+              if (map_indexes) *(ptrd++) = (tuint)*ptrmin0; else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
             }
-            if (map_indexes) *(ptrd++) = (tuint)*ptrmin0; else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
           }
         } break;
         case 2 : { // Optimized for 2d vectors.
-          tuint *ptrd1 = ptrd + whd;
-          for (const T *ptrs0 = _data, *ptrs1 = ptrs0 + whd, *ptrs_end = ptrs1; ptrs0<ptrs_end; ) {
-            const Tfloat val0 = (Tfloat)*(ptrs0++), val1 = (Tfloat)*(ptrs1++);
-            Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
-            for (const t *ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp_end = ptrp1; ptrp0<ptrp_end; ) {
-              const Tfloat
-                pval0 = (Tfloat)*(ptrp0++) - val0, pval1 = (Tfloat)*(ptrp1++) - val1,
-                dist = pval0*pval0 + pval1*pval1;
-              if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (size()/_spectrum>16384)
+#endif
+          cimg_forYZ(*this,y,z) {
+            tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd;
+            for (const T *ptrs0 = data(0,y,z), *ptrs1 = ptrs0 + whd, *ptrs_end = ptrs0 + _width; ptrs0<ptrs_end; ) {
+              const Tfloat val0 = (Tfloat)*(ptrs0++), val1 = (Tfloat)*(ptrs1++);
+              Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
+              for (const t *ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp_end = ptrp1; ptrp0<ptrp_end; ) {
+                const Tfloat
+                  pval0 = (Tfloat)*(ptrp0++) - val0, pval1 = (Tfloat)*(ptrp1++) - val1,
+                  dist = pval0*pval0 + pval1*pval1;
+                if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+              }
+              if (map_indexes) { *(ptrd++) = (tuint)*ptrmin0; *(ptrd1++) = (tuint)*(ptrmin0 + pwhd); }
+              else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
             }
-            if (map_indexes) { *(ptrd++) = (tuint)*ptrmin0; *(ptrd1++) = (tuint)*(ptrmin0 + pwhd); }
-            else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
           }
         } break;
         case 3 : { // Optimized for 3d vectors (colors).
-          tuint *ptrd1 = ptrd + whd, *ptrd2 = ptrd1 + whd;
-          for (const T *ptrs0 = _data, *ptrs1 = ptrs0 + whd, *ptrs2 = ptrs1 + whd, *ptrs_end = ptrs1; ptrs0<ptrs_end; ) {
-            const Tfloat val0 = (Tfloat)*(ptrs0++), val1 = (Tfloat)*(ptrs1++), val2 = (Tfloat)*(ptrs2++);
-            Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
-            for (const t *ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd, *ptrp_end = ptrp1; ptrp0<ptrp_end; ) {
-              const Tfloat
-                pval0 = (Tfloat)*(ptrp0++) - val0, pval1 = (Tfloat)*(ptrp1++) - val1, pval2 = (Tfloat)*(ptrp2++) - val2,
-                dist = pval0*pval0 + pval1*pval1 + pval2*pval2;
-              if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (size()/_spectrum>16384)
+#endif
+          cimg_forYZ(*this,y,z) {
+            tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd, *ptrd2 = ptrd1 + whd;
+            for (const T *ptrs0 = data(0,y,z), *ptrs1 = ptrs0 + whd, *ptrs2 = ptrs1 + whd, *ptrs_end = ptrs0 + _width; ptrs0<ptrs_end; ) {
+              const Tfloat val0 = (Tfloat)*(ptrs0++), val1 = (Tfloat)*(ptrs1++), val2 = (Tfloat)*(ptrs2++);
+              Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin0 = colormap._data;
+              for (const t *ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd, *ptrp_end = ptrp1; ptrp0<ptrp_end; ) {
+                const Tfloat
+                  pval0 = (Tfloat)*(ptrp0++) - val0, pval1 = (Tfloat)*(ptrp1++) - val1, pval2 = (Tfloat)*(ptrp2++) - val2,
+                  dist = pval0*pval0 + pval1*pval1 + pval2*pval2;
+                if (dist<distmin) { ptrmin0 = ptrp0 - 1; distmin = dist; }
+              }
+              if (map_indexes) { *(ptrd++) = (tuint)*ptrmin0; *(ptrd1++) = (tuint)*(ptrmin0 + pwhd); *(ptrd2++) = (tuint)*(ptrmin0 + 2*pwhd); }
+              else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
             }
-            if (map_indexes) { *(ptrd++) = (tuint)*ptrmin0; *(ptrd1++) = (tuint)*(ptrmin0 + pwhd); *(ptrd2++) = (tuint)*(ptrmin0 + 2*pwhd); }
-            else *(ptrd++) = (tuint)(ptrmin0 - colormap._data);
           }
         } break;
         default : // Generic version.
-          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ++ptrs) {
-            Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin = colormap._data;
-            for (const t *ptrp = colormap._data, *ptrp_end = ptrp + pwhd; ptrp<ptrp_end; ++ptrp) {
-              Tfloat dist = 0; const T *_ptrs = ptrs; const t *_ptrp = ptrp;
-              cimg_forC(*this,c) { dist+=cimg::sqr((Tfloat)*_ptrs - (Tfloat)*_ptrp); _ptrs+=whd; _ptrp+=pwhd; }
-              if (dist<distmin) { ptrmin = ptrp; distmin = dist; }
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (size()/_spectrum>16384)
+#endif
+          cimg_forYZ(*this,y,z) {
+            tuint *ptrd = res.data(0,y,z);
+            for (const T *ptrs = data(0,y,z), *ptrs_end = ptrs + _width; ptrs<ptrs_end; ++ptrs) {
+              Tfloat distmin = cimg::type<Tfloat>::max(); const t *ptrmin = colormap._data;
+              for (const t *ptrp = colormap._data, *ptrp_end = ptrp + pwhd; ptrp<ptrp_end; ++ptrp) {
+                Tfloat dist = 0; const T *_ptrs = ptrs; const t *_ptrp = ptrp;
+                cimg_forC(*this,c) { dist+=cimg::sqr((Tfloat)*_ptrs - (Tfloat)*_ptrp); _ptrs+=whd; _ptrp+=pwhd; }
+                if (dist<distmin) { ptrmin = ptrp; distmin = dist; }
+              }
+              if (map_indexes) {
+                tuint *_ptrd = ptrd++;
+                cimg_forC(*this,c) { *_ptrd = (tuint)*ptrmin; _ptrd+=whd; ptrmin+=pwhd; }
+              }
+              else *(ptrd++) = (tuint)(ptrmin - colormap._data);
             }
-            if (map_indexes) {
-              tuint *_ptrd = ptrd++;
-              cimg_forC(*this,c) { *_ptrd = (tuint)*ptrmin; _ptrd+=whd; ptrmin+=pwhd; }
-            }
-            else *(ptrd++) = (tuint)(ptrmin - colormap._data);
           }
         }
       }
