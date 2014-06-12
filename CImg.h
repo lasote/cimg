@@ -26370,11 +26370,11 @@ namespace cimg_library_suffixed {
     CImg<T>& _distance_core(long (*const sep)(const long, const long, const long *const),
                             long (*const f)(const long, const long, const long *const)) {
       const unsigned long wh = (unsigned long)_width*_height;
-      CImg<longT> g(_width), dt(_width), s(_width), t(_width);
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_spectrum>1) firstprivate(g,dt,s,t)
+#pragma omp parallel for if (_spectrum>1)
 #endif
       cimg_forC(*this,c) {
+        CImg<longT> g(_width), dt(_width), s(_width), t(_width);
         CImg<T> img = get_shared_channel(c);
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
@@ -26390,7 +26390,6 @@ namespace cimg_library_suffixed {
 #pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
 #endif
           cimg_forXZ(*this,x,z) { // Over Y-direction.
-            CImg<longT> g(_width), dt(_width), s(_width), t(_width);
             cimg_forY(*this,y) g[y] = (long)img(x,y,z,0,wh);
             _distance_scan(_height,g,sep,f,s,t,dt);
             cimg_forY(*this,y) img(x,y,z,0,wh) = (T)dt[y];
@@ -26402,7 +26401,6 @@ namespace cimg_library_suffixed {
 #pragma omp parallel for collapse(2) firstprivate(g,dt,s,t)
 #endif
           cimg_forXY(*this,x,y) { // Over Z-direction.
-            CImg<longT> g(_width), dt(_width), s(_width), t(_width);
             cimg_forZ(*this,z) g[z] = (long)img(x,y,z,0,wh);
             _distance_scan(_depth,g,sep,f,s,t,dt);
             cimg_forZ(*this,z) img(x,y,z,0,wh) = (T)dt[z];
