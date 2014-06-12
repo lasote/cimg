@@ -10358,7 +10358,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -10509,7 +10509,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -10644,7 +10644,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -10754,7 +10754,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -10845,7 +10845,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -10939,7 +10939,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -11033,7 +11033,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -11131,7 +11131,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -11227,7 +11227,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -11321,7 +11321,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -11428,7 +11428,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -15138,7 +15138,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -15224,7 +15224,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -15310,7 +15310,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -15422,7 +15422,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -15511,7 +15511,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -18033,7 +18033,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp(x,y,z,c);
         else {
 #ifdef cimg_use_openmp
-#pragma omp parallel if (size()>512 && std::strlen(expression)>16)
+#pragma omp parallel if (size()>512 && std::strlen(expression)>2)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
 #pragma omp for collapse(4)
@@ -25447,14 +25447,14 @@ namespace cimg_library_suffixed {
       const unsigned int N2 = patch_size*patch_size, N3 = N2*patch_size;
       cimg::unused(N2,N3);
       if (_depth>1) switch (patch_size) { // 3d
-#ifndef cimg_use_openmp
+#ifndef cimg_use_openmp_notworking
       case 2 : if (is_fast_approx) _cimg_blur_patch3d_fast(2) else _cimg_blur_patch3d(2) break;
       case 3 : if (is_fast_approx) _cimg_blur_patch3d_fast(3) else _cimg_blur_patch3d(3) break;
 #endif
       default : {
         const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
         if (is_fast_approx)
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (res.size()>4096) private(P,Q)
 #endif
           cimg_forXYZ(res,x,y,z) { // Fast
@@ -25473,7 +25473,7 @@ namespace cimg_library_suffixed {
             if (sum_weights>0) cimg_forC(res,c) res(x,y,z,c)/=sum_weights;
             else cimg_forC(res,c) res(x,y,z,c) = (Tfloat)((*this)(x,y,z,c));
           } else
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(3) if (res.size()>4096) firstprivate(P,Q)
 #endif
           cimg_forXYZ(res,x,y,z) { // Exact
@@ -25496,7 +25496,7 @@ namespace cimg_library_suffixed {
           }
       }
         } else switch (patch_size) { // 2d
-#ifndef cimg_use_openmp
+#ifndef cimg_use_openmp_notworking
         case 2 : if (is_fast_approx) _cimg_blur_patch2d_fast(2) else _cimg_blur_patch2d(2) break;
         case 3 : if (is_fast_approx) _cimg_blur_patch2d_fast(3) else _cimg_blur_patch2d(3) break;
         case 4 : if (is_fast_approx) _cimg_blur_patch2d_fast(4) else _cimg_blur_patch2d(4) break;
@@ -25509,7 +25509,7 @@ namespace cimg_library_suffixed {
         default : { // Fast
           const int psize2 = (int)patch_size/2, psize1 = (int)patch_size - psize2 - 1;
           if (is_fast_approx)
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
 #endif
             cimg_forXY(res,x,y) { // 2d fast approximation.
@@ -25528,7 +25528,7 @@ namespace cimg_library_suffixed {
               if (sum_weights>0) cimg_forC(res,c) res(x,y,c)/=sum_weights;
               else cimg_forC(res,c) res(x,y,c) = (Tfloat)((*this)(x,y,c));
             } else
-#ifdef cimg_use_openmp
+#ifdef cimg_use_openmp_notworking
 #pragma omp parallel for collapse(2) if (res.size()>4096) firstprivate(P,Q)
 #endif
             cimg_forXY(res,x,y) { // 2d exact algorithm.
