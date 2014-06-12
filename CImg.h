@@ -25755,12 +25755,12 @@ namespace cimg_library_suffixed {
             *(ptrd2++) = Iccn - Iccc;
           }
         } break;
-        case 4 : { // Using Deriche filter with low standard variation.
+        case 4 : { // Deriche filter with low standard variation.
           grad[0] = get_deriche(0,1,'x');
           grad[1] = get_deriche(0,1,'y');
           grad[2] = get_deriche(0,1,'z');
         } break;
-        case 5 : { // Using Van Vliet filter with low standard variation.
+        case 5 : { // Van Vliet filter with low standard variation.
           grad[0] = get_vanvliet(0,1,'x');
           grad[1] = get_vanvliet(0,1,'y');
           grad[2] = get_vanvliet(0,1,'z');
@@ -25804,15 +25804,15 @@ namespace cimg_library_suffixed {
           *(ptrd1++) = -a*Ipp - b*Icp - a*Inp + a*Ipn + b*Icn + a*Inn;
         }
       } break;
-      case 4 : { // using Van Vliet filter with low standard variation
+      case 4 : { // Van Vliet filter with low standard variation
         grad[0] = get_deriche(0,1,'x');
         grad[1] = get_deriche(0,1,'y');
       } break;
-      case 5 : { // using Deriche filter with low standard variation
+      case 5 : { // Deriche filter with low standard variation
         grad[0] = get_vanvliet(0,1,'x');
         grad[1] = get_vanvliet(0,1,'y');
       } break;
-      default : { // central finite differences
+      default : { // Central finite differences
         CImg_3x3(I,Tfloat);
         cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
           *(ptrd0++) = (Inc - Ipc)/2;
