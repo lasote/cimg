@@ -32831,23 +32831,31 @@ namespace cimg_library_suffixed {
         lZ = sprite.depth() - (z0 + sprite.depth()>depth()?z0 + sprite.depth() - depth():0) + (bz?z0:0),
         lC = sprite.spectrum() - (c0 + sprite.spectrum()>spectrum()?c0 + sprite.spectrum() - spectrum():0) + (bc?c0:0);
       const t
-        *const ptrs0 = sprite._data -
+        *ptrs = sprite._data -
         (bx?x0:0) -
         (by?y0*sprite.width():0) -
         (bz?z0*sprite.width()*sprite.height():0) -
         (bc?c0*sprite.width()*sprite.height()*sprite.depth():0);
+      const unsigned long
+        offX = (unsigned long)_width - lX,
+        soffX = (unsigned long)sprite._width - lX,
+        offY = (unsigned long)_width*(_height - lY),
+        soffY = (unsigned long)sprite._width*(sprite._height - lY),
+        offZ = (unsigned long)_width*_height*(_depth - lZ),
+        soffZ = (unsigned long)sprite._width*sprite._height*(sprite._depth - lZ);
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
       if (lX>0 && lY>0 && lZ>0 && lC>0) {
-	T *const ptrd0 = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
-        for (int c = 0; c<lC; ++c) {
+        T *ptrd = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
+        for (int v = 0; v<lC; ++v) {
           for (int z = 0; z<lZ; ++z) {
             for (int y = 0; y<lY; ++y) {
-              const t *ptrs = ptrs0 + sprite.offset(0,y,z,c);
-              T *ptrd = ptrd0 + offset(0,y,z,c);
               if (opacity>=1) for (int x = 0; x<lX; ++x) *(ptrd++) = (T)*(ptrs++);
               else for (int x = 0; x<lX; ++x) { *ptrd = (T)(nopacity*(*(ptrs++)) + *ptrd*copacity); ++ptrd; }
+              ptrd+=offX; ptrs+=soffX;
             }
+            ptrd+=offY; ptrs+=soffY;
           }
+          ptrd+=offZ; ptrs+=soffZ;
         }
       }
       return *this;
@@ -32866,24 +32874,32 @@ namespace cimg_library_suffixed {
         lZ = sprite.depth() - (z0 + sprite.depth()>depth()?z0 + sprite.depth() - depth():0) + (bz?z0:0),
         lC = sprite.spectrum() - (c0 + sprite.spectrum()>spectrum()?c0 + sprite.spectrum() - spectrum():0) + (bc?c0:0);
       const T
-        *const ptrs0 = sprite._data -
+        *ptrs = sprite._data -
         (bx?x0:0) -
         (by?y0*sprite.width():0) -
         (bz?z0*sprite.width()*sprite.height():0) -
         (bc?c0*sprite.width()*sprite.height()*sprite.depth():0);
-      const unsigned long slX = lX*sizeof(T);
+      const unsigned long
+        offX = (unsigned long)_width - lX,
+        soffX = (unsigned long)sprite._width - lX,
+        offY = (unsigned long)_width*(_height - lY),
+        soffY = (unsigned long)sprite._width*(sprite._height - lY),
+        offZ = (unsigned long)_width*_height*(_depth - lZ),
+        soffZ = (unsigned long)sprite._width*sprite._height*(sprite._depth - lZ),
+        slX = lX*sizeof(T);
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
       if (lX>0 && lY>0 && lZ>0 && lC>0) {
-	T *const ptrd0 = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
-        for (int c = 0; c<lC; ++c) {
+        T *ptrd = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
+        for (int v = 0; v<lC; ++v) {
           for (int z = 0; z<lZ; ++z) {
-            const T *ptrs = ptrs0 + sprite.offset(0,0,z,c);
-            T *ptrd = ptrd0 + offset(0,0,z,c);
             if (opacity>=1) for (int y = 0; y<lY; ++y) { std::memcpy(ptrd,ptrs,slX); ptrd+=_width; ptrs+=sprite._width; }
             else for (int y = 0; y<lY; ++y) {
                 for (int x = 0; x<lX; ++x) { *ptrd = (T)(nopacity*(*(ptrs++)) + *ptrd*copacity); ++ptrd; }
+                ptrd+=offX; ptrs+=soffX;
               }
+            ptrd+=offY; ptrs+=soffY;
           }
+          ptrd+=offZ; ptrs+=soffZ;
         }
       }
       return *this;
