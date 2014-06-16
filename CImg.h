@@ -23463,26 +23463,44 @@ namespace cimg_library_suffixed {
 
       if (nb<=0) { // Split by bloc size.
         const unsigned int dp = (unsigned int)(nb?-nb:1);
-        int p = 0;
         switch (_axis) {
         case 'x': {
-          for (int pe=_width-dp; p<pe; p+=dp) get_crop(p,0,0,0,p+dp-1,_height-1,_depth-1,_spectrum-1).move_to(res);
-          get_crop(p,0,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
+          res.assign(_width/dp+(_width%dp?1:0),1,1);
+          const unsigned int pe = _width - dp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (res._width>4 && _height*_depth*_spectrum>256)
+#endif
+          for (unsigned int p = 0; p<pe; p+=dp) get_crop(p,0,0,0,p+dp-1,_height-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
+          get_crop((res._width-1)*dp,0,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
         } break;
         case 'y': {
-          for (int pe=_height-dp; p<pe; p+=dp) get_crop(0,p,0,0,_width-1,p+dp-1,_depth-1,_spectrum-1).move_to(res);
-          get_crop(0,p,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
+          res.assign(_height/dp+(_height%dp?1:0),1,1);
+          const unsigned int pe = _height - dp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (res._width>4 && _width*_depth*_spectrum>256)
+#endif
+          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,p,0,0,_width-1,p+dp-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
+          get_crop(0,(res._width-1)*dp,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
         } break;
         case 'z': {
-          for (int pe=_depth-dp; p<pe; p+=dp) get_crop(0,0,p,0,_width-1,_height-1,p+dp-1,_spectrum-1).move_to(res);
-          get_crop(0,0,p,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
+          res.assign(_depth/dp+(_depth%dp?1:0),1,1);
+          const unsigned int pe = _depth - dp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (res._width>4 && _width*_height*_spectrum>256)
+#endif
+          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,p,0,_width-1,_height-1,p+dp-1,_spectrum-1).move_to(res[p/dp]);
+          get_crop(0,0,(res._width-1)*dp,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
         } break;
         default : {
-          for (int pe=_spectrum-dp; p<pe; p+=dp) get_crop(0,0,0,p,_width-1,_height-1,_depth-1,p+dp-1).move_to(res);
-          get_crop(0,0,0,p,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
+          res.assign(_spectrum/dp+(_spectrum%dp?1:0),1,1);
+          const unsigned int pe = _spectrum - dp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (res._width>4 && _width*_height*_depth>256)
+#endif
+          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,0,p,_width-1,_height-1,_depth-1,p+dp-1).move_to(res[p/dp]);
+          get_crop(0,0,0,(res._width-1)*dp,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
         }
         }
-
       } else { // Split by number of (non-homogeneous) blocs.
         const unsigned int siz = _axis=='x'?_width:_axis=='y'?_height:_axis=='z'?_depth:_axis=='c'?_spectrum:0;
         if ((unsigned int)nb>siz)
@@ -32813,31 +32831,23 @@ namespace cimg_library_suffixed {
         lZ = sprite.depth() - (z0 + sprite.depth()>depth()?z0 + sprite.depth() - depth():0) + (bz?z0:0),
         lC = sprite.spectrum() - (c0 + sprite.spectrum()>spectrum()?c0 + sprite.spectrum() - spectrum():0) + (bc?c0:0);
       const t
-        *ptrs = sprite._data -
+        *const ptrs0 = sprite._data -
         (bx?x0:0) -
         (by?y0*sprite.width():0) -
         (bz?z0*sprite.width()*sprite.height():0) -
         (bc?c0*sprite.width()*sprite.height()*sprite.depth():0);
-      const unsigned long
-        offX = (unsigned long)_width - lX,
-        soffX = (unsigned long)sprite._width - lX,
-        offY = (unsigned long)_width*(_height - lY),
-        soffY = (unsigned long)sprite._width*(sprite._height - lY),
-        offZ = (unsigned long)_width*_height*(_depth - lZ),
-        soffZ = (unsigned long)sprite._width*sprite._height*(sprite._depth - lZ);
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
       if (lX>0 && lY>0 && lZ>0 && lC>0) {
-	T *ptrd = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
-        for (int v = 0; v<lC; ++v) {
+	T *const ptrd0 = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
+        for (int c = 0; c<lC; ++c) {
           for (int z = 0; z<lZ; ++z) {
             for (int y = 0; y<lY; ++y) {
+              const t *ptrs = ptrs0 + sprite.offset(0,y,z,c);
+              T *ptrd = ptrd0 + offset(0,y,z,c);
               if (opacity>=1) for (int x = 0; x<lX; ++x) *(ptrd++) = (T)*(ptrs++);
               else for (int x = 0; x<lX; ++x) { *ptrd = (T)(nopacity*(*(ptrs++)) + *ptrd*copacity); ++ptrd; }
-              ptrd+=offX; ptrs+=soffX;
             }
-            ptrd+=offY; ptrs+=soffY;
           }
-          ptrd+=offZ; ptrs+=soffZ;
         }
       }
       return *this;
@@ -32856,32 +32866,24 @@ namespace cimg_library_suffixed {
         lZ = sprite.depth() - (z0 + sprite.depth()>depth()?z0 + sprite.depth() - depth():0) + (bz?z0:0),
         lC = sprite.spectrum() - (c0 + sprite.spectrum()>spectrum()?c0 + sprite.spectrum() - spectrum():0) + (bc?c0:0);
       const T
-        *ptrs = sprite._data -
+        *const ptrs0 = sprite._data -
         (bx?x0:0) -
         (by?y0*sprite.width():0) -
         (bz?z0*sprite.width()*sprite.height():0) -
         (bc?c0*sprite.width()*sprite.height()*sprite.depth():0);
-      const unsigned long
-        offX = (unsigned long)_width - lX,
-        soffX = (unsigned long)sprite._width - lX,
-        offY = (unsigned long)_width*(_height - lY),
-        soffY = (unsigned long)sprite._width*(sprite._height - lY),
-        offZ = (unsigned long)_width*_height*(_depth - lZ),
-        soffZ = (unsigned long)sprite._width*sprite._height*(sprite._depth - lZ),
-        slX = lX*sizeof(T);
+      const unsigned long slX = lX*sizeof(T);
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
       if (lX>0 && lY>0 && lZ>0 && lC>0) {
-	T *ptrd = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
-        for (int v = 0; v<lC; ++v) {
+	T *const ptrd0 = data(x0<0?0:x0,y0<0?0:y0,z0<0?0:z0,c0<0?0:c0);
+        for (int c = 0; c<lC; ++c) {
           for (int z = 0; z<lZ; ++z) {
+            const T *ptrs = ptrs0 + sprite.offset(0,0,z,c);
+            T *ptrd = ptrd0 + offset(0,0,z,c);
             if (opacity>=1) for (int y = 0; y<lY; ++y) { std::memcpy(ptrd,ptrs,slX); ptrd+=_width; ptrs+=sprite._width; }
             else for (int y = 0; y<lY; ++y) {
                 for (int x = 0; x<lX; ++x) { *ptrd = (T)(nopacity*(*(ptrs++)) + *ptrd*copacity); ++ptrd; }
-                ptrd+=offX; ptrs+=soffX;
               }
-            ptrd+=offY; ptrs+=soffY;
           }
-          ptrd+=offZ; ptrs+=soffZ;
         }
       }
       return *this;
