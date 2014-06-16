@@ -25921,7 +25921,6 @@ namespace cimg_library_suffixed {
     **/
     CImgList<Tfloat> get_gradient(const char *const axes=0, const int scheme=3) const {
       CImgList<Tfloat> grad(2,_width,_height,_depth,_spectrum);
-      Tfloat *ptrd0 = grad[0]._data, *ptrd1 = grad[1]._data;
       bool is_3d = false;
       if (axes) {
         for (unsigned int a = 0; axes[a]; ++a) {
@@ -25939,22 +25938,35 @@ namespace cimg_library_suffixed {
       } else is_3d = (_depth>1);
       if (is_3d) {
         CImg<Tfloat>(_width,_height,_depth,_spectrum).move_to(grad);
-        Tfloat *ptrd2 = grad[2]._data;
         switch (scheme) { // 3d.
         case -1 : { // Backward finite differences.
-          CImg_3x3x3(I,Tfloat);
-          cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
-            *(ptrd0++) = Iccc - Ipcc;
-            *(ptrd1++) = Iccc - Icpc;
-            *(ptrd2++) = Iccc - Iccp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+          cimg_forC(*this,c) {
+            const unsigned long off = c*_width*_height*_depth;
+            Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off, *ptrd2 = grad[2]._data + off;
+            CImg_3x3x3(I,Tfloat);
+            cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
+              *(ptrd0++) = Iccc - Ipcc;
+              *(ptrd1++) = Iccc - Icpc;
+              *(ptrd2++) = Iccc - Iccp;
+            }
           }
         } break;
         case 1 : { // Forward finite differences.
-          CImg_2x2x2(I,Tfloat);
-          cimg_forC(*this,c) cimg_for2x2x2(*this,x,y,z,c,I,Tfloat) {
-            *(ptrd0++) = Incc - Iccc;
-            *(ptrd1++) = Icnc - Iccc;
-            *(ptrd2++) = Iccn - Iccc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+          cimg_forC(*this,c) {
+            const unsigned long off = c*_width*_height*_depth;
+            Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off, *ptrd2 = grad[2]._data + off;
+            CImg_2x2x2(I,Tfloat);
+            cimg_for2x2x2(*this,x,y,z,c,I,Tfloat) {
+              *(ptrd0++) = Incc - Iccc;
+              *(ptrd1++) = Icnc - Iccc;
+              *(ptrd2++) = Iccn - Iccc;
+            }
           }
         } break;
         case 4 : { // Deriche filter with low standard variation.
@@ -25968,42 +25980,77 @@ namespace cimg_library_suffixed {
           grad[2] = get_vanvliet(0,1,'z');
         } break;
         default : { // Central finite differences.
-          CImg_3x3x3(I,Tfloat);
-          cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
-            *(ptrd0++) = (Incc - Ipcc)/2;
-            *(ptrd1++) = (Icnc - Icpc)/2;
-            *(ptrd2++) = (Iccn - Iccp)/2;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+          cimg_forC(*this,c) {
+            const unsigned long off = c*_width*_height*_depth;
+            Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off, *ptrd2 = grad[2]._data + off;
+            CImg_3x3x3(I,Tfloat);
+            cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
+              *(ptrd0++) = (Incc - Ipcc)/2;
+              *(ptrd1++) = (Icnc - Icpc)/2;
+              *(ptrd2++) = (Iccn - Iccp)/2;
+            }
           }
         }
         }
       } else switch (scheme) { // 2d.
       case -1 : { // Backward finite differences.
-        CImg_3x3(I,Tfloat);
-        cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = Icc - Ipc;
-          *(ptrd1++) = Icc - Icp;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off;
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = Icc - Ipc;
+            *(ptrd1++) = Icc - Icp;
+          }
         }
       } break;
       case 1 : { // Forward finite differences.
-        CImg_2x2(I,Tfloat);
-        cimg_forZC(*this,z,c) cimg_for2x2(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = Inc - Icc;
-          *(ptrd1++) = Icn - Icc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off;
+          CImg_2x2(I,Tfloat);
+          cimg_for2x2(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = Inc - Icc;
+            *(ptrd1++) = Icn - Icc;
+          }
         }
       } break;
       case 2 : { // Sobel scheme.
-        CImg_3x3(I,Tfloat);
-        cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = -Ipp - 2*Ipc - Ipn + Inp + 2*Inc + Inn;
-          *(ptrd1++) = -Ipp - 2*Icp - Inp + Ipn + 2*Icn + Inn;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off;
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = -Ipp - 2*Ipc - Ipn + Inp + 2*Inc + Inn;
+            *(ptrd1++) = -Ipp - 2*Icp - Inp + Ipn + 2*Icn + Inn;
+          }
         }
       } break;
       case 3 : { // Rotation invariant mask.
-        CImg_3x3(I,Tfloat);
-        const Tfloat a = (Tfloat)(0.25f*(2-std::sqrt(2.0f))), b = (Tfloat)(0.5f*(std::sqrt(2.0f)-1));
-        cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = -a*Ipp - b*Ipc - a*Ipn + a*Inp + b*Inc + a*Inn;
-          *(ptrd1++) = -a*Ipp - b*Icp - a*Inp + a*Ipn + b*Icn + a*Inn;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off;
+          CImg_3x3(I,Tfloat);
+          const Tfloat a = (Tfloat)(0.25f*(2-std::sqrt(2.0f))), b = (Tfloat)(0.5f*(std::sqrt(2.0f)-1));
+          cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = -a*Ipp - b*Ipc - a*Ipn + a*Inp + b*Inc + a*Inn;
+            *(ptrd1++) = -a*Ipp - b*Icp - a*Inp + a*Ipn + b*Icn + a*Inn;
+          }
         }
       } break;
       case 4 : { // Van Vliet filter with low standard variation
@@ -26015,10 +26062,17 @@ namespace cimg_library_suffixed {
         grad[1] = get_vanvliet(0,1,'y');
       } break;
       default : { // Central finite differences
-        CImg_3x3(I,Tfloat);
-        cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = (Inc - Ipc)/2;
-          *(ptrd1++) = (Icn - Icp)/2;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = grad[0]._data + off, *ptrd1 = grad[1]._data + off;
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = (Inc - Ipc)/2;
+            *(ptrd1++) = (Icn - Icp)/2;
+          }
         }
       }
       }
@@ -26053,55 +26107,109 @@ namespace cimg_library_suffixed {
 
       res.assign(lmax/2,_width,_height,_depth,_spectrum);
       if (!cimg::strcasecmp(naxes,def_axes3d)) { // 3d
-        Tfloat
-          *ptrd0 = res[0]._data, *ptrd1 = res[1]._data, *ptrd2 = res[2]._data,
-          *ptrd3 = res[3]._data, *ptrd4 = res[4]._data, *ptrd5 = res[5]._data;
-        CImg_3x3x3(I,Tfloat);
-        cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = Ipcc + Incc - 2*Iccc;          // Ixx
-          *(ptrd1++) = (Ippc + Innc - Ipnc - Inpc)/4; // Ixy
-          *(ptrd2++) = (Ipcp + Incn - Ipcn - Incp)/4; // Ixz
-          *(ptrd3++) = Icpc + Icnc - 2*Iccc;          // Iyy
-          *(ptrd4++) = (Icpp + Icnn - Icpn - Icnp)/4; // Iyz
-          *(ptrd5++) = Iccn + Iccp - 2*Iccc;          // Izz
+
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+        cimg_forC(*this,c) {
+          const unsigned long off = c*_width*_height*_depth;
+          Tfloat
+            *ptrd0 = res[0]._data + off, *ptrd1 = res[1]._data + off, *ptrd2 = res[2]._data + off,
+            *ptrd3 = res[3]._data + off, *ptrd4 = res[4]._data + off, *ptrd5 = res[5]._data + off;
+          CImg_3x3x3(I,Tfloat);
+          cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = Ipcc + Incc - 2*Iccc;          // Ixx
+            *(ptrd1++) = (Ippc + Innc - Ipnc - Inpc)/4; // Ixy
+            *(ptrd2++) = (Ipcp + Incn - Ipcn - Incp)/4; // Ixz
+            *(ptrd3++) = Icpc + Icnc - 2*Iccc;          // Iyy
+            *(ptrd4++) = (Icpp + Icnn - Icpn - Icnp)/4; // Iyz
+            *(ptrd5++) = Iccn + Iccp - 2*Iccc;          // Izz
+          }
         }
       } else if (!cimg::strcasecmp(naxes,def_axes2d)) { // 2d
-        Tfloat *ptrd0 = res[0]._data, *ptrd1 = res[1]._data, *ptrd2 = res[2]._data;
-        CImg_3x3(I,Tfloat);
-        cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
-          *(ptrd0++) = Ipc + Inc - 2*Icc;         // Ixx
-          *(ptrd1++) = (Ipp + Inn - Ipn - Inp)/4; // Ixy
-          *(ptrd2++) = Icp + Icn - 2*Icc;         // Iyy
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+        cimg_forZC(*this,z,c) {
+          const unsigned long off = c*_width*_height*_depth + z*_width*_height;
+          Tfloat *ptrd0 = res[0]._data + off, *ptrd1 = res[1]._data + off, *ptrd2 = res[2]._data + off;
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
+            *(ptrd0++) = Ipc + Inc - 2*Icc;         // Ixx
+            *(ptrd1++) = (Ipp + Inn - Ipn - Inp)/4; // Ixy
+            *(ptrd2++) = Icp + Icn - 2*Icc;         // Iyy
+          }
         }
       } else for (unsigned int l = 0; l<lmax; ) { // Version with custom axes.
-        const unsigned int l2 = l/2;
+          const unsigned int l2 = l/2;
           char axis1 = naxes[l++], axis2 = naxes[l++];
           if (axis1>axis2) cimg::swap(axis1,axis2);
           bool valid_axis = false;
-          Tfloat *ptrd = res[l2]._data;
           if (axis1=='x' && axis2=='x') { // Ixx
-            valid_axis = true; CImg_3x3(I,Tfloat);
-            cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Ipc + Inc - 2*Icc;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+            cimg_forZC(*this,z,c) {
+              Tfloat *ptrd = res[l2].data(0,0,z,c);
+              CImg_3x3(I,Tfloat);
+              cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Ipc + Inc - 2*Icc;
+            }
           }
           else if (axis1=='x' && axis2=='y') { // Ixy
-            valid_axis = true; CImg_3x3(I,Tfloat);
-            cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Ipp + Inn - Ipn - Inp)/4;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+            cimg_forZC(*this,z,c) {
+              Tfloat *ptrd = res[l2].data(0,0,z,c);
+              CImg_3x3(I,Tfloat);
+              cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Ipp + Inn - Ipn - Inp)/4;
+            }
           }
           else if (axis1=='x' && axis2=='z') { // Ixz
-            valid_axis = true; CImg_3x3x3(I,Tfloat);
-            cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Ipcp + Incn - Ipcn - Incp)/4;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+            cimg_forC(*this,c) {
+              Tfloat *ptrd = res[l2].data(0,0,0,c);
+              CImg_3x3x3(I,Tfloat);
+              cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Ipcp + Incn - Ipcn - Incp)/4;
+            }
           }
           else if (axis1=='y' && axis2=='y') { // Iyy
-            valid_axis = true; CImg_3x3(I,Tfloat);
-            cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Icp + Icn - 2*Icc;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#endif
+            cimg_forZC(*this,z,c) {
+              Tfloat *ptrd = res[l2].data(0,0,z,c);
+              CImg_3x3(I,Tfloat);
+              cimg_for3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Icp + Icn - 2*Icc;
+            }
           }
           else if (axis1=='y' && axis2=='z') { // Iyz
-            valid_axis = true; CImg_3x3x3(I,Tfloat);
-            cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Icpp + Icnn - Icpn - Icnp)/4;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+            cimg_forC(*this,c) {
+              Tfloat *ptrd = res[l2].data(0,0,0,c);
+              CImg_3x3x3(I,Tfloat);
+              cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = (Icpp + Icnn - Icpn - Icnp)/4;
+            }
           }
           else if (axis1=='z' && axis2=='z') { // Izz
-            valid_axis = true; CImg_3x3x3(I,Tfloat);
-            cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Iccn + Iccp - 2*Iccc;
+            valid_axis = true;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+            cimg_forC(*this,c) {
+              Tfloat *ptrd = res[l2].data(0,0,0,c);
+              CImg_3x3x3(I,Tfloat);
+              cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Iccn + Iccp - 2*Iccc;
+            }
           }
           else if (!valid_axis)
             throw CImgArgumentException(_cimg_instance
