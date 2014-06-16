@@ -24862,10 +24862,10 @@ namespace cimg_library_suffixed {
       const Tfloat
         nnsigma = nsigma<0.1f?0.1f:nsigma,
         q = (Tfloat)(nnsigma<2.5?3.97156-4.14554*std::sqrt(1-0.2689*nnsigma):0.98711*nnsigma-0.96330),
-        b0 = 1.57825f + 2.44413f*q + 1.4281f*q*q + 0.4222205f*q*q*q,
+        b0 = 1.57825f + 2.44413f*q + 1.4281f*q*q + 0.422205f*q*q*q,
         b1 = (2.44413f*q + 2.85619f*q*q + 1.26661f*q*q*q),
         b2 = -(1.4281f*q*q + 1.26661f*q*q*q),
-        b3 = 0.4222205f*q*q*q,
+        b3 = 0.422205f*q*q*q,
         B = 1.f - (b1 + b2 + b3)/b0;
       Tfloat filter[4];
       filter[0] = B; filter[1] = b1/b0; filter[2] = b2/b0; filter[3] = b3/b0;
