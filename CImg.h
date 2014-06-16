@@ -25775,7 +25775,7 @@ namespace cimg_library_suffixed {
           CImg<Tfloat> G = (alpha>0?get_blur(alpha).get_structure_tensors():get_structure_tensors());
           if (sigma>0) G.blur(sigma);
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>128 && _height*_depth>128)
+#pragma omp parallel for collapse(2) if (_height*_depth>4 && _width>128)
 #endif
           cimg_forYZ(G,y,z) {
             Tfloat *ptrG0 = G.data(0,y,z,0), *ptrG1 = G.data(0,y,z,1), *ptrG2 = G.data(0,y,z,2), *ptrG3 = G.data(0,y,z,3);
@@ -25842,7 +25842,7 @@ namespace cimg_library_suffixed {
           CImg<Tfloat> G = (alpha>0?get_blur(alpha).get_structure_tensors():get_structure_tensors());
           if (sigma>0) G.blur(sigma);
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_height>1 && _width>128)
+#pragma omp parallel for if (_height>4 && _width>128)
 #endif
           cimg_forY(G,y) {
             CImg<Tfloat> val, vec;
@@ -26229,19 +26229,33 @@ namespace cimg_library_suffixed {
     CImg<Tfloat> get_laplacian() const {
       if (is_empty()) return CImg<Tfloat>();
       CImg<Tfloat> res(_width,_height,_depth,_spectrum);
-      Tfloat *ptrd = res._data;
       if (_depth>1) { // 3d
-        CImg_3x3x3(I,Tfloat);
-        cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat)
-          *(ptrd++) = Incc + Ipcc + Icnc + Icpc + Iccn + Iccp - 6*Iccc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
+        cimg_forC(*this,c) {
+          Tfloat *ptrd = res.data(0,0,0,c);
+          CImg_3x3x3(I,Tfloat);
+          cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) *(ptrd++) = Incc + Ipcc + Icnc + Icpc + Iccn + Iccp - 6*Iccc;
+        }
       } else if (_height>1) { // 2d
-        CImg_3x3(I,Tfloat);
-        cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat)
-          *(ptrd++) = Inc + Ipc + Icn + Icp - 4*Icc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height>16384)
+#endif
+        cimg_forC(*this,c) {
+          Tfloat *ptrd = res.data(0,0,0,c);
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,0,c,I,Tfloat) *(ptrd++) = Inc + Ipc + Icn + Icp - 4*Icc;
+        }
       } else { // 1d
-        CImg_3x3(I,Tfloat);
-        cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat)
-          *(ptrd++) = Inc + Ipc - 2*Icc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width>128)
+#endif
+        cimg_forC(*this,c) {
+          Tfloat *ptrd = res.data(0,0,0,c);
+          CImg_3x3(I,Tfloat);
+          cimg_for3x3(*this,x,y,0,c,I,Tfloat) *(ptrd++) = Inc + Ipc - 2*Icc;
+        }
       }
       return res;
     }
@@ -26260,13 +26274,16 @@ namespace cimg_library_suffixed {
       CImg<Tfloat> res;
       if (_depth>1) { // 3d
         res.assign(_width,_height,_depth,6,0);
-        CImg_3x3x3(I,Tfloat);
         switch (scheme) {
         case 0 : { // classical central finite differences
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat
               *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2),
               *ptrd3 = res.data(0,0,0,3), *ptrd4 = res.data(0,0,0,4), *ptrd5 = res.data(0,0,0,5);
+            CImg_3x3x3(I,Tfloat);
             cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
               const Tfloat
                 ix = (Incc - Ipcc)/2,
@@ -26282,10 +26299,14 @@ namespace cimg_library_suffixed {
           }
         } break;
         case 1 : { // Forward/backward finite differences (version 1).
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat
               *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2),
               *ptrd3 = res.data(0,0,0,3), *ptrd4 = res.data(0,0,0,4), *ptrd5 = res.data(0,0,0,5);
+            CImg_3x3x3(I,Tfloat);
             cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
               const Tfloat
                 ixf = Incc - Iccc, ixb = Iccc - Ipcc,
@@ -26301,10 +26322,14 @@ namespace cimg_library_suffixed {
           }
         } break;
         default : { // Forward/backward finite differences (version 2).
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat
               *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2),
               *ptrd3 = res.data(0,0,0,3), *ptrd4 = res.data(0,0,0,4), *ptrd5 = res.data(0,0,0,5);
+            CImg_3x3x3(I,Tfloat);
             cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
               const Tfloat
                 ixf = Incc - Iccc, ixb = Iccc - Ipcc,
@@ -26322,11 +26347,14 @@ namespace cimg_library_suffixed {
         }
       } else { // 2d
         res.assign(_width,_height,_depth,3,0);
-        CImg_3x3(I,Tfloat);
         switch (scheme) {
         case 0 : { // classical central finite differences
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2);
+            CImg_3x3(I,Tfloat);
             cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
               const Tfloat
                 ix = (Inc - Ipc)/2,
@@ -26338,8 +26366,12 @@ namespace cimg_library_suffixed {
           }
         } break;
         case 1 : { // Forward/backward finite differences (version 1).
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2);
+            CImg_3x3(I,Tfloat);
             cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
               const Tfloat
                 ixf = Inc - Icc, ixb = Icc - Ipc,
@@ -26351,8 +26383,12 @@ namespace cimg_library_suffixed {
           }
         } break;
         default : { // Forward/backward finite differences (version 2).
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_spectrum>1 && _width*_height>16384)
+#endif
           cimg_forC(*this,c) {
             Tfloat *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2);
+            CImg_3x3(I,Tfloat);
             cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
               const Tfloat
                 ixf = Inc - Icc, ixb = Icc - Ipc,
@@ -26383,44 +26419,54 @@ namespace cimg_library_suffixed {
       blur(alpha).normalize(0,(T)255);
 
       if (_depth>1) { // 3d
-        CImg<floatT> val(3), vec(3,3);
         get_structure_tensors().move_to(res).blur(sigma);
-        Tfloat
-          *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2),
-          *ptrd3 = res.data(0,0,0,3), *ptrd4 = res.data(0,0,0,4), *ptrd5 = res.data(0,0,0,5);
-        cimg_forXYZ(*this,x,y,z) {
-          res.get_tensor_at(x,y,z).symmetric_eigen(val,vec);
-          const float
-            _l1 = val[2], _l2 = val[1], _l3 = val[0],
-            l1 = _l1>0?_l1:0, l2 = _l2>0?_l2:0, l3 = _l3>0?_l3:0,
-            ux = vec(0,0), uy = vec(0,1), uz = vec(0,2),
-            vx = vec(1,0), vy = vec(1,1), vz = vec(1,2),
-            wx = vec(2,0), wy = vec(2,1), wz = vec(2,2),
-            n1 = (float)std::pow(1+l1+l2+l3,-power1),
-            n2 = (float)std::pow(1+l1+l2+l3,-power2);
-          *(ptrd0++) = n1*(ux*ux + vx*vx) + n2*wx*wx;
-          *(ptrd1++) = n1*(ux*uy + vx*vy) + n2*wx*wy;
-          *(ptrd2++) = n1*(ux*uz + vx*vz) + n2*wx*wz;
-          *(ptrd3++) = n1*(uy*uy + vy*vy) + n2*wy*wy;
-          *(ptrd4++) = n1*(uy*uz + vy*vz) + n2*wy*wz;
-          *(ptrd5++) = n1*(uz*uz + vz*vz) + n2*wz*wz;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if(_width>128 && _height*_depth>4)
+#endif
+        cimg_forYZ(*this,y,z) {
+          Tfloat
+            *ptrd0 = res.data(0,y,z,0), *ptrd1 = res.data(0,y,z,1), *ptrd2 = res.data(0,y,z,2),
+            *ptrd3 = res.data(0,y,z,3), *ptrd4 = res.data(0,y,z,4), *ptrd5 = res.data(0,y,z,5);
+          CImg<floatT> val(3), vec(3,3);
+          cimg_forX(*this,x) {
+            res.get_tensor_at(x,y,z).symmetric_eigen(val,vec);
+            const float
+              _l1 = val[2], _l2 = val[1], _l3 = val[0],
+              l1 = _l1>0?_l1:0, l2 = _l2>0?_l2:0, l3 = _l3>0?_l3:0,
+              ux = vec(0,0), uy = vec(0,1), uz = vec(0,2),
+              vx = vec(1,0), vy = vec(1,1), vz = vec(1,2),
+              wx = vec(2,0), wy = vec(2,1), wz = vec(2,2),
+              n1 = (float)std::pow(1+l1+l2+l3,-power1),
+              n2 = (float)std::pow(1+l1+l2+l3,-power2);
+            *(ptrd0++) = n1*(ux*ux + vx*vx) + n2*wx*wx;
+            *(ptrd1++) = n1*(ux*uy + vx*vy) + n2*wx*wy;
+            *(ptrd2++) = n1*(ux*uz + vx*vz) + n2*wx*wz;
+            *(ptrd3++) = n1*(uy*uy + vy*vy) + n2*wy*wy;
+            *(ptrd4++) = n1*(uy*uz + vy*vz) + n2*wy*wz;
+            *(ptrd5++) = n1*(uz*uz + vz*vz) + n2*wz*wz;
+          }
         }
       } else { // for 2d images
-        CImg<floatT> val(2), vec(2,2);
         get_structure_tensors().move_to(res).blur(sigma);
-        Tfloat *ptrd0 = res.data(0,0,0,0), *ptrd1 = res.data(0,0,0,1), *ptrd2 = res.data(0,0,0,2);
-        cimg_forXY(*this,x,y) {
-          res.get_tensor_at(x,y).symmetric_eigen(val,vec);
-          const float
-            _l1 = val[1], _l2 = val[0],
-            l1 = _l1>0?_l1:0, l2 = _l2>0?_l2:0,
-            ux = vec(1,0), uy = vec(1,1),
-            vx = vec(0,0), vy = vec(0,1),
-            n1 = (float)std::pow(1+l1+l2,-power1),
-            n2 = (float)std::pow(1+l1+l2,-power2);
-          *(ptrd0++) = n1*ux*ux + n2*vx*vx;
-          *(ptrd1++) = n1*ux*uy + n2*vx*vy;
-          *(ptrd2++) = n1*uy*uy + n2*vy*vy;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if(_width>128 && _height>4)
+#endif
+        cimg_forY(*this,y) {
+          Tfloat *ptrd0 = res.data(0,y,0,0), *ptrd1 = res.data(0,y,0,1), *ptrd2 = res.data(0,y,0,2);
+          CImg<floatT> val(2), vec(2,2);
+          cimg_forX(*this,x) {
+            res.get_tensor_at(x,y).symmetric_eigen(val,vec);
+            const float
+              _l1 = val[1], _l2 = val[0],
+              l1 = _l1>0?_l1:0, l2 = _l2>0?_l2:0,
+              ux = vec(1,0), uy = vec(1,1),
+              vx = vec(0,0), vy = vec(0,1),
+              n1 = (float)std::pow(1+l1+l2,-power1),
+              n2 = (float)std::pow(1+l1+l2,-power2);
+            *(ptrd0++) = n1*ux*ux + n2*vx*vx;
+            *(ptrd1++) = n1*ux*uy + n2*vx*vy;
+            *(ptrd2++) = n1*uy*uy + n2*vy*vy;
+          }
         }
       }
       return res.move_to(*this);
