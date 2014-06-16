@@ -25768,92 +25768,136 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       T val_min, val_max = max_min(val_min);
       const float nedge = edge/2;
-      CImg<Tfloat> val, vec, velocity(_width,_height,_depth,_spectrum);
-      Tfloat *ptrd = velocity._data, veloc_max = 0;
+      CImg<Tfloat> velocity(_width,_height,_depth,_spectrum), _veloc_max(_spectrum);
 
       if (_depth>1) { // 3d
-        CImg_3x3x3(I,Tfloat);
         if (sharpen_type) { // Shock filters.
           CImg<Tfloat> G = (alpha>0?get_blur(alpha).get_structure_tensors():get_structure_tensors());
           if (sigma>0) G.blur(sigma);
-          Tfloat *ptrG0 = G.data(0,0,0,0), *ptrG1 = G.data(0,0,0,1), *ptrG2 = G.data(0,0,0,2), *ptrG3 = G.data(0,0,0,3);
-          cimg_forXYZ(G,x,y,z) {
-            G.get_tensor_at(x,y,z).symmetric_eigen(val,vec);
-            if (val[0]<0) val[0] = 0;
-            if (val[1]<0) val[1] = 0;
-            if (val[2]<0) val[2] = 0;
-            *(ptrG0++) = vec(0,0);
-            *(ptrG1++) = vec(0,1);
-            *(ptrG2++) = vec(0,2);
-            *(ptrG3++) = 1 - (Tfloat)std::pow(1+val[0]+val[1]+val[2],-(Tfloat)nedge);
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if (_width>128 && _height*_depth>128)
+#endif
+          cimg_forYZ(G,y,z) {
+            Tfloat *ptrG0 = G.data(0,y,z,0), *ptrG1 = G.data(0,y,z,1), *ptrG2 = G.data(0,y,z,2), *ptrG3 = G.data(0,y,z,3);
+            CImg<Tfloat> val, vec;
+            cimg_forX(G,x) {
+              G.get_tensor_at(x,y,z).symmetric_eigen(val,vec);
+              if (val[0]<0) val[0] = 0;
+              if (val[1]<0) val[1] = 0;
+              if (val[2]<0) val[2] = 0;
+              *(ptrG0++) = vec(0,0);
+              *(ptrG1++) = vec(0,1);
+              *(ptrG2++) = vec(0,2);
+              *(ptrG3++) = 1 - (Tfloat)std::pow(1+val[0]+val[1]+val[2],-(Tfloat)nedge);
+            }
           }
-          cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
-            const Tfloat
-              u = G(x,y,z,0),
-              v = G(x,y,z,1),
-              w = G(x,y,z,2),
-              amp = G(x,y,z,3),
-              ixx = Incc + Ipcc - 2*Iccc,
-              ixy = (Innc + Ippc - Inpc - Ipnc)/4,
-              ixz = (Incn + Ipcp - Incp - Ipcn)/4,
-              iyy = Icnc + Icpc - 2*Iccc,
-              iyz = (Icnn + Icpp - Icnp - Icpn)/4,
-              izz = Iccn + Iccp - 2*Iccc,
-              ixf = Incc - Iccc,
-              ixb = Iccc - Ipcc,
-              iyf = Icnc - Iccc,
-              iyb = Iccc - Icpc,
-              izf = Iccn - Iccc,
-              izb = Iccc - Iccp,
-              itt = u*u*ixx + v*v*iyy + w*w*izz + 2*u*v*ixy + 2*u*w*ixz + 2*v*w*iyz,
-              it = u*cimg::minmod(ixf,ixb) + v*cimg::minmod(iyf,iyb) + w*cimg::minmod(izf,izb),
-              veloc = -amp*cimg::sign(itt)*cimg::abs(it);
-            *(ptrd++) = veloc;
-            if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1 && _width*_height*_depth>16384)
+#endif
+          cimg_forC(*this,c) {
+            Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
+            CImg_3x3x3(I,Tfloat);
+            cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
+              const Tfloat
+                u = G(x,y,z,0),
+                v = G(x,y,z,1),
+                w = G(x,y,z,2),
+                amp = G(x,y,z,3),
+                ixx = Incc + Ipcc - 2*Iccc,
+                ixy = (Innc + Ippc - Inpc - Ipnc)/4,
+                ixz = (Incn + Ipcp - Incp - Ipcn)/4,
+                iyy = Icnc + Icpc - 2*Iccc,
+                iyz = (Icnn + Icpp - Icnp - Icpn)/4,
+                izz = Iccn + Iccp - 2*Iccc,
+                ixf = Incc - Iccc,
+                ixb = Iccc - Ipcc,
+                iyf = Icnc - Iccc,
+                iyb = Iccc - Icpc,
+                izf = Iccn - Iccc,
+                izb = Iccc - Iccp,
+                itt = u*u*ixx + v*v*iyy + w*w*izz + 2*u*v*ixy + 2*u*w*ixz + 2*v*w*iyz,
+                it = u*cimg::minmod(ixf,ixb) + v*cimg::minmod(iyf,iyb) + w*cimg::minmod(izf,izb),
+                veloc = -amp*cimg::sign(itt)*cimg::abs(it);
+              *(ptrd++) = veloc;
+              if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+            }
+            _veloc_max[c] = veloc_max;
           }
-        } else cimg_forC(*this,c) cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) { // Inverse diffusion.
-          const Tfloat veloc = -Ipcc - Incc - Icpc - Icnc - Iccp - Iccn + 6*Iccc;
-          *(ptrd++) = veloc;
-          if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
-        }
-      } else {
-        CImg_3x3(I,Tfloat);
+        } else  // Inverse diffusion.
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1 && _width*_height*_depth>16384)
+#endif
+          cimg_forC(*this,c) {
+            Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
+            CImg_3x3x3(I,Tfloat);
+            cimg_for3x3x3(*this,x,y,z,c,I,Tfloat) {
+              const Tfloat veloc = -Ipcc - Incc - Icpc - Icnc - Iccp - Iccn + 6*Iccc;
+              *(ptrd++) = veloc;
+              if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+            }
+            _veloc_max[c] = veloc_max;
+          }
+      } else { // 2d.
         if (sharpen_type) { // Shock filters.
           CImg<Tfloat> G = (alpha>0?get_blur(alpha).get_structure_tensors():get_structure_tensors());
           if (sigma>0) G.blur(sigma);
-          Tfloat *ptrG0 = G.data(0,0,0,0), *ptrG1 = G.data(0,0,0,1), *ptrG2 = G.data(0,0,0,2);
-          cimg_forXY(G,x,y) {
-            G.get_tensor_at(x,y).symmetric_eigen(val,vec);
-            if (val[0]<0) val[0] = 0;
-            if (val[1]<0) val[1] = 0;
-            *(ptrG0++) = vec(0,0);
-            *(ptrG1++) = vec(0,1);
-            *(ptrG2++) = 1 - (Tfloat)std::pow(1 + val[0] + val[1],-(Tfloat)nedge);
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_height>1 && _width>128)
+#endif
+          cimg_forY(G,y) {
+            CImg<Tfloat> val, vec;
+            Tfloat *ptrG0 = G.data(0,y,0,0), *ptrG1 = G.data(0,y,0,1), *ptrG2 = G.data(0,y,0,2);
+            cimg_forX(G,x) {
+              G.get_tensor_at(x,y).symmetric_eigen(val,vec);
+              if (val[0]<0) val[0] = 0;
+              if (val[1]<0) val[1] = 0;
+              *(ptrG0++) = vec(0,0);
+              *(ptrG1++) = vec(0,1);
+              *(ptrG2++) = 1 - (Tfloat)std::pow(1 + val[0] + val[1],-(Tfloat)nedge);
+            }
           }
-          cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
-            const Tfloat
-              u = G(x,y,0),
-              v = G(x,y,1),
-              amp = G(x,y,2),
-              ixx = Inc + Ipc - 2*Icc,
-              ixy = (Inn + Ipp - Inp - Ipn)/4,
-              iyy = Icn + Icp - 2*Icc,
-              ixf = Inc - Icc,
-              ixb = Icc - Ipc,
-              iyf = Icn - Icc,
-              iyb = Icc - Icp,
-              itt = u*u*ixx + v*v*iyy + 2*u*v*ixy,
-              it = u*cimg::minmod(ixf,ixb) + v*cimg::minmod(iyf,iyb),
-              veloc = -amp*cimg::sign(itt)*cimg::abs(it);
-            *(ptrd++) = veloc;
-            if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1 && _width*_height>16384)
+#endif
+          cimg_forC(*this,c) {
+            Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
+            CImg_3x3(I,Tfloat);
+            cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
+              const Tfloat
+                u = G(x,y,0),
+                v = G(x,y,1),
+                amp = G(x,y,2),
+                ixx = Inc + Ipc - 2*Icc,
+                ixy = (Inn + Ipp - Inp - Ipn)/4,
+                iyy = Icn + Icp - 2*Icc,
+                ixf = Inc - Icc,
+                ixb = Icc - Ipc,
+                iyf = Icn - Icc,
+                iyb = Icc - Icp,
+                itt = u*u*ixx + v*v*iyy + 2*u*v*ixy,
+                it = u*cimg::minmod(ixf,ixb) + v*cimg::minmod(iyf,iyb),
+                veloc = -amp*cimg::sign(itt)*cimg::abs(it);
+              *(ptrd++) = veloc;
+              if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+            }
+            _veloc_max[c] = veloc_max;
           }
-        } else cimg_forC(*this,c) cimg_for3x3(*this,x,y,0,c,I,Tfloat) { // Inverse diffusion.
-          const Tfloat veloc = -Ipc - Inc - Icp - Icn + 4*Icc;
-          *(ptrd++) = veloc;
-          if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
-        }
+        } else // Inverse diffusion.
+#ifdef cimg_use_openmp
+#pragma omp parallel for if (_spectrum>1 && _width*_height>16384)
+#endif
+          cimg_forC(*this,c) {
+            Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
+            CImg_3x3(I,Tfloat);
+            cimg_for3x3(*this,x,y,0,c,I,Tfloat) {
+              const Tfloat veloc = -Ipc - Inc - Icp - Icn + 4*Icc;
+              *(ptrd++) = veloc;
+              if (veloc>veloc_max) veloc_max = veloc; else if (-veloc>veloc_max) veloc_max = -veloc;
+            }
+            _veloc_max[c] = veloc_max;
+          }
       }
+      const Tfloat veloc_max = _veloc_max.max();
       if (veloc_max<=0) return *this;
       return ((velocity*=amplitude/veloc_max)+=*this).cut(val_min,val_max).move_to(*this);
     }
