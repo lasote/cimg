@@ -10332,7 +10332,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator+=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd + value);
       return *this;
@@ -10358,7 +10358,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd + mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>=0 && std::strlen(expression)>=6)
 #pragma omp parallel
             {
               _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -10422,7 +10422,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator++() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) ++*ptrd;
       return *this;
@@ -10491,7 +10491,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator-=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd - value);
       return *this;
@@ -10513,7 +10513,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd - mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -10559,7 +10559,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator--() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = *ptrd-(T)1;
       return *this;
@@ -10630,7 +10630,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator*=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd * value);
       return *this;
@@ -10652,7 +10652,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd * mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -10744,7 +10744,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator/=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(*ptrd / value);
       return *this;
@@ -10766,7 +10766,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)(*ptrd / mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -10839,7 +10839,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator%=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::mod(*ptrd,(T)value);
       return *this;
@@ -10861,7 +10861,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::mod(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -10937,7 +10937,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator&=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd & (unsigned long)value);
       return *this;
@@ -10959,7 +10959,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd & (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -11035,7 +11035,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator|=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd | (unsigned long)value);
       return *this;
@@ -11057,7 +11057,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd | (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -11135,7 +11135,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator^=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)value);
       return *this;
@@ -11159,7 +11159,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((unsigned long)*ptrd ^ (unsigned long)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
             {
               _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -11237,7 +11237,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator<<=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) << (int)value);
       return *this;
@@ -11259,7 +11259,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd << (int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -11335,7 +11335,7 @@ namespace cimg_library_suffixed {
     CImg<T>& operator>>=(const t value) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)(((long)*ptrd) >> (int)value);
       return *this;
@@ -11357,7 +11357,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)((long)*ptrd >> (int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -11468,7 +11468,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { if (!is_equal) break; is_equal = ((double)*(ptrs++)==mp(x,y,z,c)); }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel reduction(&&:is_equal)
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -14608,7 +14608,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sqr() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(val*val); };
       return *this;
@@ -14635,7 +14635,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sqrt() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::sqrt((double)*ptrd);
       return *this;
@@ -14656,7 +14656,7 @@ namespace cimg_library_suffixed {
     CImg<T>& exp() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::exp((double)*ptrd);
       return *this;
@@ -14677,7 +14677,7 @@ namespace cimg_library_suffixed {
     CImg<T>& log() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::log((double)*ptrd);
       return *this;
@@ -14698,7 +14698,7 @@ namespace cimg_library_suffixed {
     CImg<T>& log2() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::log2((double)*ptrd);
       return *this;
@@ -14719,7 +14719,7 @@ namespace cimg_library_suffixed {
     CImg<T>& log10() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::log10((double)*ptrd);
       return *this;
@@ -14740,7 +14740,7 @@ namespace cimg_library_suffixed {
     CImg<T>& abs() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = cimg::abs(*ptrd);
       return *this;
@@ -14765,7 +14765,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sign() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = cimg::sign(*ptrd);
       return *this;
@@ -14787,7 +14787,7 @@ namespace cimg_library_suffixed {
     CImg<T>& cos() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::cos((double)*ptrd);
       return *this;
@@ -14809,7 +14809,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sin() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::sin((double)*ptrd);
       return *this;
@@ -14831,7 +14831,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sinc() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::sinc((double)*ptrd);
       return *this;
@@ -14853,7 +14853,7 @@ namespace cimg_library_suffixed {
     CImg<T>& tan() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::tan((double)*ptrd);
       return *this;
@@ -14874,7 +14874,7 @@ namespace cimg_library_suffixed {
     CImg<T>& cosh() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::cosh((double)*ptrd);
       return *this;
@@ -14895,7 +14895,7 @@ namespace cimg_library_suffixed {
     CImg<T>& sinh() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::sinh((double)*ptrd);
       return *this;
@@ -14916,7 +14916,7 @@ namespace cimg_library_suffixed {
     CImg<T>& tanh() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::tanh((double)*ptrd);
       return *this;
@@ -14937,7 +14937,7 @@ namespace cimg_library_suffixed {
     CImg<T>& acos() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::acos((double)*ptrd);
       return *this;
@@ -14958,7 +14958,7 @@ namespace cimg_library_suffixed {
     CImg<T>& asin() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::asin((double)*ptrd);
       return *this;
@@ -14979,7 +14979,7 @@ namespace cimg_library_suffixed {
     CImg<T>& atan() {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::atan((double)*ptrd);
       return *this;
@@ -15103,35 +15103,35 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (p==-4) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val*val)); }
         return *this;
       }
       if (p==-3) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val*val)); }
         return *this;
       }
       if (p==-2) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/(val*val)); }
         return *this;
       }
       if (p==-1) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1.0/val); }
         return *this;
       }
       if (p==-0.5) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = (T)(1/std::sqrt((double)val)); }
         return *this;
@@ -15142,20 +15142,20 @@ namespace cimg_library_suffixed {
       if (p==2) return sqr();
       if (p==3) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val; }
         return *this;
       }
       if (p==4) {
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) { const T val = *ptrd; *ptrd = val*val*val*val; }
         return *this;
       }
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)std::pow((double)*ptrd,p);
       return *this;
@@ -15182,7 +15182,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)std::pow((double)*ptrd,mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -15245,7 +15245,7 @@ namespace cimg_library_suffixed {
     CImg<T>& rol(const unsigned int n=1) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::rol(*ptrd,n);
       return *this;
@@ -15272,7 +15272,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::rol(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -15335,7 +15335,7 @@ namespace cimg_library_suffixed {
     CImg<T>& ror(const unsigned int n=1) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::ror(*ptrd,n);
       return *this;
@@ -15362,7 +15362,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::ror(*ptrd,(unsigned int)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -15426,7 +15426,7 @@ namespace cimg_library_suffixed {
     CImg<T>& min(const T val) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = cimg::min(*ptrd,val);
       return *this;
@@ -15478,7 +15478,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::min(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -15519,7 +15519,7 @@ namespace cimg_library_suffixed {
     CImg<T>& max(const T val) {
       if (is_empty()) return *this;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = cimg::max(*ptrd,val);
       return *this;
@@ -15571,7 +15571,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) { *ptrd = (T)cimg::max(*ptrd,(T)mp(x,y,z,c)); ++ptrd; }
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
           {
             _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -15901,7 +15901,7 @@ namespace cimg_library_suffixed {
         if (_depth==1) {
           const Tdouble cste = 1.0/std::sqrt(20.0); // Depends on how the Laplacian is computed.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_spectrum>1)
+#pragma omp parallel for if (_spectrum>1 && _width*_height>104856)
 #endif
           cimg_forC(*this,c) {
             CImg_3x3(I,T);
@@ -15913,7 +15913,7 @@ namespace cimg_library_suffixed {
         } else {
           const Tdouble cste = 1.0/std::sqrt(42.0); // Depends on how the Laplacian is computed.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_spectrum>1)
+#pragma omp parallel for if (_spectrum>1 && _width*_height*_depth>104856)
 #endif
           cimg_forC(*this,c) {
             CImg_3x3x3(I,T);
@@ -18097,7 +18097,7 @@ namespace cimg_library_suffixed {
         else if (*expression=='>') cimg_forXYZC(*this,x,y,z,c) *(ptrd++) = (T)mp(x,y,z,c);
         else {
 #ifdef cimg_use_openmp
-          if (_width>=96 && _height*_depth*_spectrum>4 && std::strlen(expression)>5)
+          if (_width>=0 && _height*_depth*_spectrum>0 && std::strlen(expression)>5)
 #pragma omp parallel
             {
               _cimg_math_parser _mp = omp_get_thread_num()?mp:_cimg_math_parser(), &lmp = omp_get_thread_num()?_mp:mp;
@@ -18333,7 +18333,7 @@ namespace cimg_library_suffixed {
     CImg<T>& round(const double y=1, const int rounding_type=0) {
       if (y>0)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) *ptrd = cimg::round(*ptrd,y,rounding_type);
       return *this;
@@ -18369,7 +18369,7 @@ namespace cimg_library_suffixed {
         switch (noise_type) {
         case 0 : { // Gaussian noise
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) {
             Tfloat val = (Tfloat)(*ptrd + nsigma*cimg::grand());
@@ -18380,7 +18380,7 @@ namespace cimg_library_suffixed {
         } break;
         case 1 : { // Uniform noise
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) {
             Tfloat val = (Tfloat)(*ptrd + nsigma*cimg::crand());
@@ -18393,14 +18393,14 @@ namespace cimg_library_suffixed {
           if (nsigma<0) nsigma = -nsigma;
           if (M==m) { m = 0; M = (Tfloat)(cimg::type<T>::is_float()?1:cimg::type<T>::max()); }
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) if (cimg::rand()*100<nsigma) *ptrd = (T)(cimg::rand()<0.5?M:m);
         } break;
 
         case 3 : { // Poisson Noise
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) *ptrd = (T)cimg::prand(*ptrd);
         } break;
@@ -18408,7 +18408,7 @@ namespace cimg_library_suffixed {
         case 4 : { // Rice noise
           const Tfloat sqrt2 = (Tfloat)std::sqrt(2.0);
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) {
             const Tfloat
@@ -18456,7 +18456,7 @@ namespace cimg_library_suffixed {
       if (m==M) return fill(min_value);
       if (m!=a || M!=b)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
         cimg_rof(*this,ptrd,T) *ptrd = (T)((*ptrd-fm)/(fM-fm)*(b-a)+a);
       return *this;
@@ -18575,7 +18575,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       const T a = min_value<max_value?min_value:max_value, b = min_value<max_value?max_value:min_value;
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) *ptrd = (*ptrd<a)?a:((*ptrd>b)?b:*ptrd);
       return *this;
@@ -18608,14 +18608,14 @@ namespace cimg_library_suffixed {
       if (range>0) {
         if (keep_range)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) {
             const unsigned int val = (unsigned int)((*ptrd-m)*nb_levels/range);
             *ptrd = (T)(m + cimg::min(val,nb_levels-1)*range/nb_levels);
           } else
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) {
             const unsigned int val = (unsigned int)((*ptrd-m)*nb_levels/range);
@@ -18647,23 +18647,23 @@ namespace cimg_library_suffixed {
       if (strict_threshold) {
         if (soft_threshold)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) { const T v = *ptrd; *ptrd = v>value?(T)(v-value):v<-(float)value?(T)(v+value):(T)0; }
         else
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) *ptrd = *ptrd>value?(T)1:(T)0;
       } else {
         if (soft_threshold)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) { const T v = *ptrd; *ptrd = v>=value?(T)(v-value):v<=-(float)value?(T)(v+value):(T)0; }
         else
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
           cimg_rof(*this,ptrd,T) *ptrd = *ptrd>=value?(T)1:(T)0;
       }
@@ -18705,7 +18705,7 @@ namespace cimg_library_suffixed {
       T vmin = min_value<max_value?min_value:max_value, vmax = min_value<max_value?max_value:min_value;
       CImg<ulongT> res(nb_levels,1,1,1,0);
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrs,T) {
         const T val = *ptrs;
@@ -18740,7 +18740,7 @@ namespace cimg_library_suffixed {
       unsigned long cumul = 0;
       cimg_forX(hist,pos) { cumul+=hist[pos]; hist[pos] = cumul; }
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>1048576)
+#pragma omp parallel for if (size()>=0)
 #endif
       cimg_rof(*this,ptrd,T) {
         const int pos = (int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
@@ -25825,7 +25825,7 @@ namespace cimg_library_suffixed {
           }
         } else  // Inverse diffusion.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_spectrum>1 && _width*_height*_depth>16384)
+#pragma omp parallel for if (_spectrum>1 && _width*_height*_depth>=1048576)
 #endif
           cimg_forC(*this,c) {
             Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
@@ -25884,7 +25884,7 @@ namespace cimg_library_suffixed {
           }
         } else // Inverse diffusion.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (_spectrum>1 && _width*_height>16384)
+#pragma omp parallel for if (_spectrum>1 && _width*_height>=1048576)
 #endif
           cimg_forC(*this,c) {
             Tfloat *ptrd = velocity.data(0,0,0,c), veloc_max = 0;
@@ -25941,7 +25941,7 @@ namespace cimg_library_suffixed {
         switch (scheme) { // 3d.
         case -1 : { // Backward finite differences.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>=1048576)
 #endif
           cimg_forC(*this,c) {
             const unsigned long off = c*_width*_height*_depth;
@@ -25956,7 +25956,7 @@ namespace cimg_library_suffixed {
         } break;
         case 1 : { // Forward finite differences.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>=1048576)
 #endif
           cimg_forC(*this,c) {
             const unsigned long off = c*_width*_height*_depth;
@@ -25981,7 +25981,7 @@ namespace cimg_library_suffixed {
         } break;
         default : { // Central finite differences.
 #ifdef cimg_use_openmp
-#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>16384)
+#pragma omp parallel for if(_spectrum>1 && _width*_height*_depth>=1048576)
 #endif
           cimg_forC(*this,c) {
             const unsigned long off = c*_width*_height*_depth;
@@ -25998,7 +25998,7 @@ namespace cimg_library_suffixed {
       } else switch (scheme) { // 2d.
       case -1 : { // Backward finite differences.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>=1048576)
 #endif
         cimg_forZC(*this,z,c) {
           const unsigned long off = c*_width*_height*_depth + z*_width*_height;
@@ -26012,7 +26012,7 @@ namespace cimg_library_suffixed {
       } break;
       case 1 : { // Forward finite differences.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>=1048576)
 #endif
         cimg_forZC(*this,z,c) {
           const unsigned long off = c*_width*_height*_depth + z*_width*_height;
@@ -26026,7 +26026,7 @@ namespace cimg_library_suffixed {
       } break;
       case 2 : { // Sobel scheme.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>=1048576)
 #endif
         cimg_forZC(*this,z,c) {
           const unsigned long off = c*_width*_height*_depth + z*_width*_height;
@@ -26040,7 +26040,7 @@ namespace cimg_library_suffixed {
       } break;
       case 3 : { // Rotation invariant mask.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>=1048576)
 #endif
         cimg_forZC(*this,z,c) {
           const unsigned long off = c*_width*_height*_depth + z*_width*_height;
@@ -26063,7 +26063,7 @@ namespace cimg_library_suffixed {
       } break;
       default : { // Central finite differences
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>16384)
+#pragma omp parallel for collapse(2) if(_spectrum*_depth>1 && _width*_height>=1048576)
 #endif
         cimg_forZC(*this,z,c) {
           const unsigned long off = c*_width*_height*_depth + z*_width*_height;
