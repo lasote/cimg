@@ -18704,9 +18704,6 @@ namespace cimg_library_suffixed {
       if (!nb_levels || is_empty()) return CImg<ulongT>();
       T vmin = min_value<max_value?min_value:max_value, vmax = min_value<max_value?max_value:min_value;
       CImg<ulongT> res(nb_levels,1,1,1,0);
-#ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
-#endif
       cimg_rof(*this,ptrs,T) {
         const T val = *ptrs;
         if (val>=vmin && val<=vmax) ++res[val==vmax?nb_levels-1:(unsigned int)((val-vmin)*nb_levels/(vmax-vmin))];
