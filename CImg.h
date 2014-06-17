@@ -18441,7 +18441,7 @@ namespace cimg_library_suffixed {
       if (m==M) return fill(min_value);
       if (m!=a || M!=b)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
+#pragma omp parallel for if (size()>=65536)
 #endif
         cimg_rof(*this,ptrd,T) *ptrd = (T)((*ptrd-fm)/(fM-fm)*(b-a)+a);
       return *this;
@@ -18464,7 +18464,7 @@ namespace cimg_library_suffixed {
     CImg<T>& normalize() {
       const unsigned long whd = (unsigned long)_width*_height*_depth;
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>128 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>256 && _height*_depth>=3)
 #endif
       cimg_forYZ(*this,y,z) {
         T *ptrd = data(0,y,z,0);
@@ -18510,7 +18510,7 @@ namespace cimg_library_suffixed {
       switch (norm_type) {
       case -1 : {             // Linf norm
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=128 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=3)
 #endif
         cimg_forYZ(*this,y,z) {
           const unsigned long off = offset(0,y,z);
@@ -18526,7 +18526,7 @@ namespace cimg_library_suffixed {
       } break;
       case 1 : {              // L1 norm
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=128 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=3)
 #endif
         cimg_forYZ(*this,y,z) {
           const unsigned long off = offset(0,y,z);
@@ -18542,7 +18542,7 @@ namespace cimg_library_suffixed {
       } break;
       default : {             // L2 norm
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=128 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=3)
 #endif
         cimg_forYZ(*this,y,z) {
           const unsigned long off = offset(0,y,z);
@@ -18647,23 +18647,23 @@ namespace cimg_library_suffixed {
       if (strict_threshold) {
         if (soft_threshold)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
+#pragma omp parallel for if (size()>=65536)
 #endif
           cimg_rof(*this,ptrd,T) { const T v = *ptrd; *ptrd = v>value?(T)(v-value):v<-(float)value?(T)(v+value):(T)0; }
         else
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
+#pragma omp parallel for if (size()>=65536)
 #endif
           cimg_rof(*this,ptrd,T) *ptrd = *ptrd>value?(T)1:(T)0;
       } else {
         if (soft_threshold)
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
+#pragma omp parallel for if (size()>=65536)
 #endif
           cimg_rof(*this,ptrd,T) { const T v = *ptrd; *ptrd = v>=value?(T)(v-value):v<=-(float)value?(T)(v+value):(T)0; }
         else
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=16384)
+#pragma omp parallel for if (size()>=65536)
 #endif
           cimg_rof(*this,ptrd,T) *ptrd = *ptrd>=value?(T)1:(T)0;
       }
@@ -18737,7 +18737,7 @@ namespace cimg_library_suffixed {
       unsigned long cumul = 0;
       cimg_forX(hist,pos) { cumul+=hist[pos]; hist[pos] = cumul; }
 #ifdef cimg_use_openmp
-#pragma omp parallel for if (size()>=4096)
+#pragma omp parallel for if (size()>=65536)
 #endif
       cimg_rof(*this,ptrd,T) {
         const int pos = (int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
@@ -18944,7 +18944,7 @@ namespace cimg_library_suffixed {
         switch (_spectrum) {
         case 1 : { // Optimized for scalars.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=2048 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=1024 && _height*_depth>=3)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z);
@@ -18961,7 +18961,7 @@ namespace cimg_library_suffixed {
         } break;
         case 2 : { // Optimized for 2d vectors.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=2048 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=1024 && _height*_depth>=3)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd;
@@ -18981,7 +18981,7 @@ namespace cimg_library_suffixed {
         } break;
         case 3 : { // Optimized for 3d vectors (colors).
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=2048 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=1024 && _height*_depth>=3)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd, *ptrd2 = ptrd1 + whd;
@@ -19001,7 +19001,7 @@ namespace cimg_library_suffixed {
         } break;
         default : // Generic version.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=2048 && _height*_depth>=2)
+#pragma omp parallel for collapse(2) if (_width>=1024 && _height*_depth>=3)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z);
