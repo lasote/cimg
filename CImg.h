@@ -37812,24 +37812,56 @@ namespace cimg_library_suffixed {
 
     CImg<T>& _load_tiff(TIFF *const tif, const unsigned int directory) {
       if (!TIFFSetDirectory(tif,directory)) return assign();
-      uint16 samplesperpixel = 1, bitspersample, photo;
-      uint16 sampleformat = SAMPLEFORMAT_UINT;
-      uint32 nx,ny;
+      uint16 samplesperpixel = 1, bitspersample = 8, photo = 0;
+      uint16 sampleformat = 1;
+      uint32 nx = 1, ny = 1;
       const char *const filename = TIFFFileName(tif);
+      const bool is_spp = (bool)TIFFGetField(tif,TIFFTAG_SAMPLESPERPIXEL,&samplesperpixel);
       TIFFGetField(tif,TIFFTAG_IMAGEWIDTH,&nx);
       TIFFGetField(tif,TIFFTAG_IMAGELENGTH,&ny);
-      TIFFGetField(tif,TIFFTAG_SAMPLESPERPIXEL,&samplesperpixel);
       TIFFGetField(tif, TIFFTAG_SAMPLEFORMAT, &sampleformat);
       TIFFGetFieldDefaulted(tif,TIFFTAG_BITSPERSAMPLE,&bitspersample);
       TIFFGetField(tif,TIFFTAG_PHOTOMETRIC,&photo);
-      int spectrum = samplesperpixel;
-      if (photo == 3) spectrum = 3;
+
+      const unsigned int spectrum = is_spp?samplesperpixel:photo==3?3:1;
       assign(nx,ny,1,spectrum);
-      if ((photo < 3)  && ( bitspersample!=8 || !(samplesperpixel==3 || samplesperpixel==4))) {
+
+      if (photo>=3 && sampleformat==1 && bitspersample==8 && (samplesperpixel==3 || samplesperpixel==4)) {  // Special case for unsigned color images.
+        uint32 *const raster = (uint32*)_TIFFmalloc(nx*ny*sizeof(uint32));
+        if (!raster) {
+          _TIFFfree(raster); TIFFClose(tif);
+          throw CImgException(_cimg_instance
+                              "load_tiff(): Failed to allocate memory (%s) for file '%s'.",
+                              cimg_instance,
+                              cimg::strbuffersize(nx*ny*sizeof(uint32)),filename);
+        }
+        TIFFReadRGBAImage(tif,nx,ny,raster,0);
+        switch (spectrum) {
+        case 1 : {
+          cimg_forXY(*this,x,y) (*this)(x,y) = (T)(float)((raster[nx*(ny-1-y)+x] + 128)/257);
+        } break;
+        case 3 : {
+          cimg_forXY(*this,x,y) {
+            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
+          }
+        } break;
+        case 4 : {
+          cimg_forXY(*this,x,y) {
+            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,3) = (T)(float)TIFFGetA(raster[nx*(ny-1-y)+x]);
+          }
+        } break;
+        }
+        _TIFFfree(raster);
+      } else { // Other cases.
         uint16 config;
         TIFFGetField(tif,TIFFTAG_PLANARCONFIG,&config);
         if (TIFFIsTiled(tif)) {
-          uint32 tw, th;
+          uint32 tw = 1, th = 1;
           TIFFGetField(tif,TIFFTAG_TILEWIDTH,&tw);
           TIFFGetField(tif,TIFFTAG_TILELENGTH,&th);
           if (config==PLANARCONFIG_CONTIG) switch (bitspersample) {
@@ -37876,7 +37908,7 @@ namespace cimg_library_suffixed {
               else if (sampleformat==SAMPLEFORMAT_INT) _load_tiff_contig<int>(tif,samplesperpixel,nx,ny);
               else _load_tiff_contig<float>(tif,samplesperpixel,nx,ny);
               break;
-            } else switch (bitspersample){
+            } else switch (bitspersample) {
             case 8 :
               if (sampleformat==SAMPLEFORMAT_UINT) _load_tiff_separate<unsigned char>(tif,samplesperpixel,nx,ny);
               else _load_tiff_separate<signed char>(tif,samplesperpixel,nx,ny);
@@ -37892,37 +37924,6 @@ namespace cimg_library_suffixed {
               break;
             }
         }
-      } else {
-        uint32 *const raster = (uint32*)_TIFFmalloc(nx*ny*sizeof(uint32));
-        if (!raster) {
-          _TIFFfree(raster); TIFFClose(tif);
-          throw CImgException(_cimg_instance
-                              "load_tiff(): Failed to allocate memory (%s) for file '%s'.",
-                              cimg_instance,
-                              cimg::strbuffersize(nx*ny*sizeof(uint32)),filename);
-        }
-        TIFFReadRGBAImage(tif,nx,ny,raster,0);
-        switch (spectrum) {
-        case 1 : {
-          cimg_forXY(*this,x,y) (*this)(x,y) = (T)(float)((raster[nx*(ny-1-y)+x] + 128)/257);
-        } break;
-        case 3 : {
-          cimg_forXY(*this,x,y) {
-            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
-            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
-            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
-          }
-        } break;
-        case 4 : {
-          cimg_forXY(*this,x,y) {
-            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
-            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
-            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
-            (*this)(x,y,3) = (T)(float)TIFFGetA(raster[nx*(ny-1-y)+x]);
-          }
-        } break;
-        }
-        _TIFFfree(raster);
       }
       return *this;
     }
