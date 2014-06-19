@@ -18929,7 +18929,7 @@ namespace cimg_library_suffixed {
         switch (_spectrum) {
         case 1 : { // Optimized for scalars.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16)
+#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16 && pwd>=16)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z);
@@ -18946,7 +18946,7 @@ namespace cimg_library_suffixed {
         } break;
         case 2 : { // Optimized for 2d vectors.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16)
+#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16 && pwd>=16)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd;
@@ -18966,7 +18966,7 @@ namespace cimg_library_suffixed {
         } break;
         case 3 : { // Optimized for 3d vectors (colors).
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16)
+#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16 && pwd>=16)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z), *ptrd1 = ptrd + whd, *ptrd2 = ptrd1 + whd;
@@ -18986,7 +18986,7 @@ namespace cimg_library_suffixed {
         } break;
         default : // Generic version.
 #ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16)
+#pragma omp parallel for collapse(2) if (_width>=64 && _height*_depth>=16 && pwd>=16)
 #endif
           cimg_forYZ(*this,y,z) {
             tuint *ptrd = res.data(0,y,z);
