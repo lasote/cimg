@@ -34072,46 +34072,55 @@ namespace cimg_library_suffixed {
                                     colormap._width,colormap._height,colormap._depth,colormap._spectrum,colormap._data);
 
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0), ln2 = (float)std::log(2.0);
-      unsigned int iteration = 0;
-      cimg_for_inXY(*this,x0,y0,x1,y1,p,q) {
-        const double x = z0r + p*(z1r-z0r)/_width, y = z0i + q*(z1i-z0i)/_height;
-        double zr, zi, cr, ci;
-        if (is_julia_set) { zr = x; zi = y; cr = param_r; ci = param_i; }
-        else { zr = param_r; zi = param_i; cr = x; ci = y; }
-        for (iteration=1; zr*zr + zi*zi<=4 && iteration<=iteration_max; ++iteration) {
-          const double temp = zr*zr - zi*zi + cr;
-          zi = 2*zr*zi + ci;
-          zr = temp;
+      const int
+        _x0 = x0<0?0:x0>=width()?width()-1:x0,
+        _y0 = y0<0?0:y0>=height()?height()-1:y0,
+        _x1 = x1<0?1:x1>=width()?width()-1:x1,
+        _y1 = y1<0?1:y1>=height()?height()-1:y1;
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(2) if ((1+_x1-_x0)*(1+_y1-_y0)>=2048)
+#endif
+      for (int q = _y0; q<=_y1; ++q)
+        for (int p = _x0; p<=_x1; ++p) {
+          unsigned int iteration = 0;
+          const double x = z0r + p*(z1r-z0r)/_width, y = z0i + q*(z1i-z0i)/_height;
+          double zr, zi, cr, ci;
+          if (is_julia_set) { zr = x; zi = y; cr = param_r; ci = param_i; }
+          else { zr = param_r; zi = param_i; cr = x; ci = y; }
+          for (iteration=1; zr*zr + zi*zi<=4 && iteration<=iteration_max; ++iteration) {
+            const double temp = zr*zr - zi*zi + cr;
+            zi = 2*zr*zi + ci;
+            zr = temp;
+          }
+          if (iteration>iteration_max) {
+            if (palette) {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette(0,c);
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette(0,c)*nopacity + (*this)(p,q,0,c)*copacity);
+            } else {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)0;
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)((*this)(p,q,0,c)*copacity);
+            }
+          } else if (is_normalized_iteration) {
+            const float
+              normz = (float)cimg::abs(zr*zr+zi*zi),
+              niteration = (float)(iteration + 1 - std::log(std::log(normz))/ln2);
+            if (palette) {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette._linear_atX(niteration,c);
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette._linear_atX(niteration,c)*nopacity + (*this)(p,q,0,c)*copacity);
+            } else {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)niteration;
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(niteration*nopacity + (*this)(p,q,0,c)*copacity);
+            }
+          } else {
+            if (palette) {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette._atX(iteration,c);
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette(iteration,c)*nopacity + (*this)(p,q,0,c)*copacity);
+            } else {
+              if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)iteration;
+              else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(iteration*nopacity + (*this)(p,q,0,c)*copacity);
+            }
+          }
         }
-        if (iteration>iteration_max) {
-          if (palette) {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette(0,c);
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette(0,c)*nopacity + (*this)(p,q,0,c)*copacity);
-          } else {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)0;
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)((*this)(p,q,0,c)*copacity);
-          }
-        } else if (is_normalized_iteration) {
-          const float
-            normz = (float)cimg::abs(zr*zr+zi*zi),
-            niteration = (float)(iteration + 1 - std::log(std::log(normz))/ln2);
-          if (palette) {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette._linear_atX(niteration,c);
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette._linear_atX(niteration,c)*nopacity + (*this)(p,q,0,c)*copacity);
-          } else {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)niteration;
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(niteration*nopacity + (*this)(p,q,0,c)*copacity);
-          }
-        } else {
-          if (palette) {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)palette._atX(iteration,c);
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(palette(iteration,c)*nopacity + (*this)(p,q,0,c)*copacity);
-          } else {
-            if (opacity>=1) cimg_forC(*this,c) (*this)(p,q,0,c) = (T)iteration;
-            else cimg_forC(*this,c) (*this)(p,q,0,c) = (T)(iteration*nopacity + (*this)(p,q,0,c)*copacity);
-          }
-        }
-      }
       return *this;
     }
 
