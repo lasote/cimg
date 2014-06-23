@@ -46316,7 +46316,7 @@ namespace cimg_library_suffixed {
       else if (!cimg::strcasecmp(ext,"gz")) return save_gzip_external(fn);
       else {
         if (_width==1) _data[0].save(fn,-1);
-        else cimglist_for(*this,l) { _data[l].save(fn,is_stdout?-1:l); std::fputc(EOF,stdout); }
+        else cimglist_for(*this,l) { _data[l].save(fn,is_stdout?-1:l); if (is_stdout) std::fputc(EOF,stdout); }
       }
       return *this;
     }
