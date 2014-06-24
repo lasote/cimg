@@ -16779,6 +16779,7 @@ namespace cimg_library_suffixed {
         }
         CImg<t> V(_width,_width);
         SVD(vec,val,V,false);
+
 	bool is_ambiguous = false;
 	float eig = 0;
 	cimg_forY(val,p) {       // check for ambiguous cases.
@@ -17059,14 +17060,15 @@ namespace cimg_library_suffixed {
                 cimg_forY(U,j) { const t y = U(nm,j), z = U(i,j); U(nm,j) = y*c + z*s; U(i,j) = z*c - y*s; }
               }
             }
+
             const t z = S[k];
             if (l==k) { if (z<0) { S[k] = -z; cimg_forX(U,j) V(k,j) = -V(k,j); } break; }
             nm = k-1;
             t x = S[l], y = S[nm];
             g = rv1[nm]; h = rv1[k];
-            f = ((y-z)*(y+z)+(g-h)*(g+h))/(2*h*y);
+            f = ((y-z)*(y+z)+(g-h)*(g+h))/cimg::max(1e-25,2*h*y);
             g = (t)cimg::_pythagore(f,1.0);
-            f = ((x-z)*(x+z)+h*((y/(f+ (f>=0?g:-g)))-h))/x;
+            f = ((x-z)*(x+z)+h*((y/(f + (f>=0?g:-g)))-h))/x;
             c = s = 1;
             for (int j = l; j<=nm; ++j) {
               const int i = j+1;
