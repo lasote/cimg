@@ -17068,18 +17068,18 @@ namespace cimg_library_suffixed {
             g = rv1[nm]; h = rv1[k];
             f = ((y-z)*(y+z)+(g-h)*(g+h))/cimg::max(1e-25,2*h*y);
             g = (t)cimg::_pythagore(f,1.0);
-            f = ((x-z)*(x+z)+h*((y/(f + (f>=0?g:-g)))-h))/x;
+            f = ((x-z)*(x+z)+h*((y/(f + (f>=0?g:-g)))-h))/cimg::max(1e-25,x);
             c = s = 1;
             for (int j = l; j<=nm; ++j) {
               const int i = j+1;
               g = rv1[i]; h = s*g; g = c*g;
               t y = S[i];
               t z = (t)cimg::_pythagore(f,h);
-              rv1[j] = z; c = f/z; s = h/z;
+              rv1[j] = z; c = f/cimg::max(1e-25,z); s = h/cimg::max(1e-25,z);
               f = x*c+g*s; g = g*c-x*s; h = y*s; y*=c;
               cimg_forX(U,jj) { const t x = V(j,jj), z = V(i,jj); V(j,jj) = x*c + z*s; V(i,jj) = z*c - x*s; }
               z = (t)cimg::_pythagore(f,h); S[j] = z;
-              if (z) { z = 1/z; c = f*z; s = h*z; }
+              if (z) { z = 1/cimg::max(1e-25,z); c = f*z; s = h*z; }
               f = c*g+s*y; x = c*y-s*g;
               cimg_forY(U,jj) { const t y = U(j,jj); z = U(i,jj); U(j,jj) = y*c + z*s; U(i,jj) = z*c - y*s; }
             }
