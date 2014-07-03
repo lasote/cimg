@@ -95,8 +95,8 @@ endif
 ifeq ($(CC),clang++)
 CCVER        = `$(CC) -v 2>&1 | head -n 1`
 endif
-ifeq ($(CC),icc)
-CCVER        = "icc \( `$(CC) -v 2>&1`\)"
+ifeq ($(CC),icpc)
+CCVER        = "icpc \( `$(CC) -v 2>&1`\)"
 CFLAGS       = -I..
 LDFLAGS      =
 else
@@ -109,7 +109,7 @@ endif
 #--------------------------------------------------
 
 # Flags to enable strict code standards
-ifeq ($(CC),icc)
+ifeq ($(CC),icpc)
 CIMG_ANSI_CFLAGS = -ansi
 else
 CIMG_ANSI_CFLAGS = -ansi -pedantic
@@ -123,15 +123,19 @@ CIMG_DEBUG_CFLAGS = -Dcimg_verbosity=3 -Dcimg_strict_warnings -g
 CIMG_VT100_CFLAGS = -Dcimg_use_vt100
 
 # Flags to enable code optimization by the compiler.
-ifeq ($(CC),icc)
+ifeq ($(CC),icpc)
 CIMG_OPT_CFLAGS = -O3 -ipo -no-prec-div
 else
+ifeq ($(CC),g++)
 CIMG_OPT_CFLAGS = -O3 -fno-tree-pre
+else
+CIMG_OPT_CFLAGS = -O3
+endif
 endif
 
 # Flags to enable OpenMP support.
-ifeq ($(CC),icc)
-CIMG_OPENMP_CFLAGS = -Dcimg_use_openmp -openmp -i-static
+ifeq ($(CC),icpc)
+CIMG_OPENMP_CFLAGS = #-Dcimg_use_openmp -openmp -i-static    # -> Seems to bug the compiler!
 else
 CIMG_OPENMP_CFLAGS = -Dcimg_use_openmp -fopenmp
 endif
