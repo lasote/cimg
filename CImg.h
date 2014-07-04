@@ -40948,24 +40948,26 @@ namespace cimg_library_suffixed {
       const char *volatile nfilename = filename; // two 'volatile' here to remove a g++ warning due to 'setjmp'.
       std::FILE *volatile nfile = file?file:cimg::fopen(nfilename,"wb");
 
-      double stmin, stmax = (double)max_min(stmin);
-      if (_depth>1)
-        cimg::warn(_cimg_instance
-                   "save_png(): Instance is volumetric, only the first slice will be saved in file '%s'.",
-                   cimg_instance,
-                   filename);
+      //      {
+        double stmin, stmax = (double)max_min(stmin);
+        if (_depth>1)
+          cimg::warn(_cimg_instance
+                     "save_png(): Instance is volumetric, only the first slice will be saved in file '%s'.",
+                     cimg_instance,
+                     filename);
 
-      if (_spectrum>4)
-        cimg::warn(_cimg_instance
-                   "save_png(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
-                   cimg_instance,
-                   filename);
+        if (_spectrum>4)
+          cimg::warn(_cimg_instance
+                     "save_png(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
+                     cimg_instance,
+                     filename);
 
-      if (stmin<0 || (bytes_per_pixel==1 && stmax>=256) || stmax>=65536)
-        cimg::warn(_cimg_instance
-                   "save_png(): Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
-                   cimg_instance,
-                   filename,stmin,stmax);
+        if (stmin<0 || (bytes_per_pixel==1 && stmax>=256) || stmax>=65536)
+          cimg::warn(_cimg_instance
+                     "save_png(): Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
+                     cimg_instance,
+                     filename,stmin,stmax);
+        //      }
 
       // Setup PNG structures for write
       png_voidp user_error_ptr = 0;
