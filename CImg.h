@@ -4915,6 +4915,10 @@ namespace cimg_library_suffixed {
           cimg_snprintf(s_path,sizeof(s_path),"%s\\XMedCon\\bin\\medcon.exe",pf_path);
           if ((file=std::fopen(s_path,"r"))!=0) { cimg::fclose(file); path_found = true; }
         }
+        if (!path_found) {
+          std::strcpy(s_path,"C:\\XMedCon\\bin\\medcon.exe");
+          if ((file=std::fopen(s_path,"r"))!=0) { cimg::fclose(file); path_found = true; }
+        }
         if (!path_found) std::strcpy(s_path,"medcon.exe");
 #else
         if (!path_found) {
