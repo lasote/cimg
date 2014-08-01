@@ -24098,24 +24098,27 @@ namespace cimg_library_suffixed {
 #pragma omp parallel for collapse(3) firstprivate(buf) if (size()>524288)
 #endif
         cimg_forYZC(*this,y,z,c) {
-          T *const ptrdb = buf._data, *const ptrde = buf._data + L - 1;
+          T *const ptrdb = buf._data, *ptrd = buf._data, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(0,y,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          T *ptrd = buf._data, cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(0,y,z,c); cur = cimg::min(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(0,y,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(0,y,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
 
@@ -24128,22 +24131,25 @@ namespace cimg_library_suffixed {
         cimg_forXZC(*this,x,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,0,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(x,0,z,c); cur = cimg::min(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(x,0,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(x,0,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
 
@@ -24156,22 +24162,25 @@ namespace cimg_library_suffixed {
         cimg_forXYC(*this,x,y,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,y,0,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val<=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(x,y,0,c); cur = cimg::min(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val<=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval<cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval<cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val<=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(x,y,0,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val<cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val<cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(x,y,0,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
       return *this;
@@ -24341,22 +24350,25 @@ namespace cimg_library_suffixed {
         cimg_forYZC(*this,y,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(0,y,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(0,y,z,c); cur = cimg::max(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(0,y,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(0,y,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
 
@@ -24369,22 +24381,25 @@ namespace cimg_library_suffixed {
         cimg_forXZC(*this,x,z,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,0,z,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(x,0,z,c); cur = cimg::max(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(x,0,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(x,0,z,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
 
@@ -24397,22 +24412,25 @@ namespace cimg_library_suffixed {
         cimg_forXYC(*this,x,y,c) {
           T *const ptrdb = buf._data, *ptrd = ptrdb, *const ptrde = buf._data + L - 1;
           const T *const ptrsb = data(x,y,0,c), *ptrs = ptrsb, *const ptrse = ptrs + L*off - off;
-          ptrd = buf._data; T cur = *ptrs; ptrs+=off; bool is_first = true;
-          for (int p = s2-1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
-          for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
-          for (int p = L - s - 1; p>0; --p) {
-            const T val = *ptrs; ptrs+=off;
-            if (is_first) {
-              const T *nptrs = ptrs - off; cur = val;
-              for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
-              nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
-            } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
-            *(ptrd++) = cur;
+          T cur = *ptrs; ptrs+=off; bool is_first = true;
+          for (int p = s2 - 1; p>0 && ptrs<=ptrse; --p) { const T val = *ptrs; ptrs+=off; if (val>=cur) { cur = val; is_first = false; }} *(ptrd++) = cur;
+          if (ptrs>=ptrse) { T *pd = data(x,y,0,c); cur = cimg::max(cur,*ptrse); cimg_forX(buf,x) { *pd = cur; pd+=off; }}
+          else {
+            for (int p = s1; p>0 && ptrd<=ptrde; --p) { const T val = *ptrs; if (ptrs<ptrse) ptrs+=off; if (val>=cur) { cur = val; is_first = false; } *(ptrd++) = cur; }
+            for (int p = L - s - 1; p>0; --p) {
+              const T val = *ptrs; ptrs+=off;
+              if (is_first) {
+                const T *nptrs = ptrs - off; cur = val;
+                for (int q = s - 2; q>0; --q) { nptrs-=off; const T nval = *nptrs; if (nval>cur) cur = nval; }
+                nptrs-=off; const T nval = *nptrs; if (nval>cur) { cur = nval; is_first = true; } else is_first = false;
+              } else { if (val>=cur) cur = val; else if (cur==*(ptrs-s*off)) is_first = true; }
+              *(ptrd++) = cur;
+            }
+            ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
+            for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
+            for (int p = s2 - 1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
+            T *pd = data(x,y,0,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
           }
-          ptrd = ptrde; ptrs = ptrse; cur = *ptrs; ptrs-=off;
-          for (int p = s1; p>0 && ptrs>=ptrsb; --p) { const T val = *ptrs; ptrs-=off; if (val>cur) cur = val; } *(ptrd--) = cur;
-          for (int p = s2-1; p>0 && ptrd>=ptrdb; --p) { const T val = *ptrs; if (ptrs>ptrsb) ptrs-=off; if (val>cur) cur = val; *(ptrd--) = cur; }
-          T *pd = data(x,y,0,c); cimg_for(buf,ps,T) { *pd = *ps; pd+=off; }
         }
       }
       return *this;
