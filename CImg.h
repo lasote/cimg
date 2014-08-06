@@ -23959,19 +23959,18 @@ namespace cimg_library_suffixed {
        \param mask Structuring element.
        \param boundary_conditions Boundary conditions.
        \param is_normalized Tells if the erosion is locally normalized.
-       \param threshold Threshold used to discard pixels too far from the current pixel value in the min computation.
     **/
     template<typename t>
     CImg<T>& erode(const CImg<t>& mask, const unsigned int boundary_conditions=1,
-                   const bool is_normalized=false, const float threshold=0) {
+                   const bool is_normalized=false) {
       if (is_empty() || !mask) return *this;
-      return get_erode(mask,boundary_conditions,is_normalized,threshold).move_to(*this);
+      return get_erode(mask,boundary_conditions,is_normalized).move_to(*this);
     }
 
     //! Erode image by a structuring element \newinstance.
     template<typename t>
     CImg<_cimg_Tt> get_erode(const CImg<t>& mask, const unsigned int boundary_conditions=1,
-                             const bool is_normalized=false, const float threshold=0) const {
+                             const bool is_normalized=false) const {
       if (is_empty() || !mask) return *this;
       typedef _cimg_Tt Tt;
       CImg<Tt> res(_width,_height,_depth,cimg::max(_spectrum,mask._spectrum));
@@ -23986,206 +23985,101 @@ namespace cimg_library_suffixed {
         const CImg<T> _img = get_shared_channel(c%_spectrum);
         const CImg<t> _mask = mask.get_shared_channel(c%mask._spectrum);
         if (is_normalized) { // Normalized erosion.
-          if (threshold>0) { // With threshold.
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
 #endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) + mval);
-                        if (mval && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            if (boundary_conditions)
+          for (int z = mz1; z<mze; ++z)
+            for (int y = my1; y<mye; ++y)
+              for (int x = mx1; x<mxe; ++x) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) + mval);
+                      if (mval && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
+          if (boundary_conditions)
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) + mval);
-                        if (mval && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            else
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) + mval);
+                      if (mval && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
+          else
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) + mval);
-                        if (mval && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-          } else { // Without threshold.
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
-#endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) + mval);
-                        if (mval && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            if (boundary_conditions)
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) + mval);
-                        if (mval && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            else
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) + mval);
-                        if (mval && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-          }
-        } else { // Classical erosion.
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) + mval);
+                      if (mval && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
 
-          if (threshold>0) { // With threshold.
+        } else { // Classical erosion.
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
 #endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            if (boundary_conditions)
+          for (int z = mz1; z<mze; ++z)
+            for (int y = my1; y<mye; ++y)
+              for (int x = mx1; x<mxe; ++x) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
+          if (boundary_conditions)
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            else
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
+          else
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)min_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val && cimg::abs((float)cval-val0)<=threshold) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-          } else { // Without threshold.
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
-#endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            if (boundary_conditions)
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-            else
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt min_val = cimg::type<Tt>::max();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
-                      }
-                  res(x,y,z,c) = min_val;
-                }
-          }
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt min_val = cimg::type<Tt>::max();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval<min_val) min_val = cval;
+                    }
+                res(x,y,z,c) = min_val;
+              }
         }
       }
       return res;
@@ -24320,15 +24214,15 @@ namespace cimg_library_suffixed {
     **/
     template<typename t>
     CImg<T>& dilate(const CImg<t>& mask, const unsigned int boundary_conditions=1,
-                    const bool is_normalized=false, const float threshold=0) {
+                    const bool is_normalized=false) {
       if (is_empty() || !mask) return *this;
-      return get_dilate(mask,boundary_conditions,is_normalized,threshold).move_to(*this);
+      return get_dilate(mask,boundary_conditions,is_normalized).move_to(*this);
     }
 
     //! Dilate image by a structuring element \newinstance.
     template<typename t>
     CImg<_cimg_Tt> get_dilate(const CImg<t>& mask, const unsigned int boundary_conditions=1,
-                              const bool is_normalized=false, const float threshold=0) const {
+                              const bool is_normalized=false) const {
       if (is_empty() || !mask) return *this;
       typedef _cimg_Tt Tt;
       CImg<Tt> res(_width,_height,_depth,_spectrum);
@@ -24343,205 +24237,100 @@ namespace cimg_library_suffixed {
         const CImg<T> _img = get_shared_channel(c%_spectrum);
         const CImg<t> _mask = mask.get_shared_channel(c%mask._spectrum);
         if (is_normalized) { // Normalized dilation.
-          if (threshold>0) { // With threshold.
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
 #endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) - mval);
-                        if (mval && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            if (boundary_conditions)
+          for (int z = mz1; z<mze; ++z)
+            for (int y = my1; y<mye; ++y)
+              for (int x = mx1; x<mxe; ++x) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) - mval);
+                      if (mval && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
+          if (boundary_conditions)
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) - mval);
-                        if (mval && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            else
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) - mval);
+                      if (mval && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
+          else
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(*this,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) - mval);
-                        if (mval && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-          } else { // Without threshold.
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(3) if (_width*_height*_depth>=32768)
-#endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img(x+xm,y+ym,z+zm) - mval);
-                        if (mval && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            if (boundary_conditions)
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img._atXYZ(x+xm,y+ym,z+zm) - mval);
-                        if (mval && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            else
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(*this,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
-                        const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) - mval);
-                        if (mval && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-          }
+            cimg_forYZ(*this,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const t mval = _mask(mx1+xm,my1+ym,mz1+zm);
+                      const Tt cval = (Tt)(_img.atXYZ(x+xm,y+ym,z+zm,0,0) - mval);
+                      if (mval && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
         } else { // Classical dilation.
-          if (threshold>0) { // With threshold.
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(3) if (_width>=256 && _height*_depth>=128)
 #endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            if (boundary_conditions)
+          for (int z = mz1; z<mze; ++z)
+            for (int y = my1; y<mye; ++y)
+              for (int x = mx1; x<mxe; ++x) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
+          if (boundary_conditions)
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            else
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
+          else
 #ifdef cimg_use_openmp
 #pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
 #endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = (Tt)_img(x,y,z);
-                  const float val0 = (float)max_val;
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val && cimg::abs((float)cval-val0)<=threshold) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-          } else { // Without threshold.
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(3) if (_width>=256 && _height*_depth>=128)
-#endif
-            for (int z = mz1; z<mze; ++z)
-              for (int y = my1; y<mye; ++y)
-                for (int x = mx1; x<mxe; ++x) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const Tt cval = (Tt)_img(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            if (boundary_conditions)
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img._atXYZ(x+xm,y+ym,z+zm);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-            else
-#ifdef cimg_use_openmp
-#pragma omp parallel for collapse(2) if (_width>=256 && _height*_depth>=128)
-#endif
-              cimg_forYZ(res,y,z)
-                for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
-                  Tt max_val = cimg::type<Tt>::min();
-                  for (int zm = -mz1; zm<=mz2; ++zm)
-                    for (int ym = -my1; ym<=my2; ++ym)
-                      for (int xm = -mx1; xm<=mx2; ++xm) {
-                        const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
-                        if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
-                      }
-                  res(x,y,z,c) = max_val;
-                }
-          }
+            cimg_forYZ(res,y,z)
+              for (int x = 0; x<width(); (y<my1 || y>=mye || z<mz1 || z>=mze)?++x:((x<mx1-1 || x>=mxe)?++x:(x=mxe))) {
+                Tt max_val = cimg::type<Tt>::min();
+                for (int zm = -mz1; zm<=mz2; ++zm)
+                  for (int ym = -my1; ym<=my2; ++ym)
+                    for (int xm = -mx1; xm<=mx2; ++xm) {
+                      const T cval = (Tt)_img.atXYZ(x+xm,y+ym,z+zm,0,0);
+                      if (_mask(mx1+xm,my1+ym,mz1+zm) && cval>max_val) max_val = cval;
+                    }
+                res(x,y,z,c) = max_val;
+              }
         }
       }
       return res;
