@@ -45894,8 +45894,8 @@ namespace cimg_library_suffixed {
 	}
       }
       delete[] buffer;
-#endif
       return *this;
+#endif
     }
 
     //! Load an image from a video file, using ffmpeg libraries \newinstance.
