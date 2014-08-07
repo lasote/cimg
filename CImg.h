@@ -3822,6 +3822,7 @@ namespace cimg_library_suffixed {
        on Windows-based systems.
     **/
     inline int system(const char *const command, const char *const module_name=0) {
+      cimg::unused(module_name);
 #ifdef cimg_no_system_calls
       return -1;
 #else
@@ -3843,7 +3844,6 @@ namespace cimg_library_suffixed {
       } else
 #endif
         return std::system(command);
-      return module_name?0:1;
 #endif
     }
 
@@ -7459,12 +7459,12 @@ namespace cimg_library_suffixed {
       }
     }
 
-    static void* _events_thread(void *) { // Thread to manage events for all opened display windows.
+    static void* _events_thread(void *arg) { // Thread to manage events for all opened display windows.
       Display *const dpy = cimg::X11_attr().display;
       XEvent event;
       pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,0);
       pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,0);
-      for (;;) {
+      if (!arg) for (;;) {
         XLockDisplay(dpy);
         bool event_flag = XCheckTypedEvent(dpy,ClientMessage,&event);
         if (!event_flag) event_flag = XCheckMaskEvent(dpy,
@@ -14184,7 +14184,6 @@ namespace cimg_library_suffixed {
                                     (ss-8)>expr._data?"...":"",
                                     (ss-8)>expr._data?ss-8:expr._data,
                                     se<&expr.back()?"...":"");
-        return 0;
       }
 
       // Evaluation functions, known by the parser.
@@ -15758,7 +15757,6 @@ namespace cimg_library_suffixed {
           if (j<=k) l = i;
         }
       }
-      return 0;
     }
 
     //! Return the median pixel value.
@@ -40383,7 +40381,7 @@ namespace cimg_library_suffixed {
       if (nxmin==nxmax) { nxmin = 0; nxmax = siz1; }
       int x0 = 0, x1 = width()*height()*depth() - 1, key = 0;
 
-      for (bool reset_view = true, resize_disp = false; !key && !disp.is_closed(); ) {
+      for (bool reset_view = true; !key && !disp.is_closed(); ) {
         if (reset_view) { x0 = 0; x1 = width()*height()*depth()-1; y0 = ymin; y1 = ymax; reset_view = false; }
         CImg<T> zoom(x1-x0+1,1,1,spectrum());
         cimg_forC(*this,c) zoom.get_shared_channel(c) = CImg<T>(data(x0,0,0,c),x1-x0+1,1,1,1,true);
@@ -40408,7 +40406,7 @@ namespace cimg_library_suffixed {
         } else {
           bool go_in = false, go_out = false, go_left = false, go_right = false, go_up = false, go_down = false;
           switch (key = disp.key()) {
-          case cimg::keyHOME : reset_view = resize_disp = true; key = 0; disp.set_key(); break;
+          case cimg::keyHOME : reset_view = true; key = 0; disp.set_key(); break;
           case cimg::keyPADADD : go_in = true; go_out = false; key = 0; disp.set_key(); break;
           case cimg::keyPADSUB : go_out = true; go_in = false; key = 0; disp.set_key(); break;
           case cimg::keyARROWLEFT : case cimg::keyPAD4 : go_left = true; go_right = false; key = 0; disp.set_key(); break;
