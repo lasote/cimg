@@ -37058,7 +37058,6 @@ namespace cimg_library_suffixed {
         throw CImgArgumentException(_cimg_instance
                                     "load_magick(): Specified filename is (null).",
                                     cimg_instance);
-
 #ifdef cimg_use_magick
       Magick::Image image(filename);
       const unsigned int W = image.size().width(), H = image.size().height();
@@ -37109,13 +37108,13 @@ namespace cimg_library_suffixed {
         }
       }
       }
+      return *this;
 #else
       throw CImgIOException(_cimg_instance
                             "load_magick(): Unable to load file '%s' unless libMagick++ is enabled.",
                             cimg_instance,
                             filename);
 #endif
-      return *this;
     }
 
     //! Load image from a file, using Magick++ library \newinstance.
@@ -39406,6 +39405,7 @@ namespace cimg_library_suffixed {
             *(ptr_b++) = (T)*(ptrs++); *(ptr_g++) = (T)*(ptrs++); *(ptr_r++) = (T)*(ptrs++);
           }
       }
+      return *this;
 #else
       cimg::unused(camera_index,skip_frames,release_camera,capture_width,capture_height);
       throw CImgIOException(_cimg_instance
@@ -39413,7 +39413,6 @@ namespace cimg_library_suffixed {
                             "(macro 'cimg_use_opencv' must be defined).",
                             cimg_instance);
 #endif
-      return *this;
     }
 
     //! Load image from a camera stream, using OpenCV \newinstance.
@@ -40984,6 +40983,7 @@ namespace cimg_library_suffixed {
       }
       image.syncPixels();
       image.write(filename);
+      return *this;
 #else
       cimg::unused(bytes_per_pixel);
       throw CImgIOException(_cimg_instance
@@ -40991,7 +40991,6 @@ namespace cimg_library_suffixed {
                             cimg_instance,
                             filename);
 #endif
-      return *this;
     }
 
     //! Save image as a PNG file.
@@ -41655,11 +41654,11 @@ namespace cimg_library_suffixed {
                                    "save_tiff(): Failed to open file '%s' for writing.",
                                    cimg_instance,
                                    filename);
+      return *this;
 #else
       cimg::unused(compression_type);
       return save_other(filename);
 #endif
-      return *this;
     }
 
 #ifdef cimg_use_tiff
@@ -42282,8 +42281,8 @@ namespace cimg_library_suffixed {
       CImgList<T> list;
       get_split('z').move_to(list);
       list.save_ffmpeg(filename,fps,bitrate);
-#endif
       return *this;
+#endif
     }
 
     //! Save image as a .yuv video file.
