@@ -19056,7 +19056,7 @@ namespace cimg_library_suffixed {
         case 1 : // Neumann boundaries.
           cimg_for(res,ptrd,t) {
             const long ind = (long)*(ptrs++);
-            *ptrd = colormap[ind<0?0:ind>=pwhd?pwhd-1:ind];
+            *ptrd = colormap[ind<0?0:ind>=(long)pwhd?pwhd-1:ind];
           } break;
         default : // Dirichlet boundaries.
           cimg_for(res,ptrd,t) {
@@ -19080,7 +19080,7 @@ namespace cimg_library_suffixed {
           const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd;
           t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd;
           for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=(long)pwhd?pwhd-1:_ind;
             *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind];
           }
         } break;
@@ -19110,7 +19110,7 @@ namespace cimg_library_suffixed {
           const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd;
           t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd, *ptrd2 = ptrd1 + whd;
           for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=(long)pwhd?pwhd-1:_ind;
             *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind]; *(ptrd2++) = ptrp2[ind];
           }
         } break;
@@ -19139,7 +19139,7 @@ namespace cimg_library_suffixed {
         case 1 : { // Neumann boundaries.
           t *ptrd = res._data;
           for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=(long)pwhd?pwhd-1:_ind;
             const t *ptrp = colormap._data + ind;
             t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = *ptrp; _ptrd+=whd; ptrp+=pwhd; }
           }
