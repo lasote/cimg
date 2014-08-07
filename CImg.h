@@ -19015,6 +19015,7 @@ namespace cimg_library_suffixed {
     //! Map predefined colormap on the scalar (indexed) image instance.
     /**
        \param colormap Multi-valued colormap used for mapping the indexes.
+       \param boundary_conditions The border condition type { 0=zero |  1=dirichlet | 2=periodic }.
        \par Example
        \code
        const CImg<float> img("reference.jpg"),
@@ -19026,13 +19027,13 @@ namespace cimg_library_suffixed {
        \image html ref_map.jpg
     **/
     template<typename t>
-    CImg<T>& map(const CImg<t>& colormap) {
-      return get_map(colormap).move_to(*this);
+    CImg<T>& map(const CImg<t>& colormap, const unsigned int boundary_conditions=0) {
+      return get_map(colormap,boundary_conditions).move_to(*this);
     }
 
     //! Map predefined colormap on the scalar (indexed) image instance \newinstance.
     template<typename t>
-    CImg<t> get_map(const CImg<t>& colormap) const {
+    CImg<t> get_map(const CImg<t>& colormap, const unsigned int boundary_conditions=0) const {
       if (_spectrum!=1 && colormap._spectrum!=1)
         throw CImgArgumentException(_cimg_instance
                                     "map(): Instance and specified colormap (%u,%u,%u,%u,%p) "
@@ -19043,35 +19044,119 @@ namespace cimg_library_suffixed {
       const unsigned long whd = (unsigned long)_width*_height*_depth, pwhd = (unsigned long)colormap._width*colormap._height*colormap._depth;
       CImg<t> res(_width,_height,_depth,colormap._spectrum==1?_spectrum:colormap._spectrum);
       switch (colormap._spectrum) {
+
       case 1 : { // Optimized for scalars.
         const T *ptrs = _data;
-        cimg_for(res,ptrd,t) {
-          const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind<pwhd?_ind:0;
-          *ptrd = colormap[ind];
+        switch (boundary_conditions) {
+        case 2 : // Periodic boundaries.
+          cimg_for(res,ptrd,t) {
+            const unsigned long ind = (unsigned long)*(ptrs++);
+            *ptrd = colormap[ind%pwhd];
+          } break;
+        case 1 : // Neumann boundaries.
+          cimg_for(res,ptrd,t) {
+            const long ind = (long)*(ptrs++);
+            *ptrd = colormap[ind<0?0:ind>=pwhd?pwhd-1:ind];
+          } break;
+        default : // Dirichlet boundaries.
+          cimg_for(res,ptrd,t) {
+            const unsigned long ind = (unsigned long)*(ptrs++);
+            *ptrd = ind<pwhd?colormap[ind]:(t)0;
+          }
         }
       } break;
+
       case 2 : { // Optimized for 2d vectors.
-        const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd;
-        t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd;
-        for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-          const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind<pwhd?_ind:0;
-          *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind];
+        switch (boundary_conditions) {
+        case 2 : { // Periodic boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind%pwhd;
+            *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind];
+          }
+        } break;
+        case 1 : { // Neumann boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind];
+          }
+        } break;
+        default : { // Dirichlet boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long ind = (unsigned long)*(ptrs++);
+            const bool is_in = ind<pwhd;
+            *(ptrd0++) = is_in?ptrp0[ind]:(t)0; *(ptrd1++) = is_in?ptrp1[ind]:(t)0;
+          }
+        }
         }
       } break;
+
       case 3 : { // Optimized for 3d vectors (colors).
-        const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd;
-        t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd, *ptrd2 = ptrd1 + whd;
-        for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-          const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind<pwhd?_ind:0;
-          *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind]; *(ptrd2++) = ptrp2[ind];
+        switch (boundary_conditions) {
+        case 2 : { // Periodic boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd, *ptrd2 = ptrd1 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind%pwhd;
+            *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind]; *(ptrd2++) = ptrp2[ind];
+          }
+        } break;
+        case 1 : { // Neumann boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd, *ptrd2 = ptrd1 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            *(ptrd0++) = ptrp0[ind]; *(ptrd1++) = ptrp1[ind]; *(ptrd2++) = ptrp2[ind];
+          }
+        } break;
+        default : { // Dirichlet boundaries.
+          const t *const ptrp0 = colormap._data, *ptrp1 = ptrp0 + pwhd, *ptrp2 = ptrp1 + pwhd;
+          t *ptrd0 = res._data, *ptrd1 = ptrd0 + whd, *ptrd2 = ptrd1 + whd;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long ind = (unsigned long)*(ptrs++);
+            const bool is_in = ind<pwhd;
+            *(ptrd0++) = is_in?ptrp0[ind]:(t)0; *(ptrd1++) = is_in?ptrp1[ind]:(t)0; *(ptrd2++) = is_in?ptrp2[ind]:(t)0;
+          }
+        }
         }
       } break;
+
       default : { // Generic version.
-        t *ptrd = res._data;
-        for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
-          const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind<pwhd?_ind:0;
-          const t *ptrp = colormap._data + ind;
-          t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = *ptrp; _ptrd+=whd; ptrp+=pwhd; }
+        switch (boundary_conditions) {
+        case 2 : { // Periodic boundaries.
+          t *ptrd = res._data;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long _ind = (unsigned long)*(ptrs++), ind = _ind%pwhd;
+            const t *ptrp = colormap._data + ind;
+            t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = *ptrp; _ptrd+=whd; ptrp+=pwhd; }
+          }
+        } break;
+        case 1 : { // Neumann boundaries.
+          t *ptrd = res._data;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const long _ind = (long)*(ptrs++), ind = _ind<0?0:_ind>=pwhd?pwhd-1:_ind;
+            const t *ptrp = colormap._data + ind;
+            t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = *ptrp; _ptrd+=whd; ptrp+=pwhd; }
+          }
+        } break;
+        default : { // Dirichlet boundaries.
+          t *ptrd = res._data;
+          for (const T *ptrs = _data, *ptrs_end = ptrs + whd; ptrs<ptrs_end; ) {
+            const unsigned long ind = (unsigned long)*(ptrs++);
+            const bool is_in = ind<pwhd;
+            if (is_in) {
+              const t *ptrp = colormap._data + ind;
+              t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = *ptrp; _ptrd+=whd; ptrp+=pwhd; }
+            } else {
+              t *_ptrd = ptrd++; cimg_forC(res,c) { *_ptrd = (t)0; _ptrd+=whd; }
+            }
+          }
+        }
         }
       }
       }
