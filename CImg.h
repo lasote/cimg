@@ -46798,8 +46798,8 @@ namespace cimg_library_suffixed {
       }
       av_free(oc);
       av_free(video_outbuf);
-#endif
       return *this;
+#endif
     }
 
     const CImgList<T>& _save_yuv(std::FILE *const file, const char *const filename, const bool is_rgb) const {
