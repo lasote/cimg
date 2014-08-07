@@ -16135,7 +16135,6 @@ namespace cimg_library_suffixed {
         return res;
       }
       }
-      return 0;
     }
 
     //! Compute the dot product between instance and argument, viewed as matrices.
