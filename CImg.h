@@ -17269,9 +17269,9 @@ namespace cimg_library_suffixed {
        \param str input C-string to encode as an image.
        \param is_last_zero Tells if the ending \c '0' character appear in the resulting image.
     **/
-    static CImg<T> string(const char *const str, const bool is_last_zero=true) {
+    static CImg<T> string(const char *const str, const bool is_last_zero=true, const bool is_shared=false) {
       if (!str) return CImg<T>();
-      return CImg<T>(str,(unsigned int)std::strlen(str)+(is_last_zero?1:0));
+      return CImg<T>(str,(unsigned int)std::strlen(str)+(is_last_zero?1:0),1,1,1,is_shared);
     }
 
     //! Return a \c 1x1 image containing specified value.
