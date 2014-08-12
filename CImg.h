@@ -3826,7 +3826,17 @@ namespace cimg_library_suffixed {
 #ifdef cimg_no_system_calls
       return -1;
 #else
-#if cimg_OS==2
+#if cimg_OS==1
+      const unsigned int l = std::strlen(command);
+      if (l) {
+        char *const ncommand = new char[l+16];
+        std::strncpy(ncommand,command,l);
+        std::strcpy(ncommand+l," 2> /dev/null"); // Make command silent.
+        const int out_val = std::system(ncommand);
+        delete[] ncommand;
+        return out_val;
+      } else return -1;
+#elif cimg_OS==2
       PROCESS_INFORMATION pi;
       STARTUPINFO si;
       std::memset(&pi,0,sizeof(PROCESS_INFORMATION));
@@ -3841,9 +3851,8 @@ namespace cimg_library_suffixed {
         CloseHandle(pi.hThread);
         CloseHandle(pi.hProcess);
         return 0;
-      } else
+      } else return std::system(command);
 #endif
-        return std::system(command);
 #endif
     }
 
