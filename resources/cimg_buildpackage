@@ -85,17 +85,6 @@ mkdir $DEST_DIR/examples/img
 cd $SRC_DIR/examples/img
 cp -f *.pgm *.ppm *.bmp *.h $DEST_DIR/examples/img/
 
-# mkdir $DEST_DIR/html
-# cd $SRC_DIR/html
-# cp -f *.shtml *.html *.h favicon.* $DEST_DIR/html/
-# sed s\/_cimg_version\/$RELEASE\/ CImg.doxygen > $DEST_DIR/html/CImg.doxygen
-# mkdir $DEST_DIR/html/img
-# cd $SRC_DIR/html/img
-# cp -f *.html *.jpg *.gif *.ppm $DEST_DIR/html/img/
-# mkdir $DEST_DIR/html/img/reference
-# cd $SRC_DIR/html/img/reference
-# cp -f *.jpg $DEST_DIR/html/img/reference/
-
 mkdir $DEST_DIR/plugins
 cd $SRC_DIR/plugins
 cp -f *.h $DEST_DIR/plugins/
