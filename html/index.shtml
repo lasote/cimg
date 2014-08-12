@@ -334,7 +334,7 @@
         <li><a href="img/postcard47.jpg" onclick="NewWindow(this.href,'name','420','320','yes');return false;">
             Torquay/Australia, from Pauline van Buren.</a></li>
       </ul><br/>
-    <li>If you have too much money, you can also <a href="http://sourceforge.net/donate/index.php?group_id=96492">
+    <li>If you have too much money, you can also <a href="https://sourceforge.net/p/cimg/donate/">
         <img src="img/project-support.jpg" alt=""></img></a></li>
     </ul>
     </blockquote>
