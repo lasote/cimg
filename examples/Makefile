@@ -98,10 +98,10 @@ endif
 ifeq ($(CC),icpc)
 CCVER        = "icpc \( `$(CC) -v 2>&1`\)"
 CFLAGS       = -I..
-LDFLAGS      =
+LIBS         =
 else
 CFLAGS       = -I.. -Wall -W
-LDFLAGS      = -lm
+LIBS         = -lm
 endif
 
 #--------------------------------------------------
@@ -142,8 +142,8 @@ endif
 
 # Flags to enable OpenCV support.
 CIMG_OPENCV_CFLAGS = -Dcimg_use_opencv -I/usr/include/opencv
-CIMG_OPENCV_LDFLAGS = -lopencv_core -lopencv_highgui
-#CIMG_OPENCV_LDFLAGS = -lcv -lhighgui    #-> Use this for OpenCV < 2.2.0
+CIMG_OPENCV_LIBS = -lopencv_core -lopencv_highgui
+#CIMG_OPENCV_LIBS = -lcv -lhighgui    #-> Use this for OpenCV < 2.2.0
 
 # Flags used to disable display capablities of CImg
 CIMG_NODISPLAY_CFLAGS = -Dcimg_display=0
@@ -152,84 +152,84 @@ CIMG_NODISPLAY_CFLAGS = -Dcimg_display=0
 # (X11 is used by CImg to handle display windows)
 # !!! For 64bits systems : replace -L$(X11PATH)/lib by -L$(X11PATH)/lib64 !!!
 CIMG_X11_CFLAGS = -I$(X11PATH)/include
-CIMG_X11_LDFLAGS = -L$(X11PATH)/lib -lpthread -lX11
+CIMG_X11_LIBS = -L$(X11PATH)/lib -lpthread -lX11
 
 # Flags to enable fast image display, using the XSHM library (when using X11).
 # !!! Seems to randomly crash when used on MacOSX and 64bits systems, so use it only when necessary !!!
 CIMG_XSHM_CFLAGS = # -Dcimg_use_xshm
-CIMG_XSHM_LDFLAGS = # -lXext
+CIMG_XSHM_LIBS = # -lXext
 
 # Flags to enable GDI32 display (Windows native).
 CIMG_GDI32_CFLAGS = -mwindows
-CIMG_GDI32_LDFLAGS = -lgdi32
+CIMG_GDI32_LIBS = -lgdi32
 
 # Flags to enable screen mode switching, using the XRandr library (when using X11).
 # ( http://www.x.org/wiki/Projects/XRandR )
 # !!! Not supported by the X11 server on MacOSX, so do not use it on MacOSX !!!
 CIMG_XRANDR_CFLAGS = -Dcimg_use_xrandr
-CIMG_XRANDR_LDFLAGS = -lXrandr
+CIMG_XRANDR_LIBS = -lXrandr
 
 # Flags to enable native support for PNG image files, using the PNG library.
 # ( http://www.libpng.org/ )
 CIMG_PNG_CFLAGS = -Dcimg_use_png
-CIMG_PNG_LDFLAGS = -lpng -lz
+CIMG_PNG_LIBS = -lpng -lz
 
 # Flags to enable native support for JPEG image files, using the JPEG library.
 # ( http://www.ijg.org/ )
 CIMG_JPEG_CFLAGS = -Dcimg_use_jpeg
-CIMG_JPEG_LDFLAGS = -ljpeg
+CIMG_JPEG_LIBS = -ljpeg
 
 # Flags to enable native support for TIFF image files, using the TIFF library.
 # ( http://www.libtiff.org/ )
 CIMG_TIFF_CFLAGS = -Dcimg_use_tiff
-CIMG_TIFF_LDFLAGS = -ltiff
+CIMG_TIFF_LIBS = -ltiff
 
 # Flags to enable native support for MINC2 image files, using the MINC2 library.
 # ( http://en.wikibooks.org/wiki/MINC/Reference/MINC2.0_Users_Guide )
 CIMG_MINC2_CFLAGS = -Dcimg_use_minc2 -I${HOME}/local/include
-CIMG_MINC2_LDFLAGS = -lminc_io -lvolume_io2 -lminc2 -lnetcdf -lhdf5 -lz -L${HOME}/local/lib
+CIMG_MINC2_LIBS = -lminc_io -lvolume_io2 -lminc2 -lnetcdf -lhdf5 -lz -L${HOME}/local/lib
 
 # Flags to enable native support for EXR image files, using the OpenEXR library.
 # ( http://www.openexr.com/ )
 CIMG_EXR_CFLAGS = -Dcimg_use_openexr -I/usr/include/OpenEXR
-CIMG_EXR_LDFLAGS = -lIlmImf -lHalf
+CIMG_EXR_LIBS = -lIlmImf -lHalf
 
 # Flags to enable native support for various video files, using the FFMPEG library.
 # ( http://www.ffmpeg.org/ )
 CIMG_FFMPEG_CFLAGS = -Dcimg_use_ffmpeg -D__STDC_CONSTANT_MACROS -I/usr/include/libavcodec -I/usr/include/libavformat -I/usr/include/libswscale -I/usr/include/ffmpeg
-CIMG_FFMPEG_LDFLAGS = -lavcodec -lavformat -lswscale
+CIMG_FFMPEG_LIBS = -lavcodec -lavformat -lswscale
 
 # Flags to enable native support for compressed .cimgz files, using the Zlib library.
 # ( http://www.zlib.net/ )
 CIMG_ZLIB_CFLAGS = -Dcimg_use_zlib
-CIMG_ZLIB_LDFLAGS = -lz
+CIMG_ZLIB_LIBS = -lz
 
 # Flags to enable native support of most classical image file formats, using the Magick++ library.
 # ( http://www.imagemagick.org/Magick++/ )
 CIMG_MAGICK_CFLAGS = -Dcimg_use_magick `Magick++-config --cppflags` `Magick++-config --cxxflags`
-CIMG_MAGICK_LDFLAGS = `Magick++-config --ldflags` `Magick++-config --libs`
+CIMG_MAGICK_LIBS = `Magick++-config --ldflags` `Magick++-config --libs`
 
 # Flags to enable faster Discrete Fourier Transform computation, using the FFTW3 library
 # ( http://www.fftw.org/ )
 CIMG_FFTW3_CFLAGS = -Dcimg_use_fftw3
 ifeq ($(OSTYPE),msys)
-CIMG_FFTW3_LDFLAGS = -lfftw3-3
+CIMG_FFTW3_LIBS = -lfftw3-3
 else
-CIMG_FFTW3_LDFLAGS = -lfftw3 -lfftw3_threads
+CIMG_FFTW3_LIBS = -lfftw3 -lfftw3_threads
 endif
 
 # Flags to enable the use of LAPACK routines for matrix computation
 # ( http://www.netlib.org/lapack/ )
 CIMG_LAPACK_CFLAGS = -Dcimg_use_lapack
-CIMG_LAPACK_LDFLAGS = -lblas -lg2c -llapack
+CIMG_LAPACK_LIBS = -lblas -lg2c -llapack
 
 # Flags to enable the use of the Board library
 # ( http://libboard.sourceforge.net/ )
 CIMG_BOARD_CFLAGS = -Dcimg_use_board -I/usr/include/board
-CIMG_BOARD_LDFLAGS = -lboard
+CIMG_BOARD_LIBS = -lboard
 
 # Flags to compile on Sun Solaris
-CIMG_SOLARIS_LDFLAGS = -R$(X11PATH)/lib -lrt -lnsl -lsocket
+CIMG_SOLARIS_LIBS = -R$(X11PATH)/lib -lrt -lnsl -lsocket
 
 # Flags to compile GIMP plug-ins.
 ifeq ($(MSYSTEM),MINGW32)
@@ -243,7 +243,7 @@ endif
 	@echo
 	@echo "** Compiling '$* ($(CIMG_VERSION))' with '$(CCVER)'"
 	@echo
-	$(CC) -o $(EXEPFX)$* $< $(CFLAGS) $(CONF_CFLAGS) $(LDFLAGS) $(CONF_LDFLAGS)
+	$(CC) -o $(EXEPFX)$* $< $(CFLAGS) $(CONF_CFLAGS) $(LIBS) $(CONF_LIBS)
 ifeq ($(STRIP_EXE),true)
 ifeq ($(MSYSTEM),MINGW32)
 	strip $(EXEPFX)$*.exe
@@ -301,10 +301,10 @@ $(CIMG_VT100_CFLAGS) \
 $(CIMG_TIFF_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_TIFF_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 all $(CIMG_EXTRA_FILES)
 
 # Linux/BSD/Mac OSX targets, with X11 display.
@@ -315,9 +315,9 @@ $(CIMG_ANSI_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 all
 
 dlinux:
@@ -328,9 +328,9 @@ $(CIMG_DEBUG_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 all
 
 olinux:
@@ -342,9 +342,9 @@ $(CIMG_OPENMP_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 "STRIP_EXE=true" \
 all
 
@@ -373,18 +373,18 @@ $(CIMG_ZLIB_CFLAGS) \
 $(CIMG_OPENCV_CFLAGS) \
 $(CIMG_MAGICK_CFLAGS) \
 $(CIMG_FFTW3_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS) \
-$(CIMG_XRANDR_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) -ltiffxx \
-$(CIMG_EXR_LDFLAGS) \
-$(CIMG_PNG_LDFLAGS) \
-$(CIMG_JPEG_LDFLAGS) \
-$(CIMG_ZLIB_LDFLAGS) \
-$(CIMG_OPENCV_LDFLAGS) \
-$(CIMG_MAGICK_LDFLAGS) \
-$(CIMG_FFTW3_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS) \
+$(CIMG_XRANDR_LIBS) \
+$(CIMG_TIFF_LIBS) -ltiffxx \
+$(CIMG_EXR_LIBS) \
+$(CIMG_PNG_LIBS) \
+$(CIMG_JPEG_LIBS) \
+$(CIMG_ZLIB_LIBS) \
+$(CIMG_OPENCV_LIBS) \
+$(CIMG_MAGICK_LIBS) \
+$(CIMG_FFTW3_LIBS)" \
 "STRIP_EXE=true" \
 all $(CIMG_EXTRA_FILES)
 
@@ -396,10 +396,10 @@ $(CIMG_ANSI_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_SOLARIS_LDFLAGS) \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_SOLARIS_LIBS) \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 all
 
 dsolaris:
@@ -410,10 +410,10 @@ $(CIMG_DEBUG_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_SOLARIS_LDFLAGS) \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_SOLARIS_LIBS) \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 all
 
 osolaris:
@@ -424,10 +424,10 @@ $(CIMG_OPT_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS) \
 $(CIMG_XSHM_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_SOLARIS_LDFLAGS) \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_SOLARIS_LIBS) \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS)" \
 "STRIP_EXE=true" \
 all
 
@@ -457,20 +457,20 @@ $(CIMG_ZLIB_CFLAGS) \
 $(CIMG_OPENCV_CFLAGS) \
 $(CIMG_MAGICK_CFLAGS) \
 $(CIMG_FFTW3_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_SOLARIS_LDFLAGS) \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_XSHM_LDFLAGS) \
-$(CIMG_XRANDR_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) \
-$(CIMG_MINC2_LDFLAGS) \
-$(CIMG_EXR_LDFLAGS) \
-$(CIMG_PNG_LDFLAGS) \
-$(CIMG_JPEG_LDFLAGS) \
-$(CIMG_ZLIB_LDFLAGS) \
-$(CIMG_OPENCV_LDFLAGS) \
-$(CIMG_MAGICK_LDFLAGS) \
-$(CIMG_FFTW3_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_SOLARIS_LIBS) \
+$(CIMG_X11_LIBS) \
+$(CIMG_XSHM_LIBS) \
+$(CIMG_XRANDR_LIBS) \
+$(CIMG_TIFF_LIBS) \
+$(CIMG_MINC2_LIBS) \
+$(CIMG_EXR_LIBS) \
+$(CIMG_PNG_LIBS) \
+$(CIMG_JPEG_LIBS) \
+$(CIMG_ZLIB_LIBS) \
+$(CIMG_OPENCV_LIBS) \
+$(CIMG_MAGICK_LIBS) \
+$(CIMG_FFTW3_LIBS)" \
 "STRIP_EXE=true" \
 all $(CIMG_EXTRA_FILES)
 
@@ -481,8 +481,8 @@ macosx:
 $(CIMG_ANSI_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS)" \
 all
 
 dmacosx:
@@ -492,8 +492,8 @@ $(CIMG_ANSI_CFLAGS) \
 $(CIMG_DEBUG_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS)" \
 all
 
 omacosx:
@@ -503,8 +503,8 @@ $(CIMG_ANSI_CFLAGS) \
 $(CIMG_OPT_CFLAGS) \
 $(CIMG_VT100_CFLAGS) \
 $(CIMG_X11_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS)" \
 all
 
 mmacosx:
@@ -530,41 +530,41 @@ $(CIMG_ZLIB_CFLAGS) \
 $(CIMG_OPENCV_CFLAGS) \
 $(CIMG_MAGICK_CFLAGS) \
 $(CIMG_FFTW3_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_X11_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) \
-$(CIMG_MINC2_LDFLAGS) \
-$(CIMG_EXR_LDFLAGS) \
-$(CIMG_PNG_LDFLAGS) \
-$(CIMG_JPEG_LDFLAGS) \
-$(CIMG_ZLIB_LDFLAGS) \
-$(CIMG_OPENCV_LDFLAGS) \
-$(CIMG_MAGICK_LDFLAGS) \
-$(CIMG_FFTW3_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_X11_LIBS) \
+$(CIMG_TIFF_LIBS) \
+$(CIMG_MINC2_LIBS) \
+$(CIMG_EXR_LIBS) \
+$(CIMG_PNG_LIBS) \
+$(CIMG_JPEG_LIBS) \
+$(CIMG_ZLIB_LIBS) \
+$(CIMG_OPENCV_LIBS) \
+$(CIMG_MAGICK_LIBS) \
+$(CIMG_FFTW3_LIBS)" \
 all $(CIMG_EXTRA_FILES)
 
 # Windows targets, with GDI32 display.
 windows:
 	@$(MAKE) \
 "CONF_CFLAGS = " \
-"CONF_LDFLAGS = \
-$(CIMG_GDI32_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_GDI32_LIBS)" \
 all
 
 dwindows:
 	@$(MAKE) \
 "CONF_CFLAGS = \
 $(CIMG_DEBUG_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_GDI32_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_GDI32_LIBS)" \
 all
 
 owindows:
 	@$(MAKE) \
 "CONF_CFLAGS = \
 $(CIMG_OPT_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_GDI32_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_GDI32_LIBS)" \
 "STRIP_EXE=true" \
 all
 
@@ -586,14 +586,14 @@ $(CIMG_JPEG_CFLAGS) \
 $(CIMG_ZLIB_CFLAGS) \
 $(CIMG_OPENCV_CFLAGS) \
 $(CIMG_FFTW3_CFLAGS)" \
-"CONF_LDFLAGS = \
-$(CIMG_GDI32_LDFLAGS) \
-$(CIMG_TIFF_LDFLAGS) \
-$(CIMG_PNG_LDFLAGS) \
-$(CIMG_JPEG_LDFLAGS) \
-$(CIMG_ZLIB_LDFLAGS) \
-$(CIMG_OPENCV_LDFLAGS) \
-$(CIMG_FFTW3_LDFLAGS)" \
+"CONF_LIBS = \
+$(CIMG_GDI32_LIBS) \
+$(CIMG_TIFF_LIBS) \
+$(CIMG_PNG_LIBS) \
+$(CIMG_JPEG_LIBS) \
+$(CIMG_ZLIB_LIBS) \
+$(CIMG_OPENCV_LIBS) \
+$(CIMG_FFTW3_LIBS)" \
 "STRIP_EXE=true" \
 all $(CIMG_EXTRA_FILES)
 

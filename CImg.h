@@ -23490,40 +23490,48 @@ namespace cimg_library_suffixed {
         const unsigned int dp = (unsigned int)(nb?-nb:1);
         switch (_axis) {
         case 'x': {
-          res.assign(_width/dp+(_width%dp?1:0),1,1);
-          const unsigned int pe = _width - dp;
+          if (_width>dp) {
+            res.assign(_width/dp+(_width%dp?1:0),1,1);
+            const unsigned int pe = _width - dp;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (res._width>=128 && _height*_depth*_spectrum>=128)
 #endif
-          for (unsigned int p = 0; p<pe; p+=dp) get_crop(p,0,0,0,p+dp-1,_height-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
-          get_crop((res._width-1)*dp,0,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+            for (unsigned int p = 0; p<pe; p+=dp) get_crop(p,0,0,0,p+dp-1,_height-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
+            get_crop((res._width-1)*dp,0,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+          } else res.assign(*this);
         } break;
         case 'y': {
-          res.assign(_height/dp+(_height%dp?1:0),1,1);
-          const unsigned int pe = _height - dp;
+          if (_height>dp) {
+            res.assign(_height/dp+(_height%dp?1:0),1,1);
+            const unsigned int pe = _height - dp;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (res._width>=128 && _width*_depth*_spectrum>=128)
 #endif
-          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,p,0,0,_width-1,p+dp-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
-          get_crop(0,(res._width-1)*dp,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+            for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,p,0,0,_width-1,p+dp-1,_depth-1,_spectrum-1).move_to(res[p/dp]);
+            get_crop(0,(res._width-1)*dp,0,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+          } else res.assign(*this);
         } break;
         case 'z': {
-          res.assign(_depth/dp+(_depth%dp?1:0),1,1);
-          const unsigned int pe = _depth - dp;
+          if (_depth>dp) {
+            res.assign(_depth/dp+(_depth%dp?1:0),1,1);
+            const unsigned int pe = _depth - dp;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (res._width>=128 && _width*_height*_spectrum>=128)
 #endif
-          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,p,0,_width-1,_height-1,p+dp-1,_spectrum-1).move_to(res[p/dp]);
-          get_crop(0,0,(res._width-1)*dp,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+            for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,p,0,_width-1,_height-1,p+dp-1,_spectrum-1).move_to(res[p/dp]);
+            get_crop(0,0,(res._width-1)*dp,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+          } else res.assign(*this);
         } break;
         default : {
-          res.assign(_spectrum/dp+(_spectrum%dp?1:0),1,1);
-          const unsigned int pe = _spectrum - dp;
+          if (_spectrum>dp) {
+            res.assign(_spectrum/dp+(_spectrum%dp?1:0),1,1);
+            const unsigned int pe = _spectrum - dp;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (res._width>=128 && _width*_height*_depth>=128)
 #endif
-          for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,0,p,_width-1,_height-1,_depth-1,p+dp-1).move_to(res[p/dp]);
-          get_crop(0,0,0,(res._width-1)*dp,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+            for (unsigned int p = 0; p<pe; p+=dp) get_crop(0,0,0,p,_width-1,_height-1,_depth-1,p+dp-1).move_to(res[p/dp]);
+            get_crop(0,0,0,(res._width-1)*dp,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res.back());
+          } else res.assign(*this);
         }
         }
       } else { // Split by number of (non-homogeneous) blocs.
