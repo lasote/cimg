@@ -23541,37 +23541,40 @@ namespace cimg_library_suffixed {
                                       "get_split(): Instance cannot be split along %c-axis into %u blocs.",
                                       cimg_instance,
                                       axis,nb);
-        int err = (int)siz;
-        unsigned int _p = 0;
-        switch (_axis) {
-        case 'x' : {
-          cimg_forX(*this,p) if ((err-=nb)<=0) {
-            get_crop(_p,0,0,0,p,_height-1,_depth-1,_spectrum-1).move_to(res);
-            err+=(int)siz;
-            _p=p+1;
+        if (nb==1) res.assign(*this);
+        else {
+          int err = (int)siz;
+          unsigned int _p = 0;
+          switch (_axis) {
+          case 'x' : {
+            cimg_forX(*this,p) if ((err-=nb)<=0) {
+              get_crop(_p,0,0,0,p,_height-1,_depth-1,_spectrum-1).move_to(res);
+              err+=(int)siz;
+              _p=p+1;
+            }
+          } break;
+          case 'y' : {
+            cimg_forY(*this,p) if ((err-=nb)<=0) {
+              get_crop(0,_p,0,0,_width-1,p,_depth-1,_spectrum-1).move_to(res);
+              err+=(int)siz;
+              _p=p+1;
+            }
+          } break;
+          case 'z' : {
+            cimg_forZ(*this,p) if ((err-=nb)<=0) {
+              get_crop(0,0,_p,0,_width-1,_height-1,p,_spectrum-1).move_to(res);
+              err+=(int)siz;
+              _p=p+1;
+            }
+          } break;
+          default : {
+            cimg_forC(*this,p) if ((err-=nb)<=0) {
+              get_crop(0,0,0,_p,_width-1,_height-1,_depth-1,p).move_to(res);
+              err+=(int)siz;
+              _p=p+1;
+            }
           }
-        } break;
-        case 'y' : {
-          cimg_forY(*this,p) if ((err-=nb)<=0) {
-            get_crop(0,_p,0,0,_width-1,p,_depth-1,_spectrum-1).move_to(res);
-            err+=(int)siz;
-            _p=p+1;
           }
-        } break;
-        case 'z' : {
-          cimg_forZ(*this,p) if ((err-=nb)<=0) {
-            get_crop(0,0,_p,0,_width-1,_height-1,p,_spectrum-1).move_to(res);
-            err+=(int)siz;
-            _p=p+1;
-          }
-        } break;
-        default : {
-          cimg_forC(*this,p) if ((err-=nb)<=0) {
-            get_crop(0,0,0,_p,_width-1,_height-1,_depth-1,p).move_to(res);
-            err+=(int)siz;
-            _p=p+1;
-          }
-        }
         }
       }
       return res;
