@@ -142,6 +142,14 @@
 #define cimg_vsnprintf vsnprintf
 #endif
 
+// Look for C++11 features
+#if !defined(cimg_use_cpp11) && __cplusplus>201100
+#define cimg_use_cpp11
+#endif
+#ifdef cimg_use_cpp11
+#include <utility>
+#endif
+
 // Configure filename separator.
 //
 // Filename separator is set by default to '/', except for Windows where it is '\'.
@@ -9927,6 +9935,17 @@ namespace cimg_library_suffixed {
     explicit CImg(const CImgDisplay &disp):_width(0),_height(0),_depth(0),_spectrum(0),_is_shared(false),_data(0) {
       disp.snapshot(*this);
     }
+
+    // Constructor and assignment operator for rvalue references (c++11).
+    // This avoids an additional image copy for methods returning new images. Can save RAM for big images !
+#ifdef cimg_use_cpp11
+    CImg(CImg<T>&& img):_width(0),_height(0),_depth(0),_spectrum(0),_is_shared(false),_data(0) {
+      swap(img);
+    }
+    CImg<T>& operator=(CImg<T>&& img) {
+      return img.swap(*this);
+    }
+#endif
 
     //! Construct empty image \inplace.
     /**

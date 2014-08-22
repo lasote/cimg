@@ -110,9 +110,9 @@ endif
 
 # Flags to enable strict code standards
 ifeq ($(CC),icpc)
-CIMG_ANSI_CFLAGS = -ansi
+CIMG_ANSI_CFLAGS = -std=c++11 -ansi
 else
-CIMG_ANSI_CFLAGS = -ansi -pedantic
+CIMG_ANSI_CFLAGS = -std=c++11 -ansi -pedantic
 endif
 
 # Flags to enable code debugging.
@@ -123,13 +123,13 @@ CIMG_DEBUG_CFLAGS = -Dcimg_verbosity=3 -Dcimg_strict_warnings -g
 CIMG_VT100_CFLAGS = -Dcimg_use_vt100
 
 # Flags to enable code optimization by the compiler.
-ifeq ($(CC),icpc)
-CIMG_OPT_CFLAGS = -O3 -ipo -no-prec-div
-else
 ifeq ($(CC),g++)
-CIMG_OPT_CFLAGS = -O3 -fno-tree-pre
+CIMG_OPT_CFLAGS = -O2 -fno-ipa-sra -mtune=generic
 else
-CIMG_OPT_CFLAGS = -O3
+ifeq ($(CC),icpc)
+CIMG_OPT_CFLAGS = -fast
+else
+CIMG_OPT_CFLAGS = -O2
 endif
 endif
 
