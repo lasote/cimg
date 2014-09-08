@@ -9943,6 +9943,7 @@ namespace cimg_library_suffixed {
       swap(img);
     }
     CImg<T>& operator=(CImg<T>&& img) {
+      if (_is_shared) return assign(img);
       return img.swap(*this);
     }
 #endif
@@ -41849,9 +41850,9 @@ namespace cimg_library_suffixed {
         if (reset_view) { x0 = 0; x1 = width()*height()*depth()-1; y0 = ymin; y1 = ymax; reset_view = false; }
         CImg<T> zoom(x1-x0+1,1,1,spectrum());
         cimg_forC(*this,c) zoom.get_shared_channel(c) = CImg<T>(data(x0,0,0,c),x1-x0+1,1,1,1,true);
-
         if (y0==y1) { y0 = zoom.min_max(y1); const double dy = y1 - y0; y0-=dy/20; y1+=dy/20; }
         if (y0==y1) { --y0; ++y1; }
+
         const CImg<intT> selection = zoom.get_select_graph(disp,plot_type,vertex_type,
         					           labelx,
                                                            nxmin + x0*(nxmax-nxmin)/siz1,
