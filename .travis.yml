@@ -1,0 +1,59 @@
+language: cpp
+compiler:
+- gcc
+before_install:
+- sudo apt-get update -qq
+install:
+- wget http://www.biicode.com/downloads/latest/ubuntu32
+- mv ubuntu32 bii-ubuntu32.deb
+- (! sudo dpkg -i bii-ubuntu32.deb ) && sudo apt-get -f install
+- rm bii-ubuntu32.deb
+- wget http://www.cmake.org/files/v3.0/cmake-3.0.1-Linux-i386.tar.gz
+- tar -xzf cmake-3.0.1-Linux-i386.tar.gz
+- sudo cp -fR cmake-3.0.1-Linux-i386/* /usr
+- rm -rf cmake-3.0.1-Linux-i386
+- rm cmake-3.0.1-Linux-i386.tar.gz
+script:
+- cmake --version
+- bii init biicode_project
+- mkdir -p ./biicode_project/blocks/lasote/cimg
+- mv !(biicode_project) ./biicode_project/blocks/lasote/cimg
+- cd biicode_project
+- bii cpp:build
+- ls ./bin/lasote_cimg_examples_captcha
+- ls ./bin/lasote_cimg_examples_image2ascii
+- ls ./bin/lasote_cimg_examples_plotter1d
+- ls ./bin/lasote_cimg_examples_use_jpeg_buffer
+- ls ./bin/lasote_cimg_examples_CImg_demo
+- ls ./bin/lasote_cimg_examples_image_registration2d
+- ls ./bin/lasote_cimg_examples_radon_transform2d
+- ls ./bin/lasote_cimg_examples_use_nlmeans
+- ls ./bin/lasote_cimg_examples_curve_editor2d
+- ls ./bin/lasote_cimg_examples_image_surface3d
+- ls ./bin/lasote_cimg_examples_scene3d
+- ls ./bin/lasote_cimg_examples_use_patchmatch
+- ls ./bin/lasote_cimg_examples_dtmri_view3d
+- ls ./bin/lasote_cimg_examples_jawbreaker
+- ls ./bin/lasote_cimg_examples_spherical_function3d
+- ls ./bin/lasote_cimg_examples_use_RGBclass
+- ls ./bin/lasote_cimg_examples_edge_explorer2d
+- ls ./bin/lasote_cimg_examples_mcf_levelsets2d
+- ls ./bin/lasote_cimg_examples_tetris
+- ls ./bin/lasote_cimg_examples_use_skeleton
+- ls ./bin/lasote_cimg_examples_fade_images
+- ls ./bin/lasote_cimg_examples_mcf_levelsets3d
+- ls ./bin/lasote_cimg_examples_tron
+- ls ./bin/lasote_cimg_examples_wavelet_atrous
+- ls ./bin/lasote_cimg_examples_gaussian_fit1d
+- ls ./bin/lasote_cimg_examples_odykill
+- ls ./bin/lasote_cimg_examples_tutorial
+- ls ./bin/lasote_cimg_examples_generate_loop_macros
+- ls ./bin/lasote_cimg_examples_pde_heatflow2d
+- ls ./bin/lasote_cimg_examples_use_chlpca
+- ls ./bin/lasote_cimg_examples_hough_transform2d
+- ls ./bin/lasote_cimg_examples_pde_TschumperleDeriche2d
+- ls ./bin/lasote_cimg_examples_use_draw_gradient
+after_success:
+- bii user lasote -p $BII_LASOTE_PASSWORD
+- bii publish
+
