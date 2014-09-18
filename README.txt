@@ -1,3 +1,11 @@
+The biicode block "https://www.biicode.com/tschumperle/tschumperle/cimg/master" has been generated from the forked github repo: "https://github.com/lasote/cimg". 
+
+It includes slight modifications added to the original repository (enlace) in order to work properly with biicode. 
+
+The github fork is configured to automatically publish to biicode via travis-ci.
+
+
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
                             ____  _   _  ____

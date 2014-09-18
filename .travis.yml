@@ -16,46 +16,46 @@ install:
 script:
 - cmake --version
 - bii init biicode_project
-- mkdir -p ./biicode_project/blocks/lasote/cimg
-- mv !(biicode_project) ./biicode_project/blocks/lasote/cimg
+- mkdir -p ./biicode_project/blocks/tschumperle/cimg
+- mv !(biicode_project) ./biicode_project/blocks/tschumperle/cimg
 - cd biicode_project
 - bii cpp:build
-- ls ./bin/lasote_cimg_examples_captcha
-- ls ./bin/lasote_cimg_examples_image2ascii
-- ls ./bin/lasote_cimg_examples_plotter1d
-- ls ./bin/lasote_cimg_examples_use_jpeg_buffer
-- ls ./bin/lasote_cimg_examples_CImg_demo
-- ls ./bin/lasote_cimg_examples_image_registration2d
-- ls ./bin/lasote_cimg_examples_radon_transform2d
-- ls ./bin/lasote_cimg_examples_use_nlmeans
-- ls ./bin/lasote_cimg_examples_curve_editor2d
-- ls ./bin/lasote_cimg_examples_image_surface3d
-- ls ./bin/lasote_cimg_examples_scene3d
-- ls ./bin/lasote_cimg_examples_use_patchmatch
-- ls ./bin/lasote_cimg_examples_dtmri_view3d
-- ls ./bin/lasote_cimg_examples_jawbreaker
-- ls ./bin/lasote_cimg_examples_spherical_function3d
-- ls ./bin/lasote_cimg_examples_use_RGBclass
-- ls ./bin/lasote_cimg_examples_edge_explorer2d
-- ls ./bin/lasote_cimg_examples_mcf_levelsets2d
-- ls ./bin/lasote_cimg_examples_tetris
-- ls ./bin/lasote_cimg_examples_use_skeleton
-- ls ./bin/lasote_cimg_examples_fade_images
-- ls ./bin/lasote_cimg_examples_mcf_levelsets3d
-- ls ./bin/lasote_cimg_examples_tron
-- ls ./bin/lasote_cimg_examples_wavelet_atrous
-- ls ./bin/lasote_cimg_examples_gaussian_fit1d
-- ls ./bin/lasote_cimg_examples_odykill
-- ls ./bin/lasote_cimg_examples_tutorial
-- ls ./bin/lasote_cimg_examples_generate_loop_macros
-- ls ./bin/lasote_cimg_examples_pde_heatflow2d
-- ls ./bin/lasote_cimg_examples_use_chlpca
-- ls ./bin/lasote_cimg_examples_hough_transform2d
-- ls ./bin/lasote_cimg_examples_pde_TschumperleDeriche2d
-- ls ./bin/lasote_cimg_examples_use_draw_gradient
+- ls ./bin/tschumperle_cimg_examples_captcha
+- ls ./bin/tschumperle_cimg_examples_image2ascii
+- ls ./bin/tschumperle_cimg_examples_plotter1d
+- ls ./bin/tschumperle_cimg_examples_use_jpeg_buffer
+- ls ./bin/tschumperle_cimg_examples_CImg_demo
+- ls ./bin/tschumperle_cimg_examples_image_registration2d
+- ls ./bin/tschumperle_cimg_examples_radon_transform2d
+- ls ./bin/tschumperle_cimg_examples_use_nlmeans
+- ls ./bin/tschumperle_cimg_examples_curve_editor2d
+- ls ./bin/tschumperle_cimg_examples_image_surface3d
+- ls ./bin/tschumperle_cimg_examples_scene3d
+- ls ./bin/tschumperle_cimg_examples_use_patchmatch
+- ls ./bin/tschumperle_cimg_examples_dtmri_view3d
+- ls ./bin/tschumperle_cimg_examples_jawbreaker
+- ls ./bin/tschumperle_cimg_examples_spherical_function3d
+- ls ./bin/tschumperle_cimg_examples_use_RGBclass
+- ls ./bin/tschumperle_cimg_examples_edge_explorer2d
+- ls ./bin/tschumperle_cimg_examples_mcf_levelsets2d
+- ls ./bin/tschumperle_cimg_examples_tetris
+- ls ./bin/tschumperle_cimg_examples_use_skeleton
+- ls ./bin/tschumperle_cimg_examples_fade_images
+- ls ./bin/tschumperle_cimg_examples_mcf_levelsets3d
+- ls ./bin/tschumperle_cimg_examples_tron
+- ls ./bin/tschumperle_cimg_examples_wavelet_atrous
+- ls ./bin/tschumperle_cimg_examples_gaussian_fit1d
+- ls ./bin/tschumperle_cimg_examples_odykill
+- ls ./bin/tschumperle_cimg_examples_tutorial
+- ls ./bin/tschumperle_cimg_examples_generate_loop_macros
+- ls ./bin/tschumperle_cimg_examples_pde_heatflow2d
+- ls ./bin/tschumperle_cimg_examples_use_chlpca
+- ls ./bin/tschumperle_cimg_examples_hough_transform2d
+- ls ./bin/tschumperle_cimg_examples_pde_TschumperleDeriche2d
+- ls ./bin/tschumperle_cimg_examples_use_draw_gradient
 after_success:
-- bii user lasote -p $BII_LASOTE_PASSWORD
+- bii user tschumperle -p $BII_TSCHUMPERLE_PASSWORD
 - bii publish
 env:
   global:
-    secure: ZvecGcy3Wf14LrwWGe+1SaYPWLANGeLtom+Rv/WVqXerMlzeKwYYyWUWWpdu4sFd5BzQ6In0Kpw6Yv4Yu8VvD4g7vZAcBmp6YD1iwpz7l8gwyUB445QiiZDKXM/CswcdT+iZjksLRHGHfslvIhW/z8PWWXreNfqc5YUOUWufnBQ=
+    secure: FEVDnW7cyA3YhTNx7x9PHK8CI83cQcifJKhXv4aFfexbLnqtUdFy3I0GF5a08so/87Fz/lfE+yhyvvnHJWhNie2XahgZ6yNzpxxyDhXM4UiecaxxJ6Xx/EtnYZy7m2fUB+TdefIZ9XQs1M6b9HwHfoBZvumdTU+cevRSr2vbFVc=
