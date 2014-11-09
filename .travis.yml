@@ -53,6 +53,7 @@ script:
 - ls ./bin/tschumperle_cimg_examples_hough_transform2d
 - ls ./bin/tschumperle_cimg_examples_pde_TschumperleDeriche2d
 - ls ./bin/tschumperle_cimg_examples_use_draw_gradient
+
 after_success:
 - bii user tschumperle -p $BII_TSCHUMPERLE_PASSWORD
 - bii publish
